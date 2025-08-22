@@ -103,6 +103,12 @@ namespace TarodevGhost {
             return _runs.TryGetValue(type, out run);
         }
 
+        public string GetRunData(RecordingType type) {
+            if (!GetRun(type, out var run)) return null;
+            Debug.Log(run.Serialize());
+            return run.Serialize();
+        }
+
         #endregion
 
         #region Play Ghost
@@ -122,6 +128,23 @@ namespace TarodevGhost {
             if (_ghostObj != null) Object.Destroy(_ghostObj);
 
             if (!GetRun(type, out _currentReplay)) {
+                Object.Destroy(ghostObj);
+                return;
+            }
+
+            _replaySmoothedTime = 0;
+            _destroyOnComplete = destroyOnCompletion;
+
+            if (_currentReplay != null) _ghostObj = ghostObj;
+            else if (_destroyOnComplete) Object.Destroy(_ghostObj);
+        }
+
+        public void LoadRunData(string data, GameObject ghostObj, bool destroyOnCompletion = true) {
+            if (_ghostObj != null) Object.Destroy(_ghostObj);
+            
+            _currentReplay = new Recording(data);
+
+            if (_currentReplay == null) {
                 Object.Destroy(ghostObj);
                 return;
             }

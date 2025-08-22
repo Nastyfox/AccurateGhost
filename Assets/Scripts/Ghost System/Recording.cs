@@ -72,7 +72,7 @@ namespace TarodevGhost {
             void StringifyPoints(AnimationCurve curve, bool addDelimiter = true) {
                 for (var i = 0; i < curve.length; i++) {
                     var point = curve[i];
-                    builder.Append($"{point.time:F3},{point.value:F2}");
+                    builder.Append($"{point.time:F3}/{point.value:F2}");
                     if (i != curve.length - 1) builder.Append(DATA_DELIMITER);
                 }
 
@@ -92,7 +92,8 @@ namespace TarodevGhost {
             void DeserializePoint(AnimationCurve curve, string d) {
                 var splitValues = d.Split(DATA_DELIMITER);
                 foreach (var timeValPair in splitValues) {
-                    var s = timeValPair.Split(',');
+                    var s = timeValPair.Split('/');
+
                     var kf = new Keyframe(float.Parse(s[0]), float.Parse(s[1]));
                     curve.AddKey(kf);
                 }

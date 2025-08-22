@@ -90,6 +90,7 @@ namespace Esper.ESave
         /// <param name="saveFile">The save file.</param>
         public void AddToSavedPaths(SaveFile saveFile)
         {
+            Debug.Log(savePathsFile);
             if (!savePathsFile.HasData(saveFile.fileName))
             {
                 savePathsFile.AddOrUpdateData(saveFile.fileName, saveFile.GetSetupData());

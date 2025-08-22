@@ -14,6 +14,8 @@ public class GhostRunner : MonoBehaviour
 
     private int remainingTimeBeforeStart;
 
+    private string runData;
+
     private void Awake()
     {
         replaySystem = new ReplaySystem(this);
@@ -21,8 +23,7 @@ public class GhostRunner : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
-        await StartCountdown(3);
-        await StartRecord();
+        //await StartCountdown(3);
     }
 
     // Update is called once per frame
@@ -35,7 +36,8 @@ public class GhostRunner : MonoBehaviour
     {
         await UniTask.Delay(remainingTimeBeforeStart * 1000); // waits for 1 second
         replaySystem.StartRun(recordTarget, captureEveryNFrames);
-        replaySystem.PlayRecording(RecordingType.Saved, Instantiate(ghostPrefab));
+        replaySystem.PlayRecording(RecordingType.Best, Instantiate(ghostPrefab));
+        runData = replaySystem.GetRunData(RecordingType.Best);
         await EndOfRecord();
     }
 
@@ -56,5 +58,20 @@ public class GhostRunner : MonoBehaviour
             await UniTask.Delay(1000);
             remainingTimeBeforeStart--;
         }
+        await StartRecord();
+    }
+
+    public string GetRunData()
+    {
+        if(runData != "")
+            return runData;
+        
+        else 
+            return "No Run Data";
+    }
+
+    public void LoadRunData(string data)
+    {
+        replaySystem.LoadRunData(data, Instantiate(ghostPrefab));
     }
 }
