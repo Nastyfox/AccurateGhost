@@ -105,7 +105,6 @@ namespace TarodevGhost {
 
         public string GetRunData(RecordingType type) {
             if (!GetRun(type, out var run)) return null;
-            Debug.Log(run.Serialize());
             return run.Serialize();
         }
 

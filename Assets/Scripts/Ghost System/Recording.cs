@@ -100,6 +100,43 @@ namespace TarodevGhost {
             }
         }
 
+        private int CompareCurve(AnimationCurve curve1, AnimationCurve curve2, float accuracyThreshold, int frameThreshold)
+        {
+            int sameValues = 0;
+
+            int minLength = Mathf.Min(curve1.length, curve2.length);
+
+            for (int i = 0; i < minLength; i++)
+            {
+                for(int j = 1; j < frameThreshold; j++)
+                {
+                    if (i + j < minLength)
+                    {
+                        if (Mathf.Abs(curve1.keys[i + j].value - curve2.keys[i].value) <= accuracyThreshold)
+                        {
+                            sameValues++;
+                            break;
+                        }
+                    }
+                    if(i - j >= 0)
+                    {
+                        if (Mathf.Abs(curve1.keys[i - j].value - curve2.keys[i].value) <= accuracyThreshold)
+                        {
+                            sameValues++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return sameValues;
+        }
+
         #endregion
+
+        public void CompareRecording(Recording other, float accuracyThreshold, int frameThreshold) {
+            int scorePosX = CompareCurve(_posXCurve, other._posXCurve, accuracyThreshold, frameThreshold);
+            Debug.Log("Position X Similarity: " + scorePosX + "/" + Mathf.Max(_posXCurve.length, other._posXCurve.length));
+        }
     }
 }

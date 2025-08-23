@@ -1,7 +1,6 @@
 using TarodevGhost;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
 
 public class GhostRunner : MonoBehaviour
 {
@@ -12,18 +11,13 @@ public class GhostRunner : MonoBehaviour
 
     private ReplaySystem replaySystem;
 
-    private int remainingTimeBeforeStart;
-
     private string runData;
+
+    [SerializeField] private int recordDuration;
 
     private void Awake()
     {
         replaySystem = new ReplaySystem(this);
-    }
-
-    private async UniTaskVoid Start()
-    {
-        //await StartCountdown(3);
     }
 
     // Update is called once per frame
@@ -32,33 +26,20 @@ public class GhostRunner : MonoBehaviour
 
     }
 
-    private async UniTask StartRecord()
+    public async UniTask StartRecordAsync()
     {
-        await UniTask.Delay(remainingTimeBeforeStart * 1000); // waits for 1 second
         replaySystem.StartRun(recordTarget, captureEveryNFrames);
         replaySystem.PlayRecording(RecordingType.Best, Instantiate(ghostPrefab));
         runData = replaySystem.GetRunData(RecordingType.Best);
-        await EndOfRecord();
     }
 
-    private async UniTask EndOfRecord()
+    public async UniTask<string> EndOfRecordAsync()
     {
-        await UniTask.Delay(10000);
+        await UniTask.Delay(recordDuration * 1000);
         replaySystem.FinishRun();
         replaySystem.StopReplay();
-        await StartRecord();
-    }
-
-    public async UniTask StartCountdown(int countdownValue)
-    {
-        remainingTimeBeforeStart = countdownValue;
-        while (remainingTimeBeforeStart > 0)
-        {
-            Debug.Log("Countdown: " + remainingTimeBeforeStart);
-            await UniTask.Delay(1000);
-            remainingTimeBeforeStart--;
-        }
-        await StartRecord();
+        return replaySystem.GetRunData(RecordingType.Best);
+        await StartRecordAsync();
     }
 
     public string GetRunData()

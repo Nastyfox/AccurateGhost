@@ -26,14 +26,16 @@ public class ESaveSystem : MonoBehaviour
     {
         saveFile = saveFileSetup.GetSaveFile();
         saveData = ghostRunner.GetRunData();
+        Debug.Log("Save Data: " + saveData);
         saveFile.AddOrUpdateData("TestSave", saveData);
         saveFile.Save();
     }
 
-    public void Load()
+    public string Load()
     {
         saveFile = saveFileSetup.GetSaveFile();
         string testLoad = saveFile.GetData<string>("TestSave");
         ghostRunner.LoadRunData(testLoad);
+        return testLoad;
     }
 }
