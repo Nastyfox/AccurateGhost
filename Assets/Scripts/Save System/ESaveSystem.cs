@@ -5,7 +5,6 @@ public class ESaveSystem : MonoBehaviour
 {
     private SaveFileSetup saveFileSetup;
     private SaveFile saveFile;
-    private string saveData;
 
     [SerializeField] private GhostRunner ghostRunner;
 
@@ -13,7 +12,6 @@ public class ESaveSystem : MonoBehaviour
     void Start()
     {
         saveFileSetup = GetComponent<SaveFileSetup>();
-        saveData = "Save Data";
     }
 
     // Update is called once per frame
@@ -22,19 +20,18 @@ public class ESaveSystem : MonoBehaviour
         
     }
 
-    public void Save()
+    public void Save(string data)
     {
         saveFile = saveFileSetup.GetSaveFile();
-        saveData = ghostRunner.GetRunData();
-        Debug.Log("Save Data: " + saveData);
-        saveFile.AddOrUpdateData("TestSave", saveData);
+        Debug.Log("Save Data: " + data);
+        saveFile.AddOrUpdateData("RunSave", data);
         saveFile.Save();
     }
 
     public string Load()
     {
         saveFile = saveFileSetup.GetSaveFile();
-        string testLoad = saveFile.GetData<string>("TestSave");
+        string testLoad = saveFile.GetData<string>("RunSave");
         ghostRunner.LoadRunData(testLoad);
         return testLoad;
     }

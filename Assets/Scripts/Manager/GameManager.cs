@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading.Tasks;
 using TarodevGhost;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float accuracyThreshold;
     [Range(1, 5)]
     [SerializeField] private int frameThreshold;
+
+    [SerializeField] private TextMeshProUGUI textMeshProUGUI;
 
     private int remainingTimeBeforeStart;
 
@@ -31,26 +34,30 @@ public class GameManager : MonoBehaviour
     private async UniTask StartCountdown(int countdownValue)
     {
         remainingTimeBeforeStart = countdownValue;
+        string savedRun = "";
+
         while (remainingTimeBeforeStart > 0)
         {
-            Debug.Log("Countdown: " + remainingTimeBeforeStart);
+            textMeshProUGUI.text = remainingTimeBeforeStart.ToString();
             await UniTask.Delay(1000);
             remainingTimeBeforeStart--;
+            if (remainingTimeBeforeStart == 1)
+            {
+                savedRun = eSaveSystem.Load();
+            }
         }
-        /*
-        string savedRun = eSaveSystem.Load();
-        Debug.Log(savedRun);
-        await UniTask.Delay(1000);
-        */
-        Debug.Log("GO!");
+
+        textMeshProUGUI.text = "GO !";
         await ghostRunner.StartRecordAsync();
         string currentRun = await ghostRunner.EndOfRecordAsync();
+        
+        //eSaveSystem.Save(currentRun);
 
-        /*
         Recording newRecording = new Recording(currentRun);
         Recording savedRecording = new Recording(savedRun);
 
-        newRecording.CompareRecording(savedRecording, accuracyThreshold, frameThreshold);
-        */
+        float score = newRecording.CompareRecording(savedRecording, accuracyThreshold, frameThreshold);
+
+        textMeshProUGUI.text = ((int)(score * 100)).ToString() + "%";
     }
 }

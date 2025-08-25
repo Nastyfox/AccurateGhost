@@ -100,17 +100,17 @@ namespace TarodevGhost {
             }
         }
 
-        private int CompareCurve(AnimationCurve curve1, AnimationCurve curve2, float accuracyThreshold, int frameThreshold)
+        private float CompareCurve(AnimationCurve curve1, AnimationCurve curve2, float accuracyThreshold, int frameThreshold)
         {
-            int sameValues = 0;
+            float sameValues = 0f;
 
             int minLength = Mathf.Min(curve1.length, curve2.length);
 
             for (int i = 0; i < minLength; i++)
             {
-                for(int j = 1; j < frameThreshold; j++)
+                for(int j = 0; j < frameThreshold; j++)
                 {
-                    if (i + j < minLength)
+                    if (i + j < curve1.length)
                     {
                         if (Mathf.Abs(curve1.keys[i + j].value - curve2.keys[i].value) <= accuracyThreshold)
                         {
@@ -134,9 +134,22 @@ namespace TarodevGhost {
 
         #endregion
 
-        public void CompareRecording(Recording other, float accuracyThreshold, int frameThreshold) {
-            int scorePosX = CompareCurve(_posXCurve, other._posXCurve, accuracyThreshold, frameThreshold);
-            Debug.Log("Position X Similarity: " + scorePosX + "/" + Mathf.Max(_posXCurve.length, other._posXCurve.length));
+        public float CompareRecording(Recording other, float accuracyThreshold, int frameThreshold) {
+            float scorePosX = CompareCurve(_posXCurve, other._posXCurve, accuracyThreshold, frameThreshold);
+            float lengthPosX = Mathf.Max(_posXCurve.length, other._posXCurve.length);
+
+            float scorePosY = CompareCurve(_posYCurve, other._posYCurve, accuracyThreshold, frameThreshold);
+            float lengthPosY = Mathf.Max(_posYCurve.length, other._posYCurve.length);
+
+            float scoreRotZ = CompareCurve(_rotZCurve, other._rotZCurve, accuracyThreshold, frameThreshold);
+            float lengthRotZ = Mathf.Max(_rotZCurve.length, other._rotZCurve.length);
+
+            Debug.Log("Position X Similarity: " + scorePosX + "/" + lengthPosX);
+            Debug.Log("Position Y Similarity: " + scorePosY + "/" + lengthPosY);
+            Debug.Log("Rotation Z Similarity: " + scoreRotZ + "/" + lengthRotZ);
+
+            float globalScore = (scorePosX + scorePosY + scoreRotZ) / (lengthPosX + lengthPosY + lengthRotZ);
+            return globalScore;
         }
     }
 }
