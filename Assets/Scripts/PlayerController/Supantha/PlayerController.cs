@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using TarodevController;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SupanthaPaul
 {
@@ -61,6 +63,11 @@ namespace SupanthaPaul
 		private int m_onWallSide = 0;
 		private int m_playerSide = 1;
 
+		private InputAction jumpAction;
+		private InputAction dashAction;
+		private InputAction moveAction;
+		private InputActionMap inputActionMap;
+		[SerializeField] private InputActionAsset inputAction;
 
 		void Start()
 		{
@@ -79,10 +86,17 @@ namespace SupanthaPaul
 
 			m_rb = GetComponent<Rigidbody2D>();
 			m_dustParticle = GetComponentInChildren<ParticleSystem>();
+
+			inputActionMap = inputAction.FindActionMap("PlayMode");
+			jumpAction = inputActionMap.FindAction("Jump");
+			dashAction = inputActionMap.FindAction("Dash");
+			moveAction = inputActionMap.FindAction("Move");
 		}
 
 		private void FixedUpdate()
 		{
+			moveInput = moveAction.ReadValue<Vector2>().x;
+
 			// check if grounded
 			isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround);
 			var position = transform.position;
@@ -179,9 +193,6 @@ namespace SupanthaPaul
 
 		private void Update()
 		{
-			// horizontal input
-			moveInput = InputSystem.HorizontalRaw();
-
             if (isGrounded)
 			{
 				m_extraJumps = extraJumpCount;
@@ -197,7 +208,7 @@ namespace SupanthaPaul
 			if (!isDashing && !m_hasDashedInAir && m_dashCooldown <= 0f)
 			{
 				// dash input (left shift)
-				if (InputSystem.Dash())
+				if (dashAction.WasPressedThisFrame())
 				{
 					isDashing = true;
 					// dash effect
@@ -217,20 +228,20 @@ namespace SupanthaPaul
 				m_hasDashedInAir = false;
 			
 			// Jumping
-			if(InputSystem.Jump() && m_extraJumps > 0 && !isGrounded && !m_wallGrabbing)	// extra jumping
+			if(jumpAction.WasPressedThisFrame() && m_extraJumps > 0 && !isGrounded && !m_wallGrabbing)	// extra jumping
 			{
 				m_rb.linearVelocity = new Vector2(m_rb.linearVelocity.x, m_extraJumpForce); ;
 				m_extraJumps--;
 				// jumpEffect
 				PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
 			}
-			else if(InputSystem.Jump() && (isGrounded || m_groundedRemember > 0f))	// normal single jumping
+			else if(jumpAction.WasPressedThisFrame() && (isGrounded || m_groundedRemember > 0f))	// normal single jumping
 			{
 				m_rb.linearVelocity = new Vector2(m_rb.linearVelocity.x, jumpForce);
 				// jumpEffect
 				PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
 			}
-			else if(InputSystem.Jump() && m_wallGrabbing && moveInput!=m_onWallSide )		// wall jumping off the wall
+			else if(jumpAction.WasPressedThisFrame() && m_wallGrabbing && moveInput!=m_onWallSide )		// wall jumping off the wall
 			{
 				m_wallGrabbing = false;
 				m_wallJumping = true;
@@ -238,7 +249,7 @@ namespace SupanthaPaul
 					Flip();
 				m_rb.AddForce(new Vector2(-m_onWallSide * wallJumpForce.x, wallJumpForce.y), ForceMode2D.Impulse);
 			}
-			else if(InputSystem.Jump() && m_wallGrabbing && moveInput != 0 && (moveInput == m_onWallSide))      // wall climbing jump
+			else if(jumpAction.WasPressedThisFrame() && m_wallGrabbing && moveInput != 0 && (moveInput == m_onWallSide))      // wall climbing jump
 			{
 				m_wallGrabbing = false;
 				m_wallJumping = true;
@@ -252,9 +263,8 @@ namespace SupanthaPaul
 		void Flip()
 		{
 			m_facingRight = !m_facingRight;
-			Vector3 scale = transform.localScale;
-			scale.x *= -1;
-			transform.localScale = scale;
+			Vector3 eulerAngles = new Vector3(0f, m_facingRight? 0f: 180f, 0f);
+			transform.rotation = Quaternion.Euler(eulerAngles);
 		}
 
 		void CalculateSides()
@@ -279,5 +289,5 @@ namespace SupanthaPaul
 			Gizmos.DrawWireSphere((Vector2)transform.position + grabRightOffset, grabCheckRadius);
 			Gizmos.DrawWireSphere((Vector2)transform.position + grabLeftOffset, grabCheckRadius);
 		}
-	}
+    }
 }

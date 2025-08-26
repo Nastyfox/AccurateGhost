@@ -32,7 +32,6 @@ public class ESaveSystem : MonoBehaviour
     {
         saveFile = saveFileSetup.GetSaveFile();
         string testLoad = saveFile.GetData<string>("RunSave");
-        ghostRunner.LoadRunData(testLoad);
         return testLoad;
     }
 }
