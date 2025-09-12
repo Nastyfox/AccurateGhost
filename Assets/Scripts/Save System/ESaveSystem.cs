@@ -1,17 +1,16 @@
 using UnityEngine;
 using Esper.ESave;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 public class ESaveSystem : MonoBehaviour
 {
-    private SaveFileSetup saveFileSetup;
     private SaveFile saveFile;
-
-    [SerializeField] private GhostRunner ghostRunner;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        saveFileSetup = GetComponent<SaveFileSetup>();
+
     }
 
     // Update is called once per frame
@@ -20,18 +19,50 @@ public class ESaveSystem : MonoBehaviour
         
     }
 
-    public void Save(string data)
+    public struct Results
     {
-        saveFile = saveFileSetup.GetSaveFile();
+        public string completion;
+        public string chrono;
+        public string medal;
+
+        public Results(string _completion, string _chrono, string _medal)
+        {
+            completion = _completion;
+            chrono = _chrono;
+            medal = _medal;
+        }
+    }
+
+    public void SaveRun(string data, SaveFileSetup runSaveFileSetup)
+    {
+        saveFile = runSaveFileSetup.GetSaveFile();
         Debug.Log("Save Data: " + data);
         saveFile.AddOrUpdateData("RunSave", data);
         saveFile.Save();
     }
 
-    public string Load()
+    public string LoadRun(SaveFileSetup runSaveFileSetup)
     {
-        saveFile = saveFileSetup.GetSaveFile();
+        saveFile = runSaveFileSetup.GetSaveFile();
         string testLoad = saveFile.GetData<string>("RunSave");
         return testLoad;
+    }
+
+    public void SaveResults(string levelName, string completion, string chrono, string medal, SaveFileSetup resultsSaveFileSetu)
+    {
+        saveFile = resultsSaveFileSetu.GetSaveFile();
+        Debug.Log("Save Data: " + levelName + " " + completion + " " + chrono + " " + medal);
+
+        Results results = new Results(completion, chrono, medal);
+        saveFile.AddOrUpdateData(levelName, results);
+        saveFile.Save();
+    }
+
+    public Results LoadResults(string levelName, SaveFileSetup resultsSaveFileSetup)
+    {
+        saveFile = resultsSaveFileSetup.GetSaveFile();
+        Results results = saveFile.GetData<Results>(levelName);
+
+        return results;
     }
 }
