@@ -1,29 +1,31 @@
 fileFormatVersion: 2
-guid: 03827acccde38a4449a6c66343f655e6
-AssetOrigin:
-  serializedVersion: 1
-  productId: 245475
-  packageName: 2D Platformer Controller (with animated character)
-  packageVersion: 1.0.0
-  assetPath: Assets/SupanthaPaul/2D Platformer Controller/Art/Sprites/Characters/Player_Reko/FInal_Character_Dash.png
-  uploadId: 558839
+guid: e1754cdc1746b1c458629e7eae8432ac
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 21300000
-    second: FInal_Character_Dash_0
+      213: 8227761844738003090
+    second: FInal_Character_Run_0
   - first:
-      213: 21300002
-    second: FInal_Character_Dash_1
+      213: -3088285813384564132
+    second: FInal_Character_Run_1
   - first:
-      213: 21300004
-    second: FInal_Character_Dash_2
+      213: -6411303155403724860
+    second: FInal_Character_Run_2
   - first:
-      213: 21300006
-    second: FInal_Character_Dash_3
+      213: -7637674785748030359
+    second: FInal_Character_Run_3
   - first:
-      213: 21300008
-    second: FInal_Character_Dash_4
+      213: -1495263300676075275
+    second: FInal_Character_Run_4
+  - first:
+      213: -7990314454313378953
+    second: FInal_Character_Run_5
+  - first:
+      213: 8943748420607764368
+    second: FInal_Character_Run_6
+  - first:
+      213: -2904501715866395656
+    second: FInal_Character_Run_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -85,9 +87,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
@@ -101,64 +103,38 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 256
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
-  - serializedVersion: 4
-    buildTarget: Server
-    maxTextureSize: 256
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: WebGL
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FInal_Character_Dash_0
+      name: FInal_Character_Run_0
       rect:
         serializedVersion: 2
         x: 0
@@ -171,16 +147,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ef2d38e0d56b4c649810a8c69a01e80b
-      internalID: 21300000
+      spriteID: 2901f142ec1ee2270800000000000000
+      internalID: 8227761844738003090
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FInal_Character_Dash_1
+      name: FInal_Character_Run_1
       rect:
         serializedVersion: 2
         x: 34
@@ -193,16 +169,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 41f0c7800bd89bd409f5f8e38ad11be8
-      internalID: 21300002
+      spriteID: c52b5584a643425d0800000000000000
+      internalID: -3088285813384564132
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FInal_Character_Dash_2
+      name: FInal_Character_Run_2
       rect:
         serializedVersion: 2
         x: 68
@@ -215,16 +191,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 043b9613a16b9364c8057983f30b9982
-      internalID: 21300004
+      spriteID: 4c7e1daafb97607a0800000000000000
+      internalID: -6411303155403724860
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FInal_Character_Dash_3
+      name: FInal_Character_Run_3
       rect:
         serializedVersion: 2
         x: 102
@@ -237,16 +213,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 84e184305d1b7a84eb8eb803ff46b4c9
-      internalID: 21300006
+      spriteID: 96ce78d9f37810690800000000000000
+      internalID: -7637674785748030359
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FInal_Character_Dash_4
+      name: FInal_Character_Run_4
       rect:
         serializedVersion: 2
         x: 136
@@ -259,10 +235,76 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 2f3263e00b3a16d4e8f1a7c986d057b1
-      internalID: 21300008
+      spriteID: 5f0468543f1cf3be0800000000000000
+      internalID: -1495263300676075275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FInal_Character_Run_5
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 0
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77b5bfa9653bc1190800000000000000
+      internalID: -7990314454313378953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FInal_Character_Run_6
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 0
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09769c27dc39e1c70800000000000000
+      internalID: 8943748420607764368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FInal_Character_Run_7
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 0
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fb5540041321b7d0800000000000000
+      internalID: -2904501715866395656
       vertices: []
       indices: 
       edges: []
@@ -271,7 +313,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 34c66a6a6e8574a45a860774f2bb510c
+    spriteID: 9881cac0d7899ad429501eaf1f7d462e
     internalID: 0
     vertices: []
     indices: 
@@ -281,11 +323,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      FInal_Character_Dash_0: 21300000
-      FInal_Character_Dash_1: 21300002
-      FInal_Character_Dash_2: 21300004
-      FInal_Character_Dash_3: 21300006
-      FInal_Character_Dash_4: 21300008
+      FInal_Character_Run_0: 8227761844738003090
+      FInal_Character_Run_1: -3088285813384564132
+      FInal_Character_Run_2: -6411303155403724860
+      FInal_Character_Run_3: -7637674785748030359
+      FInal_Character_Run_4: -1495263300676075275
+      FInal_Character_Run_5: -7990314454313378953
+      FInal_Character_Run_6: 8943748420607764368
+      FInal_Character_Run_7: -2904501715866395656
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
