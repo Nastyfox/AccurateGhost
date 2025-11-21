@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
-using UnityEditor.Overlays;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
-using static Playback;
 
 public class Playback : MonoBehaviour
 {
@@ -60,7 +56,10 @@ public class Playback : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        targetAnimator = target.GetComponentInChildren<Animator>();
+        if (target != null)
+        {
+            targetAnimator = target.GetComponentInChildren<Animator>();
+        }
     }
 
     // Update is called once per frame
@@ -140,10 +139,14 @@ public class Playback : MonoBehaviour
             }
         }
 
-        if(nextIndex ==  playbackKeyFrames.Count - 1)
+        if (nextIndex == playbackKeyFrames.Count - 1)
         {
             isPlaybackDone = true;
-            virtualCamera.Follow = target.transform;
+            isPlaybacking = false;
+            if (target != null)
+            {
+                virtualCamera.Follow = target.transform;
+            }
             playbackDoneEvent?.Invoke();
         }
 
@@ -169,7 +172,7 @@ public class Playback : MonoBehaviour
             savedDatas += playbackKeyFrames[i].time.ToString() + "|" + SerializeVector3(playbackKeyFrames[i].pos) + "|" + SerializeQuarternion(playbackKeyFrames[i].rot) + "|" +
                           playbackKeyFrames[i].moveSpeedAnimator.ToString() + "|" + playbackKeyFrames[i].jumpSpeedAnimator.ToString() + "|" + playbackKeyFrames[i].isJumpingAnimator + "|" +
                            playbackKeyFrames[i].isGrabbingAnimator + "|" + playbackKeyFrames[i].isDashingAnimator;
-            if(i < playbackKeyFrames.Count - 1)
+            if (i < playbackKeyFrames.Count - 1)
             {
                 savedDatas += "/";
             }
@@ -190,7 +193,7 @@ public class Playback : MonoBehaviour
 
     private string SerializeQuarternion(Quaternion q)
     {
-        return q.x.ToString() + "_" + q.y.ToString() + "_" + q.z.ToString() + "_" + q.w.ToString(); 
+        return q.x.ToString() + "_" + q.y.ToString() + "_" + q.z.ToString() + "_" + q.w.ToString();
     }
 
     private Quaternion DeserializeQuaternion(string s)
@@ -198,18 +201,27 @@ public class Playback : MonoBehaviour
         return new Quaternion(float.Parse(s.Split('_')[0]), float.Parse(s.Split('_')[1]), float.Parse(s.Split('_')[2]), float.Parse(s.Split('_')[3]));
     }
 
-    public void LoadDatas(string savedDatas)
+    public void SetGhostPlayback(bool follow, string savedDatas)
     {
-        playbackKeyFrames.Clear();
-        playerTimer = 0;
-        isRecording = false;
+        ResetPlayback();
 
         playbackKeyFrames = GetPlaybackKeyFramesFromString(savedDatas);
 
         ghost = Instantiate(ghostPrefab, playbackKeyFrames[0].pos, playbackKeyFrames[0].rot);
         ghostAnimator = ghost.GetComponentInChildren<Animator>();
         playerTimer = playbackKeyFrames[0].time;
-        virtualCamera.Follow = ghost.transform;
+        if (follow)
+        {
+            virtualCamera.Follow = ghost.transform;
+        }
+    }
+
+    public void ResetPlayback()
+    {
+        playbackKeyFrames.Clear();
+        playerTimer = 0;
+        isRecording = false;
+        isPlaybackDone = false;
     }
 
 
@@ -222,37 +234,40 @@ public class Playback : MonoBehaviour
         {
             string splitString = splitStrings[i];
 
-            string timeString = splitString.Split('|')[0];
-            string posString = splitString.Split('|')[1];
-            string rotString = splitString.Split('|')[2];
-            string moveSpeedAnimatorString = splitString.Split('|')[3];
-            string jumpSpeedAnimatorString = splitString.Split('|')[4];
-            string isJumpingAnimatorString = splitString.Split('|')[5];
-            string isGrabbingAnimatorString = splitString.Split('|')[6];
-            string isDashingAnimatorString = splitString.Split('|')[7];
-
-            float _time = float.Parse(timeString);
-            Vector3 _pos = DeserializeVector3(posString);
-            Quaternion _rot = DeserializeQuaternion(rotString);
-            float _moveSpeedAnimator = float.Parse(moveSpeedAnimatorString);
-            float _jumpSpeedAnimator = float.Parse(jumpSpeedAnimatorString);
-            bool isJumpingAnimator = bool.Parse(isJumpingAnimatorString);
-            bool isGrabbingAnimator = bool.Parse(isGrabbingAnimatorString);
-            bool isDashingAnimator = bool.Parse(isDashingAnimatorString);
-
-            PlaybackKeyFrame frame = new PlaybackKeyFrame()
+            if (splitString != "")
             {
-                time = _time,
-                pos = _pos,
-                rot = _rot,
-                moveSpeedAnimator = _moveSpeedAnimator,
-                jumpSpeedAnimator = _jumpSpeedAnimator,
-                isJumpingAnimator = isJumpingAnimator,
-                isGrabbingAnimator = isGrabbingAnimator,
-                isDashingAnimator = isDashingAnimator
-            };
+                string timeString = splitString.Split('|')[0];
+                string posString = splitString.Split('|')[1];
+                string rotString = splitString.Split('|')[2];
+                string moveSpeedAnimatorString = splitString.Split('|')[3];
+                string jumpSpeedAnimatorString = splitString.Split('|')[4];
+                string isJumpingAnimatorString = splitString.Split('|')[5];
+                string isGrabbingAnimatorString = splitString.Split('|')[6];
+                string isDashingAnimatorString = splitString.Split('|')[7];
 
-            localKeyFrames.Add(frame);
+                float _time = float.Parse(timeString);
+                Vector3 _pos = DeserializeVector3(posString);
+                Quaternion _rot = DeserializeQuaternion(rotString);
+                float _moveSpeedAnimator = float.Parse(moveSpeedAnimatorString);
+                float _jumpSpeedAnimator = float.Parse(jumpSpeedAnimatorString);
+                bool isJumpingAnimator = bool.Parse(isJumpingAnimatorString);
+                bool isGrabbingAnimator = bool.Parse(isGrabbingAnimatorString);
+                bool isDashingAnimator = bool.Parse(isDashingAnimatorString);
+
+                PlaybackKeyFrame frame = new PlaybackKeyFrame()
+                {
+                    time = _time,
+                    pos = _pos,
+                    rot = _rot,
+                    moveSpeedAnimator = _moveSpeedAnimator,
+                    jumpSpeedAnimator = _jumpSpeedAnimator,
+                    isJumpingAnimator = isJumpingAnimator,
+                    isGrabbingAnimator = isGrabbingAnimator,
+                    isDashingAnimator = isDashingAnimator
+                };
+
+                localKeyFrames.Add(frame);
+            }
         }
 
         return localKeyFrames;
@@ -262,6 +277,9 @@ public class Playback : MonoBehaviour
     {
         List<PlaybackKeyFrame> currentRunKeyFrames = new List<PlaybackKeyFrame>();
         List<PlaybackKeyFrame> savedRunKeyFrames = new List<PlaybackKeyFrame>();
+
+        Debug.Log(currentRun);
+        Debug.Log(savedRun);
 
         currentRunKeyFrames = GetPlaybackKeyFramesFromString(currentRun);
         savedRunKeyFrames = GetPlaybackKeyFramesFromString(savedRun);

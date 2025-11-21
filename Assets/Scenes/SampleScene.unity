@@ -671,13 +671,14 @@ GameObject:
   m_Component:
   - component: {fileID: 224464015}
   - component: {fileID: 224464014}
+  - component: {fileID: 224464016}
   m_Layer: 0
   m_Name: Ghost System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &224464014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -685,7 +686,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 224464013}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac542d5007b3c80429057a1f7260adad, type: 3}
   m_Name: 
@@ -710,6 +711,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &224464016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224464013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b97df032ed7bf649aeeb2077e63167f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 2143147336}
+  ghostPrefab: {fileID: 2579475382891032189, guid: 95b97a8fb581d6a4787b3540d6ea3d35,
+    type: 3}
+  timeBetweenKeyFrames: 0.02
+  virtualCamera: {fileID: 886376396}
 --- !u!1 &292174418
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,7 +759,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75adf86f4696a4e409b2c8c60a6ea11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghostRunner: {fileID: 292174423}
 --- !u!114 &292174421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2062,13 +2079,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1190527248}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 49.998436, y: -4.211648, z: -0.07575093}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.51, y: -2.3, z: -0.07575093}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1046619835}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1190527250
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2620,6 +2637,11 @@ PrefabInstance:
       propertyPath: extraJumpCount
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1865938916397552050, guid: 3c02ac99ebd71b24cb0f7c53261c4241,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: e830a61b552f71c4ea562f76314c44a0, type: 2}
     - target: {fileID: 1865938916397552063, guid: 3c02ac99ebd71b24cb0f7c53261c4241,
         type: 3}
       propertyPath: m_IsActive
@@ -2689,10 +2711,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2143147336}
-  ghostPrefab: {fileID: 2579475382891032189, guid: 95b97a8fb581d6a4787b3540d6ea3d35,
-    type: 3}
+  ghostPrefab: {fileID: 0}
   timeBetweenKeyFrames: 0.02
-  virtualCamera: {fileID: 886376396}
+  virtualCamera: {fileID: 0}
 --- !u!114 &1585225199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2786,12 +2807,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ghostRunner: {fileID: 224464014}
   eSaveSystem: {fileID: 292174419}
-  accuracyThreshold: 1
-  frameThreshold: 5
+  runSaveFileSetup: {fileID: 292174421}
+  resultsSaveFileSetup: {fileID: 292174421}
+  accuracyThreshold: 0.1
+  frameThreshold: 1
   textMeshProUGUI: {fileID: 1199197369}
-  playback: {fileID: 1585225198}
+  savePlayback: {fileID: 1585225198}
+  ghostPlayback: {fileID: 224464016}
   saveRun: 0
-  displayGhost: 1
+  displayGhostBefore: 0
+  displayGhostDuring: 1
   inputAction: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100,
     type: 3}
   runDataScriptableObject: {fileID: 11400000, guid: cf87e7863d353534181f5daac22eda50,

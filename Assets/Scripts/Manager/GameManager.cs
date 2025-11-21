@@ -23,12 +23,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI textMeshProUGUI;
 
-    [SerializeField] private Playback playback;
+    [SerializeField] private Playback savePlayback;
+    [SerializeField] private Playback ghostPlayback;
 
     private int remainingTimeBeforeStart;
 
     [SerializeField] private bool saveRun;
-    [SerializeField] private bool displayGhost;
+    [SerializeField] private bool displayGhostBefore;
+    [SerializeField] private bool displayGhostDuring;
 
     [SerializeField] private InputActionAsset inputAction;
     private InputActionMap playModeActionMap;
@@ -44,14 +46,24 @@ public class GameManager : MonoBehaviour
     {
         PlayerCollisions.startEvent += StartRecord;
         PlayerCollisions.endEvent += StopRecord;
-        Playback.playbackDoneEvent += UniTask.Action(EnablePlayerControls);
+        if(displayGhostDuring)
+        {
+            PlayerCollisions.startEvent += () => DisplayGhost(false);
+        }
+
+        Playback.playbackDoneEvent += EnablePlayerControls;
     }
 
     private void OnDisable()
     {
         PlayerCollisions.startEvent -= StartRecord;
         PlayerCollisions.endEvent -= StopRecord;
-        Playback.playbackDoneEvent -= UniTask.Action(EnablePlayerControls);
+        if (displayGhostDuring)
+        {
+            PlayerCollisions.startEvent -= () => DisplayGhost(false);
+        }
+
+        Playback.playbackDoneEvent -= EnablePlayerControls;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -67,19 +79,18 @@ public class GameManager : MonoBehaviour
         }
 
         savedRun = eSaveSystem.LoadRun(runSaveFileSetup);
-        if(savedRun == null)
+        if (savedRun == null)
         {
             savedRun = runDataScriptableObject.runData;
         }
 
-        if (displayGhost)
+        if (displayGhostBefore)
         {
-            playback.LoadDatas(savedRun);
-            playback.SetIsPlaybacking(true);
+            DisplayGhost(true);
         }
         else
         {
-            EnablePlayerControls().Forget();
+            StartTimer().Forget();
         }
     }
 
@@ -122,13 +133,13 @@ public class GameManager : MonoBehaviour
 
     private void StartRecord()
     {
-        playback.SetIsRecording(true);
+        savePlayback.SetIsRecording(true);
     }
 
     private void StopRecord()
     {
-        playback.SetIsRecording(true);
-        string currentRun = playback.SaveDatas();
+        savePlayback.SetIsRecording(true);
+        string currentRun = savePlayback.SaveDatas();
 
         if(saveRun)
         {
@@ -136,7 +147,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            float score = playback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
+            float score = savePlayback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
             startTimer = false;
             string levelName = SceneManager.GetActiveScene().name;
             string medal = "";
@@ -167,12 +178,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private async UniTaskVoid EnablePlayerControls()
+    private void StopPlayback()
     {
-        await StartCountdown(3);
+        savePlayback.SetIsPlaybacking(false);
+    }
+
+    private void EnablePlayerControls()
+    {
         ghostModeActionMap.Disable();
         playModeActionMap.Enable();
+    }
+
+    private async UniTaskVoid StartTimer()
+    {
+        await StartCountdown(3);
+
+        EnablePlayerControls();
+
         await UniTask.Delay(1000);
         textMeshProUGUI.enabled = false;
+    }
+
+    private void DisplayGhost(bool follow)
+    {
+        ghostPlayback.SetGhostPlayback(follow, savedRun);
+        ghostPlayback.SetIsPlaybacking(true);
     }
 }

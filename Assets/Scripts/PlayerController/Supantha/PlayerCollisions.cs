@@ -8,6 +8,8 @@ public class PlayerCollisions : MonoBehaviour
     public static event Action startEvent;
     public static event Action endEvent;
 
+    private bool firstStart = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,7 +26,11 @@ public class PlayerCollisions : MonoBehaviour
     {
         if(collision.tag == "StartFlag")
         {
-            startEvent?.Invoke();
+            if (firstStart)
+            {
+                startEvent?.Invoke();
+                firstStart = false;
+            }
         }
         else if(collision.tag == "EndFlag")
         {

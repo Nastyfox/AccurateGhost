@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: 922ed659aa79a114bb8fbda9eff3b864
+guid: b91805c0536a87141956de6b3213de05
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 245475
-  packageName: 2D Platformer Controller (with animated character)
-  packageVersion: 1.0.0
-  assetPath: Assets/SupanthaPaul/2D Platformer Controller/Art/Animations/Player/WallGrab.anim
-  uploadId: 558839

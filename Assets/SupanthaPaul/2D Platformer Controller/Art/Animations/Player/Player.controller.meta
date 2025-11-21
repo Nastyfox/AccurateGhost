@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: 4526272885f784a4eb011a6c1eddf921
+guid: e830a61b552f71c4ea562f76314c44a0
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 9100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 245475
-  packageName: 2D Platformer Controller (with animated character)
-  packageVersion: 1.0.0
-  assetPath: Assets/SupanthaPaul/2D Platformer Controller/Art/Animations/Player/Player.controller
-  uploadId: 558839

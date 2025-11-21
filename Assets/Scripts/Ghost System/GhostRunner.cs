@@ -38,8 +38,8 @@ public class GhostRunner : MonoBehaviour
         await UniTask.Delay(recordDuration * 1000);
         replaySystem.FinishRun();
         replaySystem.StopReplay();
-        return replaySystem.GetRunData(RecordingType.Best);
         await StartRecordAsync();
+        return replaySystem.GetRunData(RecordingType.Best);
     }
 
     public string GetRunData()
