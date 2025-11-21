@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Playback : MonoBehaviour
 {
@@ -46,6 +47,10 @@ public class Playback : MonoBehaviour
     public void SetIsRecording(bool value)
     {
         isRecording = value;
+        if(isRecording)
+        {
+            playerTimer = 0;
+        }
     }
 
     public void SetIsPlaybacking(bool value)
@@ -77,8 +82,11 @@ public class Playback : MonoBehaviour
         {
             Destroy(ghost);
         }
+    }
 
-        playerTimer += Time.deltaTime;
+    private void FixedUpdate()
+    {
+        playerTimer += Time.fixedDeltaTime;
     }
 
 
@@ -289,32 +297,41 @@ public class Playback : MonoBehaviour
 
         float sameValues = 0;
 
+        float distanceToGhostPos = 0;
+
         for (int i = 0; i < minFrameCount; i++)
         {
+            Debug.Log("Comparing frame " + i);
             for (int j = 0; j < frameThreshold; j++)
             {
                 if (i + j < currentRunKeyFrames.Count)
                 {
-                    if (Vector3.Distance(currentRunKeyFrames[i + j].pos, savedRunKeyFrames[i].pos) <= accuracyThreshold)
+                    distanceToGhostPos = Vector3.Distance(currentRunKeyFrames[i + j].pos, savedRunKeyFrames[i].pos);
+                    if (distanceToGhostPos <= accuracyThreshold)
                     {
                         sameValues++;
                         break;
                     }
+                    Debug.Log("Distance at frame " + (i + j) + " is " + distanceToGhostPos);
+                    Debug.Log("Pos are " + currentRunKeyFrames[i + j].pos + " compared to " + savedRunKeyFrames[i].pos);
                 }
                 if (i - j >= 0)
                 {
-                    if (Vector3.Distance(currentRunKeyFrames[i - j].pos, savedRunKeyFrames[i].pos) <= accuracyThreshold)
+                    distanceToGhostPos = Vector3.Distance(currentRunKeyFrames[i - j].pos, savedRunKeyFrames[i].pos);
+                    if (distanceToGhostPos <= accuracyThreshold)
                     {
                         sameValues++;
                         break;
                     }
+                    Debug.Log("Distance at frame " + (i - j) + " is " + distanceToGhostPos);
+                    Debug.Log("Pos are " + currentRunKeyFrames[i - j].pos + " compared to " + savedRunKeyFrames[i].pos);
                 }
             }
         }
 
-        Debug.Log(sameValues + "/" + maxFrameCount);
+        Debug.Log(sameValues + "/" + savedRunKeyFrames.Count);
 
-        return sameValues / maxFrameCount;
+        return sameValues / savedRunKeyFrames.Count;
     }
 
     private float CompareCurve(AnimationCurve curve1, AnimationCurve curve2, float accuracyThreshold, int frameThreshold)

@@ -2810,13 +2810,13 @@ MonoBehaviour:
   runSaveFileSetup: {fileID: 292174421}
   resultsSaveFileSetup: {fileID: 292174421}
   accuracyThreshold: 0.1
-  frameThreshold: 1
+  frameThreshold: 5
   textMeshProUGUI: {fileID: 1199197369}
   savePlayback: {fileID: 1585225198}
   ghostPlayback: {fileID: 224464016}
   saveRun: 0
-  displayGhostBefore: 0
-  displayGhostDuring: 1
+  displayGhostBefore: 1
+  displayGhostDuring: 0
   inputAction: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100,
     type: 3}
   runDataScriptableObject: {fileID: 11400000, guid: cf87e7863d353534181f5daac22eda50,
