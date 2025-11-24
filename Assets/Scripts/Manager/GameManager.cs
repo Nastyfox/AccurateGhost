@@ -4,13 +4,20 @@ using System;
 using System.Threading.Tasks;
 using TarodevGhost;
 using TMPro;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [Serializable]
+    public enum LevelDifficulty
+    {
+        Easy,
+        Medium,
+        Hard
+    }
+
     [SerializeField] private GhostRunner ghostRunner;
     [SerializeField] private ESaveSystem eSaveSystem;
     [SerializeField] private SaveFileSetup runSaveFileSetup;
@@ -28,6 +35,8 @@ public class GameManager : MonoBehaviour
 
     private int remainingTimeBeforeStart;
 
+    [SerializeField] private LevelDifficulty levelDifficulty;
+
     [SerializeField] private bool saveRun;
     [SerializeField] private bool displayGhostBefore;
     [SerializeField] private bool displayGhostDuring;
@@ -42,16 +51,19 @@ public class GameManager : MonoBehaviour
     private float time = 0f;
     private bool startTimer = false;
 
+    [Range(0, 100)]
+    [SerializeField] private int frameOffset;
+
     private void OnEnable()
     {
         PlayerCollisions.startEvent += StartRecord;
         PlayerCollisions.endEvent += StopRecord;
         if(displayGhostDuring)
         {
-            PlayerCollisions.startEvent += () => DisplayGhost(false);
+            PlayerCollisions.startEvent += () => DisplayGhost(false, false, frameOffset);
         }
 
-        Playback.playbackDoneEvent += EnablePlayerControls;
+        Playback.playbackDoneEvent += UniTask.Action(StartRun);
     }
 
     private void OnDisable()
@@ -60,7 +72,7 @@ public class GameManager : MonoBehaviour
         PlayerCollisions.endEvent -= StopRecord;
         if (displayGhostDuring)
         {
-            PlayerCollisions.startEvent -= () => DisplayGhost(false);
+            PlayerCollisions.startEvent -= () => DisplayGhost(false, false, frameOffset);
         }
 
         Playback.playbackDoneEvent -= EnablePlayerControls;
@@ -78,19 +90,30 @@ public class GameManager : MonoBehaviour
             playModeActionMap.Disable();
         }
 
-        savedRun = eSaveSystem.LoadRun(runSaveFileSetup);
+        savedRun = eSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
         if (savedRun == null)
         {
-            savedRun = runDataScriptableObject.runData;
+            switch(levelDifficulty)
+            {
+                case LevelDifficulty.Easy:
+                    savedRun = runDataScriptableObject.easyRunData;
+                    break;
+                case LevelDifficulty.Medium:
+                    savedRun = runDataScriptableObject.mediumRunData;
+                    break;
+                case LevelDifficulty.Hard:
+                    savedRun = runDataScriptableObject.hardRunData;
+                    break;
+            }
         }
 
         if (displayGhostBefore)
         {
-            DisplayGhost(true);
+            DisplayGhost(true, true, 0);
         }
         else
         {
-            StartTimer().Forget();
+            StartRun().Forget();
         }
     }
 
@@ -138,18 +161,19 @@ public class GameManager : MonoBehaviour
 
     private void StopRecord()
     {
-        savePlayback.SetIsRecording(true);
-        string currentRun = savePlayback.SaveDatas();
+        savePlayback.SetIsRecording(false);
 
-        if(saveRun)
+        string currentRun = savePlayback.GetSavedDatas();
+
+        if (saveRun)
         {
-            eSaveSystem.SaveRun(currentRun, runSaveFileSetup);
+            eSaveSystem.SaveRun(currentRun, levelDifficulty, SceneManager.GetActiveScene().name, runSaveFileSetup);
         }
         else
         {
             float score = savePlayback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
             startTimer = false;
-            string levelName = SceneManager.GetActiveScene().name;
+            string levelName = SceneManager.GetActiveScene().name + "_" + levelDifficulty.ToString();
             string medal = "";
             if(score <= 0.3f)
             {
@@ -189,7 +213,7 @@ public class GameManager : MonoBehaviour
         playModeActionMap.Enable();
     }
 
-    private async UniTaskVoid StartTimer()
+    private async UniTaskVoid StartRun()
     {
         await StartCountdown(3);
 
@@ -199,9 +223,14 @@ public class GameManager : MonoBehaviour
         textMeshProUGUI.enabled = false;
     }
 
-    private void DisplayGhost(bool follow)
+    private void DisplayGhost(bool follow, bool startRun, int frameOffset)
     {
-        ghostPlayback.SetGhostPlayback(follow, savedRun);
+        ghostPlayback.SetGhostPlayback(follow, startRun, frameOffset, savedRun);
         ghostPlayback.SetIsPlaybacking(true);
+    }
+
+    public void SetLevelDifficulty(LevelDifficulty difficulty)
+    {
+        levelDifficulty = difficulty;
     }
 }

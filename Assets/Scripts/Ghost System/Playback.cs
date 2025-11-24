@@ -29,6 +29,9 @@ public class Playback : MonoBehaviour
     private bool isPlaybackDone = false;
 
     public static event Action playbackDoneEvent;
+    private bool startRunAfterPlayback = false;
+
+    private int frameOffset = 0;
 
     [SerializeField] private CinemachineCamera virtualCamera;
     public struct PlaybackKeyFrame
@@ -70,10 +73,6 @@ public class Playback : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isRecording)
-        {
-            Record();
-        }
         if (isPlaybacking && !isPlaybackDone)
         {
             PlaybackUpdate(playerTimer);
@@ -87,6 +86,11 @@ public class Playback : MonoBehaviour
     private void FixedUpdate()
     {
         playerTimer += Time.fixedDeltaTime;
+
+        if (isRecording)
+        {
+            Record();
+        }
     }
 
 
@@ -147,7 +151,7 @@ public class Playback : MonoBehaviour
             }
         }
 
-        if (nextIndex == playbackKeyFrames.Count - 1)
+        if ((nextIndex + frameOffset) == playbackKeyFrames.Count - 1)
         {
             isPlaybackDone = true;
             isPlaybacking = false;
@@ -155,11 +159,14 @@ public class Playback : MonoBehaviour
             {
                 virtualCamera.Follow = target.transform;
             }
-            playbackDoneEvent?.Invoke();
+            if(startRunAfterPlayback)
+            {
+                playbackDoneEvent?.Invoke();
+            }
         }
 
-        PlaybackKeyFrame frameA = playbackKeyFrames[prevIndex];
-        PlaybackKeyFrame frameB = playbackKeyFrames[nextIndex];
+        PlaybackKeyFrame frameA = playbackKeyFrames[prevIndex + frameOffset];
+        PlaybackKeyFrame frameB = playbackKeyFrames[nextIndex + frameOffset];
         float abPercent = Mathf.InverseLerp(frameA.time, frameB.time, playTime);
 
         ghost.transform.position = Vector3.Lerp(frameA.pos, frameB.pos, abPercent);
@@ -171,7 +178,7 @@ public class Playback : MonoBehaviour
         ghostAnimator.SetBool(IsDashing, frameA.isDashingAnimator);
     }
 
-    public string SaveDatas()
+    public string GetSavedDatas()
     {
         string savedDatas = "";
 
@@ -209,7 +216,7 @@ public class Playback : MonoBehaviour
         return new Quaternion(float.Parse(s.Split('_')[0]), float.Parse(s.Split('_')[1]), float.Parse(s.Split('_')[2]), float.Parse(s.Split('_')[3]));
     }
 
-    public void SetGhostPlayback(bool follow, string savedDatas)
+    public void SetGhostPlayback(bool follow, bool startRun, int frameOffset, string savedDatas)
     {
         ResetPlayback();
 
@@ -222,6 +229,8 @@ public class Playback : MonoBehaviour
         {
             virtualCamera.Follow = ghost.transform;
         }
+        startRunAfterPlayback = startRun;
+        this.frameOffset = frameOffset;
     }
 
     public void ResetPlayback()
