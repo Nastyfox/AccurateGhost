@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using System;
-using System.Threading.Tasks;
-using TarodevGhost;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,7 +16,6 @@ public class GameManager : MonoBehaviour
         Hard
     }
 
-    [SerializeField] private GhostRunner ghostRunner;
     [SerializeField] private ESaveSystem eSaveSystem;
     [SerializeField] private SaveFileSetup runSaveFileSetup;
     [SerializeField] private SaveFileSetup resultsSaveFileSetup;
@@ -78,45 +75,6 @@ public class GameManager : MonoBehaviour
         Playback.playbackDoneEvent -= EnablePlayerControls;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    async Task Start()
-    {
-        ghostModeActionMap = inputAction.FindActionMap("GhostMode");
-        playModeActionMap = inputAction.FindActionMap("PlayMode");
-
-        if (!saveRun)
-        {
-            ghostModeActionMap.Enable();
-            playModeActionMap.Disable();
-        }
-
-        savedRun = eSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
-        if (savedRun == null)
-        {
-            switch(levelDifficulty)
-            {
-                case LevelDifficulty.Easy:
-                    savedRun = runDataScriptableObject.easyRunData;
-                    break;
-                case LevelDifficulty.Medium:
-                    savedRun = runDataScriptableObject.mediumRunData;
-                    break;
-                case LevelDifficulty.Hard:
-                    savedRun = runDataScriptableObject.hardRunData;
-                    break;
-            }
-        }
-
-        if (displayGhostBefore)
-        {
-            DisplayGhost(true, true, 0);
-        }
-        else
-        {
-            StartRun().Forget();
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -139,19 +97,6 @@ public class GameManager : MonoBehaviour
 
         textMeshProUGUI.text = "GO !";
         startTimer = true;
-    }
-
-    private async UniTask TarodevGhost(string savedRun)
-    {
-        await ghostRunner.StartRecordAsync();
-        string currentRun = await ghostRunner.EndOfRecordAsync();
-
-        Recording newRecording = new Recording(currentRun);
-        Recording savedRecording = new Recording(savedRun);
-
-        float score = newRecording.CompareRecording(savedRecording, accuracyThreshold, frameThreshold);
-
-        textMeshProUGUI.text = ((int)(score * 100)).ToString() + "%";
     }
 
     private void StartRecord()
@@ -229,8 +174,47 @@ public class GameManager : MonoBehaviour
         ghostPlayback.SetIsPlaybacking(true);
     }
 
-    public void SetLevelDifficulty(LevelDifficulty difficulty)
+    public void StartLevel(LevelDifficulty difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames)
     {
         levelDifficulty = difficulty;
+        displayGhostBefore = ghostBefore;
+        displayGhostDuring = ghostDuring;
+        frameOffset = ghostDelayInFrames;
+
+
+        ghostModeActionMap = inputAction.FindActionMap("GhostMode");
+        playModeActionMap = inputAction.FindActionMap("PlayMode");
+
+        if (!saveRun)
+        {
+            ghostModeActionMap.Enable();
+            playModeActionMap.Disable();
+        }
+
+        savedRun = eSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
+        if (savedRun == null)
+        {
+            switch (levelDifficulty)
+            {
+                case LevelDifficulty.Easy:
+                    savedRun = runDataScriptableObject.easyRunData;
+                    break;
+                case LevelDifficulty.Medium:
+                    savedRun = runDataScriptableObject.mediumRunData;
+                    break;
+                case LevelDifficulty.Hard:
+                    savedRun = runDataScriptableObject.hardRunData;
+                    break;
+            }
+        }
+
+        if (displayGhostBefore)
+        {
+            DisplayGhost(true, true, 0);
+        }
+        else
+        {
+            StartRun().Forget();
+        }
     }
 }

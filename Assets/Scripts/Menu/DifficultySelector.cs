@@ -1,5 +1,6 @@
 using Esper.ESave;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,12 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private GameObject difficultyList;
     [SerializeField] private ESaveSystem eSaveSystem;
     [SerializeField] private SaveFileSetup resultsFileSetup;
+    [SerializeField] private TextMeshProUGUI ghostDelayValueText;
+    [SerializeField] private GameObject levelDifficultySelectorScreen;
+
+    private bool ghostBefore = true;
+    private bool ghostDuring = true;
+    private int ghostDelayInFrames = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,12 +27,17 @@ public class DifficultySelector : MonoBehaviour
         {
             DifficultyComponent difficultyComponent = difficulty.GetComponent<DifficultyComponent>();
             GameManager.LevelDifficulty levelDifficulty = difficultyComponent.levelDifficulty;
-            string savedRun = eSaveSystem.LoadRun(resultsFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
-            if (savedRun != null)
+            string levelName = SceneManager.GetActiveScene().name + "_" + levelDifficulty;
+            ESaveSystem.Results savedResult = eSaveSystem.LoadResults(levelName, resultsFileSetup);
+            bool validResult = !string.IsNullOrEmpty(savedResult.completion) &&
+                               !string.IsNullOrEmpty(savedResult.chrono) &&
+                               !string.IsNullOrEmpty(savedResult.medal);
+
+            if (validResult || levelDifficulty == GameManager.LevelDifficulty.Easy)
             {
                 GameObject difficultyGO = Instantiate(difficulty, difficultyList.transform);
                 Button difficultyButton = difficultyGO.GetComponent<Button>();
-                difficultyButton.onClick.AddListener(() => SelectDifficulty(difficultyComponent));
+                difficultyButton.onClick.AddListener(() => SelectDifficulty(difficultyComponent, ghostBefore, ghostDuring, ghostDelayInFrames));
             }
         }
     }
@@ -36,8 +48,25 @@ public class DifficultySelector : MonoBehaviour
         
     }
 
-    public void SelectDifficulty(DifficultyComponent difficulty)
+    public void SetGhostBefore(bool value)
     {
-        gameManager.SetLevelDifficulty(difficulty.levelDifficulty);
+        ghostBefore = value;
+    }
+
+    public void SetGhostDuring(bool value)
+    {
+        ghostDuring = value;
+    }
+
+    public void ChangeGhostDelayText(float sliderValue)
+    {
+        ghostDelayInFrames = (int)sliderValue;
+        ghostDelayValueText.text = "Ghost Delay : " + ghostDelayInFrames.ToString() + " frames";
+    }
+
+    private void SelectDifficulty(DifficultyComponent difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames)
+    {
+        levelDifficultySelectorScreen.SetActive(false);
+        gameManager.StartLevel(difficulty.levelDifficulty, ghostBefore, ghostDuring, ghostDelayInFrames);
     }
 }
