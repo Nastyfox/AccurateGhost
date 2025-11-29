@@ -24,12 +24,14 @@ public class ESaveSystem : MonoBehaviour
         public string completion;
         public string chrono;
         public string medal;
+        public string pseudo;
 
-        public Results(string _completion, string _chrono, string _medal)
+        public Results(string _completion, string _chrono, string _medal, string _pseudo)
         {
             completion = _completion;
             chrono = _chrono;
             medal = _medal;
+            pseudo = _pseudo;
         }
     }
 
@@ -50,12 +52,12 @@ public class ESaveSystem : MonoBehaviour
         return testLoad;
     }
 
-    public void SaveResults(string levelName, string completion, string chrono, string medal, SaveFileSetup resultsSaveFileSetu)
+    public void SaveResults(string levelName, string completion, string chrono, string medal, string pseudo, SaveFileSetup resultsSaveFileSetu)
     {
         saveFile = resultsSaveFileSetu.GetSaveFile();
         Debug.Log("Save Data: " + levelName + " " + completion + " " + chrono + " " + medal);
 
-        Results results = new Results(completion, chrono, medal);
+        Results results = new Results(completion, chrono, medal, pseudo);
         saveFile.AddOrUpdateData(levelName, results);
         saveFile.Save();
     }

@@ -15,6 +15,7 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private SaveFileSetup resultsFileSetup;
     [SerializeField] private TextMeshProUGUI ghostDelayValueText;
     [SerializeField] private GameObject levelDifficultySelectorScreen;
+    [SerializeField] private TextMeshProUGUI pseudoText;
 
     private bool ghostBefore = true;
     private bool ghostDuring = true;
@@ -37,7 +38,7 @@ public class DifficultySelector : MonoBehaviour
             {
                 GameObject difficultyGO = Instantiate(difficulty, difficultyList.transform);
                 Button difficultyButton = difficultyGO.GetComponent<Button>();
-                difficultyButton.onClick.AddListener(() => SelectDifficulty(difficultyComponent, ghostBefore, ghostDuring, ghostDelayInFrames));
+                difficultyButton.onClick.AddListener(() => SelectDifficulty(difficultyComponent));
             }
         }
     }
@@ -64,9 +65,10 @@ public class DifficultySelector : MonoBehaviour
         ghostDelayValueText.text = "Ghost Delay : " + ghostDelayInFrames.ToString() + " frames";
     }
 
-    private void SelectDifficulty(DifficultyComponent difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames)
+    private void SelectDifficulty(DifficultyComponent difficulty)
     {
+        string pseudo = pseudoText.text;
         levelDifficultySelectorScreen.SetActive(false);
-        gameManager.StartLevel(difficulty.levelDifficulty, ghostBefore, ghostDuring, ghostDelayInFrames);
+        gameManager.StartLevel(difficulty.levelDifficulty, ghostBefore, ghostDuring, ghostDelayInFrames, pseudo);
     }
 }

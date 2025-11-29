@@ -51,14 +51,14 @@ public class GameManager : MonoBehaviour
     [Range(0, 100)]
     [SerializeField] private int frameOffset;
 
+    [SerializeField] private Leaderboard leaderboard;
+
+    private string playerPseudo = "";
+
     private void OnEnable()
     {
         PlayerCollisions.startEvent += StartRecord;
-        PlayerCollisions.endEvent += StopRecord;
-        if(displayGhostDuring)
-        {
-            PlayerCollisions.startEvent += () => DisplayGhost(false, false, frameOffset);
-        }
+        PlayerCollisions.endEvent += UniTask.Action(StopRecord);
 
         Playback.playbackDoneEvent += UniTask.Action(StartRun);
     }
@@ -66,13 +66,13 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         PlayerCollisions.startEvent -= StartRecord;
-        PlayerCollisions.endEvent -= StopRecord;
+        PlayerCollisions.endEvent -= UniTask.Action(StopRecord);
         if (displayGhostDuring)
         {
             PlayerCollisions.startEvent -= () => DisplayGhost(false, false, frameOffset);
         }
 
-        Playback.playbackDoneEvent -= EnablePlayerControls;
+        Playback.playbackDoneEvent -= UniTask.Action(StartRun);
     }
 
     // Update is called once per frame
@@ -104,8 +104,10 @@ public class GameManager : MonoBehaviour
         savePlayback.SetIsRecording(true);
     }
 
-    private void StopRecord()
+    private async UniTaskVoid StopRecord()
     {
+        await leaderboard.InitializeLeaderboardService();
+
         savePlayback.SetIsRecording(false);
 
         string currentRun = savePlayback.GetSavedDatas();
@@ -133,8 +135,9 @@ public class GameManager : MonoBehaviour
                 medal = "Gold";
             }
 
-            string scoreText = ((int)(score * 100)).ToString() + "%";
-            textMeshProUGUI.text = ((int)(score * 100)).ToString() + "%";
+            int scorePercent = (int)(score * 100);
+            string scoreText = scorePercent.ToString() + "%";
+            textMeshProUGUI.text = scoreText;
             textMeshProUGUI.enabled = true;
 
             int timeInSecondsInt = (int)time;  //We don't care about fractions of a second, so easy to drop them by just converting to an int
@@ -143,7 +146,9 @@ public class GameManager : MonoBehaviour
             int milliSeconds = timeInSecondsInt - (minutes * 60 + seconds);  //Get seconds for display alongside minutes
             string timeText = minutes.ToString("D2") + ":" + seconds.ToString("D2") + ":" + milliSeconds.ToString("D2");
 
-            eSaveSystem.SaveResults(levelName, scoreText, timeText, medal, resultsSaveFileSetup);
+            eSaveSystem.SaveResults(levelName, scoreText, timeText, medal, playerPseudo, resultsSaveFileSetup);
+            
+            await leaderboard.AddScoreWithMetadata("AccurateGhost", scorePercent, levelName, timeText, playerPseudo);
         }
     }
 
@@ -174,13 +179,18 @@ public class GameManager : MonoBehaviour
         ghostPlayback.SetIsPlaybacking(true);
     }
 
-    public void StartLevel(LevelDifficulty difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames)
+    public void StartLevel(LevelDifficulty difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames, string pseudo)
     {
         levelDifficulty = difficulty;
         displayGhostBefore = ghostBefore;
         displayGhostDuring = ghostDuring;
         frameOffset = ghostDelayInFrames;
+        playerPseudo = pseudo;
 
+        if (displayGhostDuring)
+        {
+            PlayerCollisions.startEvent += () => DisplayGhost(false, false, frameOffset);
+        }
 
         ghostModeActionMap = inputAction.FindActionMap("GhostMode");
         playModeActionMap = inputAction.FindActionMap("PlayMode");
