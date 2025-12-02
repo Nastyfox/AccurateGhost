@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using System.Collections.Generic;
 using TMPro;
@@ -11,8 +12,7 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private List<GameObject> difficulties;
     [SerializeField] private GameObject difficultyList;
-    [SerializeField] private ESaveSystem eSaveSystem;
-    [SerializeField] private SaveFileSetup resultsFileSetup;
+    [SerializeField] private Leaderboard leaderboard;
     [SerializeField] private TextMeshProUGUI ghostDelayValueText;
     [SerializeField] private GameObject levelDifficultySelectorScreen;
     [SerializeField] private TextMeshProUGUI pseudoText;
@@ -21,24 +21,25 @@ public class DifficultySelector : MonoBehaviour
     private bool ghostDuring = true;
     private int ghostDelayInFrames = 0;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        foreach (GameObject difficulty in difficulties)
-        {
-            DifficultyComponent difficultyComponent = difficulty.GetComponent<DifficultyComponent>();
-            GameManager.LevelDifficulty levelDifficulty = difficultyComponent.levelDifficulty;
-            string levelName = SceneManager.GetActiveScene().name + "_" + levelDifficulty;
-            ESaveSystem.Results savedResult = eSaveSystem.LoadResults(levelName, resultsFileSetup);
-            bool validResult = !string.IsNullOrEmpty(savedResult.completion) &&
-                               !string.IsNullOrEmpty(savedResult.chrono) &&
-                               !string.IsNullOrEmpty(savedResult.medal);
 
-            if (validResult || levelDifficulty == GameManager.LevelDifficulty.Easy)
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private async UniTaskVoid Start()
+    {
+        await leaderboard.InitializeLeaderboardService();
+
+        InstantiateDifficultyObject(difficulties[0], GameManager.LevelDifficulty.Easy);
+
+        for (int i = 1; i < difficulties.Count; i++)
+        {
+            GameManager.LevelDifficulty previousLevelDifficulty = difficulties[i - 1].GetComponent<DifficultyComponent>().levelDifficulty;
+            GameManager.LevelDifficulty currentLevelDifficulty = difficulties[i].GetComponent<DifficultyComponent>().levelDifficulty;
+
+            string levelName = SceneManager.GetActiveScene().name + "_" + previousLevelDifficulty;
+            Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await leaderboard.GetPlayerScoreWithMetadata(levelName);
+
+            if (playerEntry != null)
             {
-                GameObject difficultyGO = Instantiate(difficulty, difficultyList.transform);
-                Button difficultyButton = difficultyGO.GetComponent<Button>();
-                difficultyButton.onClick.AddListener(() => SelectDifficulty(difficultyComponent));
+                InstantiateDifficultyObject(difficulties[i], currentLevelDifficulty);
             }
         }
     }
@@ -65,10 +66,17 @@ public class DifficultySelector : MonoBehaviour
         ghostDelayValueText.text = "Ghost Delay : " + ghostDelayInFrames.ToString() + " frames";
     }
 
-    private void SelectDifficulty(DifficultyComponent difficulty)
+    private void SelectDifficulty(GameManager.LevelDifficulty difficulty)
     {
         string pseudo = pseudoText.text;
         levelDifficultySelectorScreen.SetActive(false);
-        gameManager.StartLevel(difficulty.levelDifficulty, ghostBefore, ghostDuring, ghostDelayInFrames, pseudo);
+        gameManager.StartLevel(difficulty, ghostBefore, ghostDuring, ghostDelayInFrames, pseudo);
+    }
+
+    private void InstantiateDifficultyObject(GameObject difficultyObject, GameManager.LevelDifficulty difficultyComponent)
+    {
+        GameObject difficultyGO = Instantiate(difficultyObject, difficultyList.transform);
+        Button difficultyButton = difficultyGO.GetComponent<Button>();
+        difficultyButton.onClick.AddListener(() => SelectDifficulty(difficultyComponent));
     }
 }

@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private ESaveSystem eSaveSystem;
     [SerializeField] private SaveFileSetup runSaveFileSetup;
-    [SerializeField] private SaveFileSetup resultsSaveFileSetup;
 
     [Range(0f, 1f)]
     [SerializeField] private float accuracyThreshold;
@@ -106,8 +105,6 @@ public class GameManager : MonoBehaviour
 
     private async UniTaskVoid StopRecord()
     {
-        await leaderboard.InitializeLeaderboardService();
-
         savePlayback.SetIsRecording(false);
 
         string currentRun = savePlayback.GetSavedDatas();
@@ -121,19 +118,6 @@ public class GameManager : MonoBehaviour
             float score = savePlayback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
             startTimer = false;
             string levelName = SceneManager.GetActiveScene().name + "_" + levelDifficulty.ToString();
-            string medal = "";
-            if(score <= 0.3f)
-            {
-                medal = "Bronze";
-            }
-            else if(score <= 0.7f)
-            {
-                medal = "Silver";
-            }
-            else
-            {
-                medal = "Gold";
-            }
 
             int scorePercent = (int)(score * 100);
             string scoreText = scorePercent.ToString() + "%";
@@ -145,10 +129,8 @@ public class GameManager : MonoBehaviour
             int seconds = timeInSecondsInt - (minutes * 60);  //Get seconds for display alongside minutes
             int milliSeconds = timeInSecondsInt - (minutes * 60 + seconds);  //Get seconds for display alongside minutes
             string timeText = minutes.ToString("D2") + ":" + seconds.ToString("D2") + ":" + milliSeconds.ToString("D2");
-
-            eSaveSystem.SaveResults(levelName, scoreText, timeText, medal, playerPseudo, resultsSaveFileSetup);
             
-            await leaderboard.AddScoreWithMetadata("AccurateGhost", scorePercent, levelName, timeText, playerPseudo);
+            await leaderboard.AddScoreWithMetadata(levelName, scorePercent, timeText, playerPseudo);
         }
     }
 

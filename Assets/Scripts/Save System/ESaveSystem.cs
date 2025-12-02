@@ -51,22 +51,4 @@ public class ESaveSystem : MonoBehaviour
         string testLoad = saveFile.GetData<string>(levelKey);
         return testLoad;
     }
-
-    public void SaveResults(string levelName, string completion, string chrono, string medal, string pseudo, SaveFileSetup resultsSaveFileSetu)
-    {
-        saveFile = resultsSaveFileSetu.GetSaveFile();
-        Debug.Log("Save Data: " + levelName + " " + completion + " " + chrono + " " + medal);
-
-        Results results = new Results(completion, chrono, medal, pseudo);
-        saveFile.AddOrUpdateData(levelName, results);
-        saveFile.Save();
-    }
-
-    public Results LoadResults(string levelName, SaveFileSetup resultsSaveFileSetup)
-    {
-        saveFile = resultsSaveFileSetup.GetSaveFile();
-        Results results = saveFile.GetData<Results>(levelName);
-
-        return results;
-    }
 }

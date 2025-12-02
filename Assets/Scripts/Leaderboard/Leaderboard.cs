@@ -19,7 +19,6 @@ public class Leaderboard : MonoBehaviour
     [Serializable]
     public class ScoreMetadata
     {
-        public string levelName;
         public string chrono;
         public string pseudo;
     }
@@ -46,9 +45,9 @@ public class Leaderboard : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async UniTask AddScoreWithMetadata(string leaderboardId, int score, string _levelName, string _chrono, string _pseudo)
+    public async UniTask AddScoreWithMetadata(string leaderboardId, int score, string _chrono, string _pseudo)
     {
-        var scoreMetadata = new ScoreMetadata { levelName = _levelName, chrono = _chrono, pseudo = _pseudo };
+        var scoreMetadata = new ScoreMetadata { chrono = _chrono, pseudo = _pseudo };
         var playerEntry = await LeaderboardsService.Instance
             .AddPlayerScoreAsync(
                 leaderboardId,
@@ -68,5 +67,17 @@ public class Leaderboard : MonoBehaviour
         string scoreData = JsonConvert.SerializeObject(scoreResponse.Results);
         Debug.Log(scoreData);
         return scoreResponse.Results;
+    }
+
+    public async UniTask<Unity.Services.Leaderboards.Models.LeaderboardEntry> GetPlayerScoreWithMetadata(string leaderboardId)
+    {
+        var scoreResponse = await LeaderboardsService.Instance
+            .GetPlayerScoreAsync(
+                leaderboardId,
+                new GetPlayerScoreOptions { IncludeMetadata = true }
+            );
+        string scoreData = JsonConvert.SerializeObject(scoreResponse);
+        Debug.Log(scoreData);
+        return scoreResponse;
     }
 }

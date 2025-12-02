@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MenuFiller : MonoBehaviour
+public class LevelsListFiller : MonoBehaviour
 {
     [SerializeField] private GameObject levelButtonPrefab;
     [SerializeField] private GameObject levelGrid;
