@@ -71,13 +71,22 @@ public class Leaderboard : MonoBehaviour
 
     public async UniTask<Unity.Services.Leaderboards.Models.LeaderboardEntry> GetPlayerScoreWithMetadata(string leaderboardId)
     {
-        var scoreResponse = await LeaderboardsService.Instance
+        try
+        {
+            var scoreResponse = await LeaderboardsService.Instance
             .GetPlayerScoreAsync(
                 leaderboardId,
                 new GetPlayerScoreOptions { IncludeMetadata = true }
             );
-        string scoreData = JsonConvert.SerializeObject(scoreResponse);
-        Debug.Log(scoreData);
-        return scoreResponse;
+
+            string scoreData = JsonConvert.SerializeObject(scoreResponse);
+            Debug.Log(scoreData);
+            return scoreResponse;
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            return null;
+        }
     }
 }

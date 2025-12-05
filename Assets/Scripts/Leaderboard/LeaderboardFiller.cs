@@ -1,8 +1,12 @@
 using Cysharp.Threading.Tasks;
 using Esper.ESave;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -30,6 +34,10 @@ public class LeaderboardFiller : MonoBehaviour
     [SerializeField] private List<DifficultyComponent> difficultyComponents;
 
     private int currentTabIndex = 0;
+
+    private double currentScore = 0;
+    private int currentRank = 1;
+    private Dictionary<double, int> sameScoreCount = new Dictionary<double, int>();
 
     private class LeaderboardResult
     {
@@ -66,6 +74,7 @@ public class LeaderboardFiller : MonoBehaviour
 
                     scoreData = await leaderboard.GetScoresWithMetadata(levelName);
                     List<LeaderboardResult> levelResults = LeaderboardDataToResults();
+                    SetNumberSameScore(levelResults);
                     GameObject levelLeaderboard = Instantiate(leaderboardDataContainerPrefab, levelsContainer);
                     levelLeaderboardsList.Add(levelLeaderboard);
                     LeaderboardDataContainer leaderboardDataElements = levelLeaderboard.GetComponent<LeaderboardDataContainer>();
@@ -77,12 +86,19 @@ public class LeaderboardFiller : MonoBehaviour
                     levelTabsButtonsList.Add(levelTab);
                     currentTabIndex++;
 
+                    currentScore = levelResults[0].score;
+
                     foreach (LeaderboardResult result in levelResults)
                     {
                         Leaderboard.ScoreMetadata scoreMetadata = JsonUtility.FromJson<Leaderboard.ScoreMetadata>(result.metadata);
 
+                        if (result.score != currentScore)
+                        {
+                            currentRank += sameScoreCount[currentScore];
+                            currentScore = result.score;
+                        }
                         GameObject rank = Instantiate(rankTextPrefab, leaderboardDataElements.rankGrid.transform);
-                        rank.GetComponentInChildren<TextMeshProUGUI>().text = (result.rank + 1).ToString();
+                        rank.GetComponentInChildren<TextMeshProUGUI>().text = (currentRank).ToString();
 
                         GameObject pseudo = Instantiate(pseudoTextPrefab, leaderboardDataElements.pseudoGrid.transform);
                         pseudo.GetComponentInChildren<TextMeshProUGUI>().text = scoreMetadata.pseudo;
@@ -121,6 +137,14 @@ public class LeaderboardFiller : MonoBehaviour
         }
 
         return result;
+    }
+
+    private void SetNumberSameScore(List<LeaderboardResult> levelResults)
+    {
+        foreach (var group in levelResults.GroupBy(i => i.score))
+        {
+            sameScoreCount.Add(group.Key, group.Count());
+        }
     }
 
     private string GetMedalFromScore(double score)

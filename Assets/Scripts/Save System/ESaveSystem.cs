@@ -48,7 +48,22 @@ public class ESaveSystem : MonoBehaviour
     {
         saveFile = runSaveFileSetup.GetSaveFile();
         string levelKey = levelName + "_" + levelDifficulty.ToString();
-        string testLoad = saveFile.GetData<string>(levelKey);
-        return testLoad;
+        string dataLoaded = saveFile.GetData<string>(levelKey);
+        return dataLoaded;
+    }
+
+    public void SavePlayerData(string data, string dataKey, SaveFileSetup playerDataSaveFileSetup)
+    {
+        saveFile = playerDataSaveFileSetup.GetSaveFile();
+        Debug.Log("Save Data: " + data);
+        saveFile.AddOrUpdateData(dataKey, data);
+        saveFile.Save();
+    }
+
+    public string LoadPlayerData(SaveFileSetup playerDataSaveFileSetup, string dataKey)
+    {
+        saveFile = playerDataSaveFileSetup.GetSaveFile();
+        string dataLoaded = saveFile.GetData<string>(dataKey);
+        return dataLoaded;
     }
 }

@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
         Hard
     }
 
-    [SerializeField] private ESaveSystem eSaveSystem;
+    [SerializeField] private ESaveSystem runSaveSystem;
     [SerializeField] private SaveFileSetup runSaveFileSetup;
 
     [Range(0f, 1f)]
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
 
         if (saveRun)
         {
-            eSaveSystem.SaveRun(currentRun, levelDifficulty, SceneManager.GetActiveScene().name, runSaveFileSetup);
+            runSaveSystem.SaveRun(currentRun, levelDifficulty, SceneManager.GetActiveScene().name, runSaveFileSetup);
         }
         else
         {
@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
             playModeActionMap.Disable();
         }
 
-        savedRun = eSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
+        savedRun = runSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
         if (savedRun == null)
         {
             switch (levelDifficulty)

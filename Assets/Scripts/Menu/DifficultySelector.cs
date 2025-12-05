@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static GameManager;
 
 public class DifficultySelector : MonoBehaviour
 {
@@ -15,7 +14,9 @@ public class DifficultySelector : MonoBehaviour
     [SerializeField] private Leaderboard leaderboard;
     [SerializeField] private TextMeshProUGUI ghostDelayValueText;
     [SerializeField] private GameObject levelDifficultySelectorScreen;
-    [SerializeField] private TextMeshProUGUI pseudoText;
+
+    [SerializeField] private ESaveSystem playerDataSaveSystem;
+    [SerializeField] private SaveFileSetup playerDataSaveFileSetup;
 
     private bool ghostBefore = true;
     private bool ghostDuring = true;
@@ -68,7 +69,7 @@ public class DifficultySelector : MonoBehaviour
 
     private void SelectDifficulty(GameManager.LevelDifficulty difficulty)
     {
-        string pseudo = pseudoText.text;
+        string pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
         levelDifficultySelectorScreen.SetActive(false);
         gameManager.StartLevel(difficulty, ghostBefore, ghostDuring, ghostDelayInFrames, pseudo);
     }
