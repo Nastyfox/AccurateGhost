@@ -6,15 +6,10 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Leaderboards;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class Leaderboard : MonoBehaviour
 {
-    string VersionId { get; set; }
-    int Offset { get; set; }
-    int Limit { get; set; }
-    int RangeLimit { get; set; }
-    List<string> FriendIds { get; set; }
+    private string playerID; 
 
     [Serializable]
     public class ScoreMetadata
@@ -23,17 +18,20 @@ public class Leaderboard : MonoBehaviour
         public string pseudo;
     }
 
-    public async UniTask InitializeLeaderboardService()
+    public async UniTask<string> InitializeLeaderboardService()
     {
         await UnityServices.InitializeAsync();
 
         await SignInAnonymously();
+
+        return playerID;
     }
 
     async UniTask SignInAnonymously()
     {
         AuthenticationService.Instance.SignedIn += () =>
         {
+            playerID = AuthenticationService.Instance.PlayerId;
             Debug.Log("Signed in as: " + AuthenticationService.Instance.PlayerId);
         };
         AuthenticationService.Instance.SignInFailed += s =>

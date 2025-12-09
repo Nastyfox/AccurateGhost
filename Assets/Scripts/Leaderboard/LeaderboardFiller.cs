@@ -27,6 +27,7 @@ public class LeaderboardFiller : MonoBehaviour
     [SerializeField] private GameObject pseudoTextPrefab;
     [SerializeField] private GameObject medalPrefab;
     [SerializeField] private GameObject completionPrefab;
+    [SerializeField] private GameObject leaderboardEntryPrefab;
 
     private List<Unity.Services.Leaderboards.Models.LeaderboardEntry> scoreData;
     [SerializeField] private Leaderboard leaderboard;
@@ -38,6 +39,8 @@ public class LeaderboardFiller : MonoBehaviour
     private double currentScore = 0;
     private int currentRank = 1;
     private Dictionary<double, int> sameScoreCount = new Dictionary<double, int>();
+
+    private string playerID;
 
     private class LeaderboardResult
     {
@@ -55,8 +58,8 @@ public class LeaderboardFiller : MonoBehaviour
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private async UniTaskVoid OnEnable()
-    {   
-        await leaderboard.InitializeLeaderboardService();
+    {
+        playerID = await leaderboard.InitializeLeaderboardService();
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
@@ -77,7 +80,6 @@ public class LeaderboardFiller : MonoBehaviour
                     SetNumberSameScore(levelResults);
                     GameObject levelLeaderboard = Instantiate(leaderboardDataContainerPrefab, levelsContainer);
                     levelLeaderboardsList.Add(levelLeaderboard);
-                    LeaderboardDataContainer leaderboardDataElements = levelLeaderboard.GetComponent<LeaderboardDataContainer>();
                     GameObject levelTab = Instantiate(levelTabButtonPrefab, levelsTabsContainer);
                     Button levelTabButton = levelTab.GetComponent<Button>();
                     levelTabButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + " " + difficulty.levelDifficulty.ToString();
@@ -92,32 +94,34 @@ public class LeaderboardFiller : MonoBehaviour
                     {
                         Leaderboard.ScoreMetadata scoreMetadata = JsonUtility.FromJson<Leaderboard.ScoreMetadata>(result.metadata);
 
+                        GameObject leaderboardEntry = Instantiate(leaderboardEntryPrefab, levelLeaderboard.GetComponentInChildren<VerticalLayoutGroup>().transform);
+
                         if (result.score != currentScore)
                         {
                             currentRank += sameScoreCount[currentScore];
                             currentScore = result.score;
                         }
-                        GameObject rank = Instantiate(rankTextPrefab, leaderboardDataElements.rankGrid.transform);
+                        GameObject rank = Instantiate(rankTextPrefab, leaderboardEntry.transform);
                         rank.GetComponentInChildren<TextMeshProUGUI>().text = (currentRank).ToString();
 
-                        GameObject pseudo = Instantiate(pseudoTextPrefab, leaderboardDataElements.pseudoGrid.transform);
+                        GameObject pseudo = Instantiate(pseudoTextPrefab, leaderboardEntry.transform);
                         pseudo.GetComponentInChildren<TextMeshProUGUI>().text = scoreMetadata.pseudo;
 
-                        GameObject medal = Instantiate(medalPrefab, leaderboardDataElements.medalGrid.transform);
+                        GameObject medal = Instantiate(medalPrefab, leaderboardEntry.transform);
                         switch (GetMedalFromScore(result.score))
                         {
                             case "Bronze":
-                                medal.GetComponent<Image>().sprite = medalSprites[0];
+                                medal.GetComponentInChildren<Image>().sprite = medalSprites[0];
                                 break;
                             case "Silver":
-                                medal.GetComponent<Image>().sprite = medalSprites[1];
+                                medal.GetComponentInChildren<Image>().sprite = medalSprites[1];
                                 break;
                             case "Gold":
-                                medal.GetComponent<Image>().sprite = medalSprites[2];
+                                medal.GetComponentInChildren<Image>().sprite = medalSprites[2];
                                 break;
                         }
 
-                        GameObject completion = Instantiate(completionPrefab, leaderboardDataElements.completionGrid.transform);
+                        GameObject completion = Instantiate(completionPrefab, leaderboardEntry.transform);
                         completion.GetComponentInChildren<TextMeshProUGUI>().text = result.score.ToString() + "%";
                     }
                 }
