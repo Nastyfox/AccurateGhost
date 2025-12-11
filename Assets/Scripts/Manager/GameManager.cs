@@ -16,6 +16,13 @@ public class GameManager : MonoBehaviour
         Hard
     }
 
+    public enum  CompareMode
+    {
+        Easy,
+        Medium,
+        Hard
+    }
+
     [SerializeField] private ESaveSystem runSaveSystem;
     [SerializeField] private SaveFileSetup runSaveFileSetup;
 
@@ -28,6 +35,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Playback savePlayback;
     [SerializeField] private Playback ghostPlayback;
+    [SerializeField] private Playback replayPlayback;
+
+    [SerializeField] private GameObject replayButton;
 
     private int remainingTimeBeforeStart;
 
@@ -42,6 +52,7 @@ public class GameManager : MonoBehaviour
     private InputActionMap ghostModeActionMap;
 
     private string savedRun = "";
+    private string currentRun = "";
     [SerializeField] private RunDataScriptableObject runDataScriptableObject;
 
     private float time = 0f;
@@ -68,7 +79,7 @@ public class GameManager : MonoBehaviour
         PlayerCollisions.endEvent -= UniTask.Action(StopRecord);
         if (displayGhostDuring)
         {
-            PlayerCollisions.startEvent -= () => DisplayGhost(false, false, frameOffset);
+            PlayerCollisions.startEvent -= () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
         }
 
         Playback.playbackDoneEvent -= UniTask.Action(StartRun);
@@ -107,7 +118,7 @@ public class GameManager : MonoBehaviour
     {
         savePlayback.SetIsRecording(false);
 
-        string currentRun = savePlayback.GetSavedDatas();
+        currentRun = savePlayback.GetSavedDatas();
 
         if (saveRun)
         {
@@ -131,6 +142,9 @@ public class GameManager : MonoBehaviour
             string timeText = minutes.ToString("D2") + ":" + seconds.ToString("D2") + ":" + milliSeconds.ToString("D2");
             
             await leaderboard.AddScoreWithMetadata(levelName, scorePercent, timeText, playerPseudo);
+
+            DisablePlayerControls();
+            replayButton.SetActive(true);
         }
     }
 
@@ -145,6 +159,12 @@ public class GameManager : MonoBehaviour
         playModeActionMap.Enable();
     }
 
+    private void DisablePlayerControls()
+    {
+        playModeActionMap.Disable();
+        ghostModeActionMap.Enable();
+    }
+
     private async UniTaskVoid StartRun()
     {
         await StartCountdown(3);
@@ -155,10 +175,10 @@ public class GameManager : MonoBehaviour
         textMeshProUGUI.enabled = false;
     }
 
-    private void DisplayGhost(bool follow, bool startRun, int frameOffset)
+    private void DisplayPlayback(Playback playback, bool follow, bool startRun, int frameOffset, string run)
     {
-        ghostPlayback.SetGhostPlayback(follow, startRun, frameOffset, savedRun);
-        ghostPlayback.SetIsPlaybacking(true);
+        playback.SetGhostPlayback(follow, startRun, frameOffset, run);
+        playback.SetIsPlaybacking(true);
     }
 
     public void StartLevel(LevelDifficulty difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames, string pseudo)
@@ -171,7 +191,7 @@ public class GameManager : MonoBehaviour
 
         if (displayGhostDuring)
         {
-            PlayerCollisions.startEvent += () => DisplayGhost(false, false, frameOffset);
+            PlayerCollisions.startEvent += () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
         }
 
         ghostModeActionMap = inputAction.FindActionMap("GhostMode");
@@ -202,11 +222,17 @@ public class GameManager : MonoBehaviour
 
         if (displayGhostBefore)
         {
-            DisplayGhost(true, true, 0);
+            DisplayPlayback(ghostPlayback, true, true, 0, savedRun);
         }
         else
         {
             StartRun().Forget();
         }
+    }
+
+    public void ComparePlaybacks()
+    {
+        DisplayPlayback(ghostPlayback, true, false, 0, savedRun);
+        DisplayPlayback(replayPlayback, false, false, 0, currentRun);
     }
 }
