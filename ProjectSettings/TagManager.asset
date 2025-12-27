@@ -44,8 +44,23 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: New Layer
+  - name: 1Sky
     uniqueID: 1802038029
+    locked: 0
+  - name: 2Mountains
+    uniqueID: 1878040861
+    locked: 0
+  - name: 3Plain
+    uniqueID: 1383378617
+    locked: 0
+  - name: 4Forest
+    uniqueID: 471947711
+    locked: 0
+  - name: Ground
+    uniqueID: 3978024991
+    locked: 0
+  - name: Player
+    uniqueID: 3315401
     locked: 0
   m_RenderingLayers:
   - Default
