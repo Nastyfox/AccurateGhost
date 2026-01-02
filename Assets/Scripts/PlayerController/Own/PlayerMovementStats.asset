@@ -31,34 +31,36 @@ MonoBehaviour:
   timeForUpwardsCancel: 0.03
   apexThreshold: 0.95
   apexHangDuration: 0.025
-  jumpBufferDuration: 0.15
+  jumpBufferDuration: 1
   jumpCoyoteDuration: 0.15
-  resetJumpsOnWallJump: 1
-  wallJumpDirection: {x: -20, y: 6.5}
+  resetJumpsOnWallJump: 0
+  wallJumpDirection: {x: -15, y: 5}
   wallJumpPostBufferDuration: 0.125
-  wallJumpGravityOnReleaseMultiplier: 1
+  wallJumpGravityOnReleaseMultiplier: 1.1
   wallSlideSpeed: 5
   wallSlideDeceleration: 30
-  dashDuration: 0.15
-  dashSpeed: 50
+  dashDuration: 0.2
+  dashSpeed: 20
+  afterDashAcceleration: 20
+  afterDashDeceleration: 10
   maxDashFallSpeed: 50
   durationBetweenDashes: 0.5
   numberOfDashesAllowed: 1
-  dashDiagonallyBias: 0.4
+  dashDiagonallyBias: 0
   resetDashesOnWallJump: 1
   dashDurationForUpwardsCancel: 0.03
-  dashGravityOnReleaseMultiplier: 1
+  dashGravityOnReleaseMultiplier: 1.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  groundDetectionRayLength: 0.02
+  groundDetectionRayLength: 0.1
   headDetectionRayLength: 0.02
   wallDetectionRayLength: 0.15
   wallDetectionRayHeightMultiplier: 0.9
   headWidth: 0.75
-  DebugGroundCollisionRays: 0
+  DebugGroundCollisionRays: 1
   DebugHeadBumpCollisionRays: 0
-  DebugWallCollisionRays: 1
+  DebugWallCollisionRays: 0
   showJumpArc: 0
   stopOnCollision: 1
   arcResolution: 20

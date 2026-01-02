@@ -75,6 +75,8 @@ public class PlayerMovementStats : ScriptableObject
     [Header("Dash Values")]
     [Range(0f, 1f)] public float dashDuration = 0.15f;
     [Range(1f, 100f)] public float dashSpeed = 50f;
+    [Range(1f, 100f)] public float afterDashAcceleration = 50f;
+    [Range(1f, 100f)] public float afterDashDeceleration = 50f;
     [Range(5f, 50f)] public float maxDashFallSpeed = 50f;
     [Range(0f, 3f)] public float durationBetweenDashes = 0.5f;
     [Range(1, 5)] public int numberOfDashesAllowed = 1;

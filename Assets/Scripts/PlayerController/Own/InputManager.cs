@@ -22,6 +22,10 @@ public class InputManager : MonoBehaviour
         {
             jumpPressed = false;
         }
+        if(dashPressed)
+        {
+            dashPressed = false;
+        }
     }
 
     public void OnMove(InputAction.CallbackContext ctx)
