@@ -12,6 +12,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Collider2D feetCollider;
     [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
+    [SerializeField] private Animator playerAnimator;
+    [SerializeField] private ParticleSystem landParticles;
+    [SerializeField] private ParticleSystem jumpParticles;
+    [SerializeField] private ParticleSystem moveParticles;
+    [SerializeField] private float moveParticlesOffsetX;
 
     private Rigidbody2D playerRb;
 
@@ -91,6 +96,7 @@ public class PlayerMovement : MonoBehaviour
         WallSlideCheck();
         WallJumpCheck();
         DashCheck();
+        MoveParticles();
     }
 
     private void FixedUpdate()
@@ -116,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(moveInput.x) >= movementStats.moveThreshold)
             {
                 playerSpriteRenderer.flipX = moveInput.x < 0;
+                float particlesOffsetX = playerSpriteRenderer.flipX ? moveParticlesOffsetX : -moveParticlesOffsetX;
+                moveParticles.gameObject.transform.localPosition = new Vector3(particlesOffsetX, moveParticles.gameObject.transform.localPosition.y, moveParticles.gameObject.transform.localPosition.z);
 
                 if (isGrounded && InputManager.runHeld)
                 {
@@ -132,6 +140,18 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 horizontalVelocity = Mathf.Lerp(horizontalVelocity, targetVelocity, deceleration * Time.fixedDeltaTime);
+            }
+
+            if (Mathf.Abs(horizontalVelocity) > movementStats.idleAnimationMaximumSpeed)
+            {
+                playerAnimator.SetBool("IsMoving", true);
+                playerAnimator.speed = Mathf.Abs(horizontalVelocity) * movementStats.walkAnimationFactor;
+            }
+            else if(Mathf.Abs(moveInput.x) < movementStats.moveThreshold)
+            {
+                horizontalVelocity = 0f;
+                playerAnimator.SetBool("IsMoving", false);
+                playerAnimator.speed = 1f;
             }
         }
     }
@@ -223,6 +243,10 @@ public class PlayerMovement : MonoBehaviour
     private void InitiateJump(int numberOfJumpsToUse)
     {
         isJumping = true;
+
+        playerAnimator.speed = 1f;
+        playerAnimator.SetTrigger("Jump");
+        PlayParticles(jumpParticles);
 
         ResetWallJumpValues();
 
@@ -787,6 +811,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 return;
             }
+
+            playerAnimator.speed = 1f;
+            playerAnimator.SetTrigger("Land");
+            PlayParticles(landParticles);
         }
     }
     #endregion
@@ -813,6 +841,37 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             dashOnGroundTimer -= Time.deltaTime;
+        }
+    }
+    #endregion
+
+    #region Particles
+    private void PlayParticles(ParticleSystem particleSystem)
+    {
+        particleSystem.gameObject.SetActive(true);
+        particleSystem.Play();
+    }
+
+    private void StopParticles(ParticleSystem particleSystem)
+    {
+        particleSystem.Stop();
+        particleSystem.gameObject.SetActive(false);
+    }
+
+    private void MoveParticles()
+    {
+        if (isGrounded && Mathf.Abs(horizontalVelocity) >= movementStats.idleAnimationMaximumSpeed)
+        {
+            Vector3 moveParticlesPosition = moveParticles.gameObject.transform.localPosition;
+
+            if (!moveParticles.isPlaying)
+            {
+                PlayParticles(moveParticles);
+            }
+        }
+        else
+        {
+            StopParticles(moveParticles);
         }
     }
     #endregion

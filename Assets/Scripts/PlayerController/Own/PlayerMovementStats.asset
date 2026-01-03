@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c483698b86bff4e99f70c36e29843f, type: 3}
   m_Name: PlayerMovementStats
   m_EditorClassIdentifier: 
+  walkAnimationFactor: 0.2
+  idleAnimationMaximumSpeed: 0.5
   moveThreshold: 0.1
   maxWalkSpeed: 7.5
   groundAcceleration: 2

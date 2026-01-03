@@ -4,6 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerMovementStats", menuName = "ScriptableObjects/PlayerMovementStats", order = 1)]
 public class PlayerMovementStats : ScriptableObject
 {
+    [Header("Animation")]
+    [Range(0.01f, 1f)] public float walkAnimationFactor = 0.2f;
+    [Range(0.01f, 1f)] public float idleAnimationMaximumSpeed = 0.1f;
+
     [Header("Walk")]
     [Range(0f, 1f)] public float moveThreshold = 0.1f;
     [Range(1f, 100f)] public float maxWalkSpeed = 12.5f;
