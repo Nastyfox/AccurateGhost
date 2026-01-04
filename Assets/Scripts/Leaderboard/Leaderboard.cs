@@ -63,7 +63,6 @@ public class Leaderboard : MonoBehaviour
                 new GetScoresOptions { Limit = 50, IncludeMetadata = true }
             );
         string scoreData = JsonConvert.SerializeObject(scoreResponse.Results);
-        Debug.Log(scoreData);
         return scoreResponse.Results;
     }
 
@@ -78,7 +77,6 @@ public class Leaderboard : MonoBehaviour
             );
 
             string scoreData = JsonConvert.SerializeObject(scoreResponse);
-            Debug.Log(scoreData);
             return scoreResponse;
         }
         catch (Exception e)
