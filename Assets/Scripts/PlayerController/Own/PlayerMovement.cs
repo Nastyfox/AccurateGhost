@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -12,11 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Collider2D feetCollider;
     [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
-    [SerializeField] private Animator playerAnimator;
-    [SerializeField] private ParticleSystem landParticles;
-    [SerializeField] private ParticleSystem jumpParticles;
-    [SerializeField] private ParticleSystem moveParticles;
-    [SerializeField] private float moveParticlesOffsetX;
+    [SerializeField] private PlayerParticles playerParticles;
+    [SerializeField] private PlayerAnimations playerAnimation;
+    [SerializeField] private CameraManager cameraManager;
 
     private Rigidbody2D playerRb;
 
@@ -96,7 +95,6 @@ public class PlayerMovement : MonoBehaviour
         WallSlideCheck();
         WallJumpCheck();
         DashCheck();
-        MoveParticles();
     }
 
     private void FixedUpdate()
@@ -122,8 +120,8 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(moveInput.x) >= movementStats.moveThreshold)
             {
                 playerSpriteRenderer.flipX = moveInput.x < 0;
-                float particlesOffsetX = playerSpriteRenderer.flipX ? moveParticlesOffsetX : -moveParticlesOffsetX;
-                moveParticles.gameObject.transform.localPosition = new Vector3(particlesOffsetX, moveParticles.gameObject.transform.localPosition.y, moveParticles.gameObject.transform.localPosition.z);
+                playerParticles.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f, ParticleType.Move);
+                playerParticles.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f, ParticleType.Dash);
 
                 if (isGrounded && InputManager.runHeld)
                 {
@@ -142,17 +140,18 @@ public class PlayerMovement : MonoBehaviour
                 horizontalVelocity = Mathf.Lerp(horizontalVelocity, targetVelocity, deceleration * Time.fixedDeltaTime);
             }
 
-            if (Mathf.Abs(horizontalVelocity) > movementStats.idleAnimationMaximumSpeed)
+            if (Mathf.Abs(horizontalVelocity) >= movementStats.idleAnimationMaximumSpeed && isGrounded)
             {
-                playerAnimator.SetBool("IsMoving", true);
-                playerAnimator.speed = Mathf.Abs(horizontalVelocity) * movementStats.walkAnimationFactor;
+                playerAnimation.PlayAnimation(AnimationType.Move, Mathf.Abs(horizontalVelocity) * movementStats.walkAnimationFactor);
+                playerParticles.PlayParticles(ParticleType.Move);
             }
-            else if(Mathf.Abs(moveInput.x) < movementStats.moveThreshold)
+            else if((Mathf.Abs(horizontalVelocity) < movementStats.idleAnimationMaximumSpeed && Mathf.Abs(moveInput.x) < movementStats.moveThreshold) || !isGrounded)
             {
-                horizontalVelocity = 0f;
-                playerAnimator.SetBool("IsMoving", false);
-                playerAnimator.speed = 1f;
+                playerAnimation.StopAnimation(AnimationType.Move);
+                playerParticles.StopParticles(ParticleType.Move);
             }
+
+            cameraManager.SetCameraOffset(new Vector3(horizontalVelocity, 0f, 0f));
         }
     }
 
@@ -244,9 +243,8 @@ public class PlayerMovement : MonoBehaviour
     {
         isJumping = true;
 
-        playerAnimator.speed = 1f;
-        playerAnimator.SetTrigger("Jump");
-        PlayParticles(jumpParticles);
+        playerAnimation.PlayAnimation(AnimationType.Jump, 1f);
+        playerParticles.PlayParticles(ParticleType.Jump);
 
         ResetWallJumpValues();
 
@@ -617,6 +615,8 @@ public class PlayerMovement : MonoBehaviour
         dashTimer = 0f;
         dashOnGroundTimer = movementStats.durationBetweenDashes;
 
+        playerParticles.PlayParticles(ParticleType.Dash);
+
         ResetJumpValues();
         ResetWallJumpValues();
         StopWallSlide();
@@ -649,6 +649,8 @@ public class PlayerMovement : MonoBehaviour
                         isDashFastFalling = true;
                     }
                 }
+
+                playerParticles.StopParticles(ParticleType.Dash);
 
                 return;
             }
@@ -812,9 +814,8 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
 
-            playerAnimator.speed = 1f;
-            playerAnimator.SetTrigger("Land");
-            PlayParticles(landParticles);
+            playerAnimation.PlayAnimation(AnimationType.Land, 1f);
+            playerParticles.PlayParticles(ParticleType.Land);
         }
     }
     #endregion
@@ -841,37 +842,6 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             dashOnGroundTimer -= Time.deltaTime;
-        }
-    }
-    #endregion
-
-    #region Particles
-    private void PlayParticles(ParticleSystem particleSystem)
-    {
-        particleSystem.gameObject.SetActive(true);
-        particleSystem.Play();
-    }
-
-    private void StopParticles(ParticleSystem particleSystem)
-    {
-        particleSystem.Stop();
-        particleSystem.gameObject.SetActive(false);
-    }
-
-    private void MoveParticles()
-    {
-        if (isGrounded && Mathf.Abs(horizontalVelocity) >= movementStats.idleAnimationMaximumSpeed)
-        {
-            Vector3 moveParticlesPosition = moveParticles.gameObject.transform.localPosition;
-
-            if (!moveParticles.isPlaying)
-            {
-                PlayParticles(moveParticles);
-            }
-        }
-        else
-        {
-            StopParticles(moveParticles);
         }
     }
     #endregion
