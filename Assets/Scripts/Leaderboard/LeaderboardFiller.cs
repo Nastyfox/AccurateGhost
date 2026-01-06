@@ -47,12 +47,14 @@ public class LeaderboardFiller : MonoBehaviour
         public int rank;
         public double score;
         public string metadata;
+        public string playerID;
 
-        public LeaderboardResult(int _rank, double _score, string _metadata)
+        public LeaderboardResult(int _rank, double _score, string _metadata, string _playerID)
         {
             rank = _rank;
             score = _score;
             metadata = _metadata;
+            playerID = _playerID;
         }
     }
 
@@ -123,6 +125,13 @@ public class LeaderboardFiller : MonoBehaviour
 
                         GameObject completion = Instantiate(completionPrefab, leaderboardEntry.transform);
                         completion.GetComponentInChildren<TextMeshProUGUI>().text = result.score.ToString() + "%";
+
+                        if(playerID != result.playerID)
+                        {
+                            Color leaderboardColor = leaderboardEntry.GetComponent<Image>().color;
+                            Color noAlphaColor = new Color(leaderboardColor.r, leaderboardColor.g, leaderboardColor.b, 0f);
+                            leaderboardEntry.GetComponent<Image>().color = noAlphaColor;
+                        }
                     }
                 }
             }
@@ -137,7 +146,7 @@ public class LeaderboardFiller : MonoBehaviour
         List<LeaderboardResult> result = new List<LeaderboardResult>();
         foreach (Unity.Services.Leaderboards.Models.LeaderboardEntry leaderboardEntry in scoreData)
         {
-            result.Add(new LeaderboardResult(leaderboardEntry.Rank, leaderboardEntry.Score, leaderboardEntry.Metadata));
+            result.Add(new LeaderboardResult(leaderboardEntry.Rank, leaderboardEntry.Score, leaderboardEntry.Metadata, leaderboardEntry.PlayerId));
         }
 
         return result;

@@ -13,13 +13,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Collider2D feetCollider;
     [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
-    [SerializeField] private PlayerParticles playerParticles;
+    [SerializeField] private ParticlesManager particlesManager;
     [SerializeField] private PlayerAnimations playerAnimation;
     [SerializeField] private CameraManager cameraManager;
 
     private Rigidbody2D playerRb;
 
-    private float horizontalVelocity;
+    private float horizontalVelocity = 0f;
     private float currentMaxSpeed;
 
     private RaycastHit2D groundHit;
@@ -120,8 +120,8 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(moveInput.x) >= movementStats.moveThreshold)
             {
                 playerSpriteRenderer.flipX = moveInput.x < 0;
-                playerParticles.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f, ParticleType.Move);
-                playerParticles.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f, ParticleType.Dash);
+                particlesManager.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f);
+                particlesManager.ChangeSpeedParticles(Mathf.Abs(horizontalVelocity), ParticleType.Speed);
 
                 if (isGrounded && InputManager.runHeld)
                 {
@@ -143,12 +143,16 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(horizontalVelocity) >= movementStats.idleAnimationMaximumSpeed && isGrounded)
             {
                 playerAnimation.PlayAnimation(AnimationType.Move, Mathf.Abs(horizontalVelocity) * movementStats.walkAnimationFactor);
-                playerParticles.PlayParticles(ParticleType.Move);
+                particlesManager.PlayParticles(ParticleType.Move);
+                particlesManager.PlayParticles(ParticleType.Speed);
+                AudioManager.audioManagerInstance.PlayWalkSFX(Mathf.Abs(horizontalVelocity));
             }
             else if((Mathf.Abs(horizontalVelocity) < movementStats.idleAnimationMaximumSpeed && Mathf.Abs(moveInput.x) < movementStats.moveThreshold) || !isGrounded)
             {
                 playerAnimation.StopAnimation(AnimationType.Move);
-                playerParticles.StopParticles(ParticleType.Move);
+                particlesManager.StopParticles(ParticleType.Move);
+                particlesManager.StopParticles(ParticleType.Speed);
+                AudioManager.audioManagerInstance.StopWalkSFX();
             }
 
             cameraManager.SetCameraOffset(new Vector3(horizontalVelocity, 0f, 0f));
@@ -244,7 +248,8 @@ public class PlayerMovement : MonoBehaviour
         isJumping = true;
 
         playerAnimation.PlayAnimation(AnimationType.Jump, 1f);
-        playerParticles.PlayParticles(ParticleType.Jump);
+        particlesManager.PlayParticles(ParticleType.Jump);
+        AudioManager.audioManagerInstance.PlayJumpSFX();
 
         ResetWallJumpValues();
 
@@ -615,7 +620,7 @@ public class PlayerMovement : MonoBehaviour
         dashTimer = 0f;
         dashOnGroundTimer = movementStats.durationBetweenDashes;
 
-        playerParticles.PlayParticles(ParticleType.Dash);
+        particlesManager.PlayParticles(ParticleType.Dash);
 
         ResetJumpValues();
         ResetWallJumpValues();
@@ -650,7 +655,7 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
 
-                playerParticles.StopParticles(ParticleType.Dash);
+                particlesManager.StopParticles(ParticleType.Dash);
 
                 return;
             }
@@ -815,7 +820,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             playerAnimation.PlayAnimation(AnimationType.Land, 1f);
-            playerParticles.PlayParticles(ParticleType.Land);
+            particlesManager.PlayParticles(ParticleType.Land);
+            AudioManager.audioManagerInstance.PlayLandSFX();
         }
     }
     #endregion

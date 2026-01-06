@@ -9,11 +9,15 @@ public class LevelsListFiller : MonoBehaviour
     [SerializeField] private GameObject levelButtonPrefab;
     [SerializeField] private GameObject levelGrid;
 
+    private bool isSelected = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
+
+        GameObject myEventSystem = GameObject.Find("EventSystem");
 
         for (int i = 0; i < sceneCount; i++)
         {
@@ -25,6 +29,11 @@ public class LevelsListFiller : MonoBehaviour
                 GameObject levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
                 levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName;
                 levelButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene(sceneName));
+                if(!isSelected && myEventSystem != null)
+                {
+                    myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(levelButton);
+                    isSelected = true;
+                }
             }
         }
     }

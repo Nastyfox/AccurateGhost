@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -9,10 +10,12 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Vector3 offsetFactor;
     [SerializeField] private float transitionSpeed;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private async UniTaskVoid Start()
     {
+        await UniTask.DelayFrame(1);
         cinemachineCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineCamera;
+        cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();
+        cinemachinePositionComposer.TargetOffset = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -23,7 +26,10 @@ public class CameraManager : MonoBehaviour
 
     public void SetCameraOffset(Vector3 newOffset)
     {
-        cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();
-        cinemachinePositionComposer.TargetOffset.x = Mathf.Lerp(cinemachinePositionComposer.TargetOffset.x, offsetFactor.x * newOffset.x, transitionSpeed * Time.fixedDeltaTime);
+        if(cinemachineCamera != null)
+        {
+            cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();
+            cinemachinePositionComposer.TargetOffset.x = Mathf.Lerp(cinemachinePositionComposer.TargetOffset.x, offsetFactor.x * newOffset.x, transitionSpeed * Time.fixedDeltaTime);
+        }
     }
 }
