@@ -6,7 +6,9 @@ public enum ParticleType
     Jump,
     Move,
     Dash,
-    Speed
+    Speed,
+    WallSlide,
+    WallJump
 }
 
 public class ParticlesManager : MonoBehaviour
@@ -14,12 +16,16 @@ public class ParticlesManager : MonoBehaviour
     [SerializeField] private ParticleSystem landParticles;
     [SerializeField] private ParticleSystem jumpParticles;
     [SerializeField] private ParticleSystem moveParticles;
+    [SerializeField] private ParticleSystem wallSlideParticles;
+    [SerializeField] private ParticleSystem wallJumpParticles;
     [SerializeField] private float moveParticlesOffsetX;
     [SerializeField] private ParticleSystem speedParticles;
     [SerializeField] private float speedParticlesOffsetX;
     [SerializeField] private float speedParticlesEmissionRotation;
     [SerializeField] private float speedParticlesSpeedFactor;
     [SerializeField] private Vector2 minSpeedParticlesStartSpeed;
+    [SerializeField] private float wallSlideParticlesOffsetX;
+    [SerializeField] private float wallJumpParticlesOffsetX;
 
     private float lastOffsetSign;
 
@@ -45,6 +51,10 @@ public class ParticlesManager : MonoBehaviour
             lastOffsetSign = signOffset;
 
             moveParticles.gameObject.transform.localPosition = new Vector3(moveParticlesOffsetX * signOffset, moveParticles.gameObject.transform.localPosition.y, moveParticles.gameObject.transform.localPosition.z);
+
+            wallSlideParticles.gameObject.transform.localPosition = new Vector3(wallSlideParticlesOffsetX * -signOffset, wallSlideParticles.gameObject.transform.localPosition.y, wallSlideParticles.gameObject.transform.localPosition.z);
+
+            wallJumpParticles.gameObject.transform.localPosition = new Vector3(wallJumpParticlesOffsetX * -signOffset, wallJumpParticles.gameObject.transform.localPosition.y, wallJumpParticles.gameObject.transform.localPosition.z);
 
             dashTrail.gameObject.transform.localPosition = new Vector3(dashTrailOffsetX * signOffset, dashTrail.gameObject.transform.localPosition.y, dashTrail.gameObject.transform.localPosition.z);
 
@@ -123,6 +133,10 @@ public class ParticlesManager : MonoBehaviour
                 return moveParticles;
             case ParticleType.Speed:
                 return speedParticles;
+            case ParticleType.WallSlide:
+                return wallSlideParticles;
+            case ParticleType.WallJump:
+                return wallJumpParticles;
         }
     }
 

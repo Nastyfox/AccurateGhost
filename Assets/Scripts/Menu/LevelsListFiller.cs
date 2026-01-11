@@ -8,6 +8,7 @@ public class LevelsListFiller : MonoBehaviour
 {
     [SerializeField] private GameObject levelButtonPrefab;
     [SerializeField] private GameObject levelGrid;
+    [SerializeField] private LevelLoader levelLoader;
 
     private bool isSelected = false;
 
@@ -28,7 +29,9 @@ public class LevelsListFiller : MonoBehaviour
             {
                 GameObject levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
                 levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName;
-                levelButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene(sceneName));
+                levelButton.GetComponent<Button>().onClick.AddListener(async () => {
+                    await levelLoader.LoadLevel(sceneName);
+                });
                 if(!isSelected && myEventSystem != null)
                 {
                     myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(levelButton);

@@ -339,7 +339,10 @@ public class PlayerMovement : MonoBehaviour
                 isWallSliding = true;
                 isWallSlideFalling = false;
 
-                if(movementStats.resetJumpsOnWallJump)
+                playerAnimation.PlayAnimation(AnimationType.Wall, 1f);
+                particlesManager.PlayParticles(ParticleType.WallSlide);
+
+                if (movementStats.resetJumpsOnWallJump)
                 {
                     numberOfJumpsUsed = 0;
                 }
@@ -433,6 +436,11 @@ public class PlayerMovement : MonoBehaviour
         isWallJumping = true;
         useWallJumpMoveStats = true;
         wallJumpTime = 0f;
+
+        playerAnimation.PlayAnimation(AnimationType.Jump, 1f);
+        particlesManager.PlayParticles(ParticleType.WallJump);
+        particlesManager.StopParticles(ParticleType.WallSlide);
+        AudioManager.audioManagerInstance.PlayJumpSFX();
 
         StopWallSlide();
 
@@ -821,6 +829,7 @@ public class PlayerMovement : MonoBehaviour
 
             playerAnimation.PlayAnimation(AnimationType.Land, 1f);
             particlesManager.PlayParticles(ParticleType.Land);
+            particlesManager.StopParticles(ParticleType.WallSlide);
             AudioManager.audioManagerInstance.PlayLandSFX();
         }
     }

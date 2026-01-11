@@ -5,7 +5,8 @@ public enum AnimationType
     Idle,
     Move,
     Jump,
-    Land
+    Land,
+    Wall
 }
 
 public class PlayerAnimations : MonoBehaviour
@@ -31,6 +32,7 @@ public class PlayerAnimations : MonoBehaviour
             case AnimationType.Land:
                 playerAnimator.SetTrigger("Land");
                 playerAnimator.ResetTrigger("Jump");
+                playerAnimator.ResetTrigger("Wall");
                 break;
             case AnimationType.Move:
                 playerAnimator.SetBool("IsMoving", true);
@@ -39,6 +41,11 @@ public class PlayerAnimations : MonoBehaviour
             case AnimationType.Jump:
                 playerAnimator.SetTrigger("Jump");
                 playerAnimator.ResetTrigger("Land");
+                playerAnimator.ResetTrigger("Wall");
+                break;
+            case AnimationType.Wall:
+                playerAnimator.SetTrigger("Wall");
+                playerAnimator.ResetTrigger("Jump");
                 break;
             default:
                 break;
