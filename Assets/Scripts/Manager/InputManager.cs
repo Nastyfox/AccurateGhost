@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager inputManagerInstance;
+
     public static PlayerInput playerInput;
 
     public static Vector2 movement;
@@ -14,6 +16,16 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
+        if (inputManagerInstance == null)
+        {
+            inputManagerInstance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void Update()
@@ -64,6 +76,23 @@ public class InputManager : MonoBehaviour
         if (ctx.performed || ctx.started)
         {
             dashPressed = true;
+        }
+    }
+
+    public void OnPause(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            playerInput.SwitchCurrentActionMap("PauseMode");
+        }
+    }
+
+    public void OnResume(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            playerInput.SwitchCurrentActionMap("PlayMode");
+            GameManager.gameManagerInstance.PauseGame();
         }
     }
 }

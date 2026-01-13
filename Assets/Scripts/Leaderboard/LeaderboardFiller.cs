@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,8 +34,6 @@ public class LeaderboardFiller : MonoBehaviour
     private List<Unity.Services.Leaderboards.Models.LeaderboardEntry> scoreData;
     [SerializeField] private Leaderboard leaderboard;
 
-    [SerializeField] private List<DifficultyComponent> difficultyComponents;
-
     private int currentTabIndex = 0;
 
     private double currentScore = 0;
@@ -58,24 +58,43 @@ public class LeaderboardFiller : MonoBehaviour
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private async UniTaskVoid OnEnable()
+    private async UniTaskVoid Start()
     {
-        playerID = await leaderboard.InitializeLeaderboardService();
+        while (!leaderboard.GetIsInitialized())
+        {
+            await UniTask.Yield();
+        }
+        playerID = leaderboard.GetPlayerID();
+
+        while (levelsContainer.transform.childCount > 0)
+        {
+            DestroyImmediate(levelsContainer.transform.GetChild(0).gameObject);
+        }
+
+        while (levelsTabsContainer.transform.childCount > 0)
+        {
+            DestroyImmediate(levelsTabsContainer.transform.GetChild(0).gameObject);
+        }
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
+
+        GameObject myEventSystem = GameObject.Find("EventSystem");
+
+        GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
 
         for (int i = 0; i < sceneCount; i++)
         {
             scenes[i] = SceneUtility.GetScenePathByBuildIndex(i);
             string sceneName = Path.GetFileNameWithoutExtension(scenes[i]);
 
+            GameObject levelButton = null;
+
             if (sceneName.Contains("Level"))
             {
-                foreach(DifficultyComponent difficulty in difficultyComponents)
+                for(int j = 0; j < difficulties.Length; j++)
                 {
-                    string levelName = sceneName + "_" + difficulty.levelDifficulty.ToString();
+                    string levelName = sceneName + "_" + difficulties[j];
 
                     scoreData = await leaderboard.GetScoresWithMetadata(levelName);
                     List<LeaderboardResult> levelResults = LeaderboardDataToResults();
@@ -84,7 +103,7 @@ public class LeaderboardFiller : MonoBehaviour
                     levelLeaderboardsList.Add(levelLeaderboard);
                     GameObject levelTab = Instantiate(levelTabButtonPrefab, levelsTabsContainer);
                     Button levelTabButton = levelTab.GetComponent<Button>();
-                    levelTabButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + " " + difficulty.levelDifficulty.ToString();
+                    levelTabButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + " " + difficulties[j];
                     int capturedIndex = currentTabIndex;
                     levelTabButton.onClick.AddListener(() => SelectLevelTab(capturedIndex));
                     levelTabsButtonsList.Add(levelTab);
@@ -126,7 +145,7 @@ public class LeaderboardFiller : MonoBehaviour
                         GameObject completion = Instantiate(completionPrefab, leaderboardEntry.transform);
                         completion.GetComponentInChildren<TextMeshProUGUI>().text = result.score.ToString() + "%";
 
-                        if(playerID != result.playerID)
+                        if (playerID != result.playerID)
                         {
                             Color leaderboardColor = leaderboardEntry.GetComponent<Image>().color;
                             Color noAlphaColor = new Color(leaderboardColor.r, leaderboardColor.g, leaderboardColor.b, 0f);

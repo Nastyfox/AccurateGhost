@@ -9,7 +9,9 @@ using UnityEngine;
 
 public class Leaderboard : MonoBehaviour
 {
-    private string playerID; 
+    private string playerID;
+
+    private bool isInitialized = false;
 
     [Serializable]
     public class ScoreMetadata
@@ -18,13 +20,21 @@ public class Leaderboard : MonoBehaviour
         public string pseudo;
     }
 
-    public async UniTask<string> InitializeLeaderboardService()
+    public string GetPlayerID()
+    {
+        return playerID;
+    }
+
+    public bool GetIsInitialized()
+    {
+        return isInitialized;
+    }
+
+    private async UniTaskVoid OnEnable()
     {
         await UnityServices.InitializeAsync();
-
+        
         await SignInAnonymously();
-
-        return playerID;
     }
 
     async UniTask SignInAnonymously()
@@ -41,6 +51,8 @@ public class Leaderboard : MonoBehaviour
         };
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        isInitialized = true;
     }
 
     public async UniTask AddScoreWithMetadata(string leaderboardId, int score, string _chrono, string _pseudo)

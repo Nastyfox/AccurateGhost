@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
         Hard
     }
 
+    public static GameManager gameManagerInstance;
+
     [SerializeField] private ESaveSystem runSaveSystem;
     [SerializeField] private SaveFileSetup runSaveFileSetup;
 
@@ -65,12 +67,26 @@ public class GameManager : MonoBehaviour
 
     private string playerPseudo = "";
 
+    [SerializeField] private GameObject pauseMenu;
+
     private void OnEnable()
     {
         PlayerCollisions.startEvent += StartRecord;
         PlayerCollisions.endEvent += UniTask.Action(StopRecord);
 
         Playback.playbackDoneEvent += UniTask.Action(StartRun);
+
+        levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
+
+        if (gameManagerInstance == null)
+        {
+            gameManagerInstance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void OnDisable()
@@ -234,5 +250,10 @@ public class GameManager : MonoBehaviour
     {
         DisplayPlayback(ghostPlayback, true, false, 0, savedRun);
         DisplayPlayback(replayPlayback, false, false, 0, currentRun);
+    }
+
+    public void PauseGame()
+    {
+        pauseMenu.SetActive(true);
     }
 }

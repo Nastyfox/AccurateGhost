@@ -12,6 +12,8 @@ public class LevelLoader : MonoBehaviour
     [SerializeField] private TweenSettings<float> fadeInAnimationSettings;
     [SerializeField] private TweenSettings<float> fadeOutAnimationSettings;
 
+    private GameManager.LevelDifficulty selectedDifficulty;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,8 +34,15 @@ public class LevelLoader : MonoBehaviour
         
     }
 
-    public async UniTask LoadLevel(string levelName)
+    public GameManager.LevelDifficulty GetSelectedDifficulty()
     {
+        return selectedDifficulty;
+    }
+
+    public async UniTask LoadLevel(string levelName, GameManager.LevelDifficulty difficulty)
+    {
+        selectedDifficulty = difficulty;
+
         crossFadeCanvasGroup.gameObject.SetActive(true);
 
         await Tween.Alpha(crossFadeCanvasGroup, fadeInAnimationSettings);
