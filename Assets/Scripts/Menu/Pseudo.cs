@@ -16,7 +16,9 @@ public class Pseudo : MonoBehaviour
     private Tween buttonScaleAnimation;
     private Vector3 pseudoButtonStartLocalScale;
 
-    string pseudo = "";
+    private string pseudo = "";
+
+    [SerializeField] GlobalDataScriptableObject globalDataScriptableObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,6 +30,7 @@ public class Pseudo : MonoBehaviour
         if (!string.IsNullOrEmpty(pseudo))
         {
             pseudoInputField.text = pseudo;
+            globalDataScriptableObject.pseudo = pseudo;
         }
         else
         {
@@ -49,6 +52,7 @@ public class Pseudo : MonoBehaviour
     {
         pseudo = pseudoInputField.text;
 
+        globalDataScriptableObject.pseudo = pseudo;
         playerDataSaveSystem.SavePlayerData(pseudo, "Pseudo", playerDataSaveFileSetup);
     }
 }

@@ -2,25 +2,22 @@ using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using TMPro;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class DifficultySelector : MonoBehaviour
+public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameManager gameManager;
     [SerializeField] private List<GameObject> difficultiesGO;
     [SerializeField] private GameObject difficultyList;
-    [SerializeField] private Leaderboard leaderboard;
     [SerializeField] private TextMeshProUGUI ghostDelayValueText;
     [SerializeField] private GameObject levelDifficultySelectorScreen;
 
     [SerializeField] private ESaveSystem playerDataSaveSystem;
     [SerializeField] private SaveFileSetup playerDataSaveFileSetup;
+
+    [SerializeField] GlobalDataScriptableObject globalDataScriptableObject;
 
     private bool ghostBefore = true;
     private bool ghostDuring = true;
@@ -28,7 +25,7 @@ public class DifficultySelector : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
-        while (!leaderboard.GetIsInitialized())
+        while (!Leaderboard.leaderboardInstance.GetIsInitialized())
         {
             await UniTask.Yield();
         }
@@ -48,7 +45,7 @@ public class DifficultySelector : MonoBehaviour
             GameManager.LevelDifficulty currentLevelDifficulty = difficulties[i];
 
             string levelName = SceneManager.GetActiveScene().name + "_" + previousLevelDifficulty;
-            Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await leaderboard.GetPlayerScoreWithMetadata(levelName);
+            Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await Leaderboard.leaderboardInstance.GetPlayerScoreWithMetadata(levelName);
 
             if (playerEntry != null)
             {
@@ -79,11 +76,18 @@ public class DifficultySelector : MonoBehaviour
         ghostDelayValueText.text = "Ghost Delay : " + ghostDelayInFrames.ToString() + " frames";
     }
 
+    public void SaveSettings()
+    {
+        globalDataScriptableObject.displayGhostBefore = ghostBefore;
+        globalDataScriptableObject.displayGhostDuring = ghostDuring;
+        globalDataScriptableObject.frameOffset = ghostDelayInFrames;
+    }
+
     private void SelectDifficulty(GameManager.LevelDifficulty difficulty)
     {
         string pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
         levelDifficultySelectorScreen.SetActive(false);
-        gameManager.StartLevel(difficulty, ghostBefore, ghostDuring, ghostDelayInFrames, pseudo);
+        GameManager.gameManagerInstance.StartLevel(difficulty);
     }
 
     private void InstantiateDifficultyObject(GameObject difficultyObject, GameManager.LevelDifficulty difficulty)

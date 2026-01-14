@@ -32,7 +32,6 @@ public class LeaderboardFiller : MonoBehaviour
     [SerializeField] private GameObject leaderboardEntryPrefab;
 
     private List<Unity.Services.Leaderboards.Models.LeaderboardEntry> scoreData;
-    [SerializeField] private Leaderboard leaderboard;
 
     private int currentTabIndex = 0;
 
@@ -60,11 +59,11 @@ public class LeaderboardFiller : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
-        while (!leaderboard.GetIsInitialized())
+        while (!Leaderboard.leaderboardInstance.GetIsInitialized())
         {
             await UniTask.Yield();
         }
-        playerID = leaderboard.GetPlayerID();
+        playerID = Leaderboard.leaderboardInstance.GetPlayerID();
 
         while (levelsContainer.transform.childCount > 0)
         {
@@ -88,15 +87,13 @@ public class LeaderboardFiller : MonoBehaviour
             scenes[i] = SceneUtility.GetScenePathByBuildIndex(i);
             string sceneName = Path.GetFileNameWithoutExtension(scenes[i]);
 
-            GameObject levelButton = null;
-
             if (sceneName.Contains("Level"))
             {
                 for(int j = 0; j < difficulties.Length; j++)
                 {
                     string levelName = sceneName + "_" + difficulties[j];
 
-                    scoreData = await leaderboard.GetScoresWithMetadata(levelName);
+                    scoreData = await Leaderboard.leaderboardInstance.GetScoresWithMetadata(levelName);
                     List<LeaderboardResult> levelResults = LeaderboardDataToResults();
                     SetNumberSameScore(levelResults);
                     GameObject levelLeaderboard = Instantiate(leaderboardDataContainerPrefab, levelsContainer);

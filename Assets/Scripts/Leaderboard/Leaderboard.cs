@@ -13,6 +13,8 @@ public class Leaderboard : MonoBehaviour
 
     private bool isInitialized = false;
 
+    public static Leaderboard leaderboardInstance;
+
     [Serializable]
     public class ScoreMetadata
     {
@@ -30,8 +32,18 @@ public class Leaderboard : MonoBehaviour
         return isInitialized;
     }
 
-    private async UniTaskVoid OnEnable()
+    private async UniTaskVoid Awake()
     {
+        if (leaderboardInstance == null)
+        {
+            leaderboardInstance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
         await UnityServices.InitializeAsync();
         
         await SignInAnonymously();

@@ -4,14 +4,26 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    public static CameraManager cameraManagerInstance;
+
     private CinemachinePositionComposer cinemachinePositionComposer;
     private CinemachineCamera cinemachineCamera;
     [SerializeField] private CinemachineBrain cinemachineBrain;
     [SerializeField] private Vector3 offsetFactor;
     [SerializeField] private float transitionSpeed;
 
-    private async UniTaskVoid Start()
+    private async UniTaskVoid Awake()
     {
+        if (cameraManagerInstance == null)
+        {
+            cameraManagerInstance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
         await UniTask.DelayFrame(1);
         cinemachineCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineCamera;
         cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();

@@ -2,12 +2,8 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.IO;
 using TMPro;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class LevelsListFiller : MonoBehaviour
@@ -16,13 +12,11 @@ public class LevelsListFiller : MonoBehaviour
     [SerializeField] private GameObject levelGrid;
     [SerializeField] private LevelLoader levelLoader;
 
-    [SerializeField] private Leaderboard leaderboard;
-
     private bool isSelected = false;
 
     private async UniTaskVoid Start()
     {
-        while(!leaderboard.GetIsInitialized())
+        while(!Leaderboard.leaderboardInstance.GetIsInitialized())
         {
             await UniTask.Yield();
         }
@@ -66,7 +60,7 @@ public class LevelsListFiller : MonoBehaviour
                     GameManager.LevelDifficulty currentLevelDifficulty = difficulties[j];
 
                     string levelName = sceneName + "_" + previousLevelDifficulty;
-                    Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await leaderboard.GetPlayerScoreWithMetadata(levelName);
+                    Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await Leaderboard.leaderboardInstance.GetPlayerScoreWithMetadata(levelName);
 
                     if (playerEntry != null)
                     {

@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Idle
+  m_Name: Land
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,7 +21,7 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 5416524585157233970, guid: 228ec816ce88a614db64069b5a8ba840,
+      value: {fileID: -8690057065640880618, guid: 74c3ad0cd6b50ef43b723970ca60868c,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -45,7 +45,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 5416524585157233970, guid: 228ec816ce88a614db64069b5a8ba840, type: 3}
+    - {fileID: -8690057065640880618, guid: 74c3ad0cd6b50ef43b723970ca60868c, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

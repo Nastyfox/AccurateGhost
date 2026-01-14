@@ -57,13 +57,13 @@ public class GameManager : MonoBehaviour
     private string currentRun = "";
     [SerializeField] private RunDataScriptableObject runDataScriptableObject;
 
+    [SerializeField] GlobalDataScriptableObject globalDataScriptableObject;
+
     private float time = 0f;
     private bool startTimer = false;
 
     [Range(0, 100)]
     [SerializeField] private int frameOffset;
-
-    [SerializeField] private Leaderboard leaderboard;
 
     private string playerPseudo = "";
 
@@ -77,7 +77,10 @@ public class GameManager : MonoBehaviour
         Playback.playbackDoneEvent += UniTask.Action(StartRun);
 
         levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
+    }
 
+    private void Awake()
+    {
         if (gameManagerInstance == null)
         {
             gameManagerInstance = this;
@@ -157,7 +160,7 @@ public class GameManager : MonoBehaviour
             int milliSeconds = timeInSecondsInt - (minutes * 60 + seconds);  //Get seconds for display alongside minutes
             string timeText = minutes.ToString("D2") + ":" + seconds.ToString("D2") + ":" + milliSeconds.ToString("D2");
             
-            await leaderboard.AddScoreWithMetadata(levelName, scorePercent, timeText, playerPseudo);
+            await Leaderboard.leaderboardInstance.AddScoreWithMetadata(levelName, scorePercent, timeText, playerPseudo);
 
             DisablePlayerControls();
             replayButton.SetActive(true);
@@ -197,13 +200,14 @@ public class GameManager : MonoBehaviour
         playback.SetIsPlaybacking(true);
     }
 
-    public void StartLevel(LevelDifficulty difficulty, bool ghostBefore, bool ghostDuring, int ghostDelayInFrames, string pseudo)
+    public void StartLevel(LevelDifficulty difficulty)
     {
+        playerPseudo = globalDataScriptableObject.pseudo;
+        displayGhostBefore = globalDataScriptableObject.displayGhostBefore;
+        displayGhostDuring = globalDataScriptableObject.displayGhostDuring;
+        frameOffset = globalDataScriptableObject.frameOffset;
+
         levelDifficulty = difficulty;
-        displayGhostBefore = ghostBefore;
-        displayGhostDuring = ghostDuring;
-        frameOffset = ghostDelayInFrames;
-        playerPseudo = pseudo;
 
         if (displayGhostDuring)
         {

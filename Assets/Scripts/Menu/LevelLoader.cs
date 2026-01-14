@@ -57,5 +57,7 @@ public class LevelLoader : MonoBehaviour
         await Tween.Alpha(crossFadeCanvasGroup, fadeOutAnimationSettings);
 
         crossFadeCanvasGroup.gameObject.SetActive(false);
+
+        GameManager.gameManagerInstance.StartLevel(difficulty);
     }
 }

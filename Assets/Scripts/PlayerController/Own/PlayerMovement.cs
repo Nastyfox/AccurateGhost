@@ -13,9 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Collider2D feetCollider;
     [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private SpriteRenderer playerSpriteRenderer;
-    [SerializeField] private ParticlesManager particlesManager;
     [SerializeField] private PlayerAnimations playerAnimation;
-    [SerializeField] private CameraManager cameraManager;
 
     private Rigidbody2D playerRb;
 
@@ -120,8 +118,8 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(moveInput.x) >= movementStats.moveThreshold)
             {
                 playerSpriteRenderer.flipX = moveInput.x < 0;
-                particlesManager.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f);
-                particlesManager.ChangeSpeedParticles(Mathf.Abs(horizontalVelocity), ParticleType.Speed);
+                ParticlesManager.particlesManagerInstance.OffsetParticles(playerSpriteRenderer.flipX ? 1f : -1f);
+                ParticlesManager.particlesManagerInstance.ChangeSpeedParticles(Mathf.Abs(horizontalVelocity), ParticleType.Speed);
 
                 if (isGrounded && InputManager.runHeld)
                 {
@@ -143,19 +141,19 @@ public class PlayerMovement : MonoBehaviour
             if (Mathf.Abs(horizontalVelocity) >= movementStats.idleAnimationMaximumSpeed && isGrounded)
             {
                 playerAnimation.PlayAnimation(AnimationType.Move, Mathf.Abs(horizontalVelocity) * movementStats.walkAnimationFactor);
-                particlesManager.PlayParticles(ParticleType.Move);
-                particlesManager.PlayParticles(ParticleType.Speed);
+                ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.Move);
+                ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.Speed);
                 AudioManager.audioManagerInstance.PlayWalkSFX(Mathf.Abs(horizontalVelocity));
             }
             else if((Mathf.Abs(horizontalVelocity) < movementStats.idleAnimationMaximumSpeed && Mathf.Abs(moveInput.x) < movementStats.moveThreshold) || !isGrounded)
             {
                 playerAnimation.StopAnimation(AnimationType.Move);
-                particlesManager.StopParticles(ParticleType.Move);
-                particlesManager.StopParticles(ParticleType.Speed);
+                ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.Move);
+                ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.Speed);
                 AudioManager.audioManagerInstance.StopWalkSFX();
             }
 
-            cameraManager.SetCameraOffset(new Vector3(horizontalVelocity, 0f, 0f));
+            CameraManager.cameraManagerInstance.SetCameraOffset(new Vector3(horizontalVelocity, 0f, 0f));
         }
     }
 
@@ -248,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
         isJumping = true;
 
         playerAnimation.PlayAnimation(AnimationType.Jump, 1f);
-        particlesManager.PlayParticles(ParticleType.Jump);
+        ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.Jump);
         AudioManager.audioManagerInstance.PlayJumpSFX();
 
         ResetWallJumpValues();
@@ -340,7 +338,7 @@ public class PlayerMovement : MonoBehaviour
                 isWallSlideFalling = false;
 
                 playerAnimation.PlayAnimation(AnimationType.Wall, 1f);
-                particlesManager.PlayParticles(ParticleType.WallSlide);
+                ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.WallSlide);
 
                 if (movementStats.resetJumpsOnWallJump)
                 {
@@ -438,8 +436,8 @@ public class PlayerMovement : MonoBehaviour
         wallJumpTime = 0f;
 
         playerAnimation.PlayAnimation(AnimationType.Jump, 1f);
-        particlesManager.PlayParticles(ParticleType.WallJump);
-        particlesManager.StopParticles(ParticleType.WallSlide);
+        ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.WallJump);
+        ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.WallSlide);
         AudioManager.audioManagerInstance.PlayJumpSFX();
 
         StopWallSlide();
@@ -628,7 +626,7 @@ public class PlayerMovement : MonoBehaviour
         dashTimer = 0f;
         dashOnGroundTimer = movementStats.durationBetweenDashes;
 
-        particlesManager.PlayParticles(ParticleType.Dash);
+        ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.Dash);
 
         ResetJumpValues();
         ResetWallJumpValues();
@@ -663,7 +661,7 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
 
-                particlesManager.StopParticles(ParticleType.Dash);
+                ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.Dash);
 
                 return;
             }
@@ -828,8 +826,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             playerAnimation.PlayAnimation(AnimationType.Land, 1f);
-            particlesManager.PlayParticles(ParticleType.Land);
-            particlesManager.StopParticles(ParticleType.WallSlide);
+            ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.Land);
+            ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.WallSlide);
             AudioManager.audioManagerInstance.PlayLandSFX();
         }
     }

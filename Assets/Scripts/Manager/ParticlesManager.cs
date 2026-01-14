@@ -13,6 +13,8 @@ public enum ParticleType
 
 public class ParticlesManager : MonoBehaviour
 {
+    public static ParticlesManager particlesManagerInstance;
+
     [SerializeField] private ParticleSystem landParticles;
     [SerializeField] private ParticleSystem jumpParticles;
     [SerializeField] private ParticleSystem moveParticles;
@@ -35,7 +37,15 @@ public class ParticlesManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (particlesManagerInstance == null)
+        {
+            particlesManagerInstance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     // Update is called once per frame

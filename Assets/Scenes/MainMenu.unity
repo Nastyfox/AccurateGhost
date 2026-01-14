@@ -771,6 +771,8 @@ MonoBehaviour:
   pseudoButton: {fileID: 1669461467}
   animationScaleFactor: 1.2
   animationScaleDuration: 0.75
+  globalDataScriptableObject: {fileID: 11400000, guid: 794bf381934561b41944e18d07b476b1,
+    type: 2}
 --- !u!1 &387991188
 GameObject:
   m_ObjectHideFlags: 0
@@ -1822,7 +1824,6 @@ MonoBehaviour:
     type: 3}
   levelGrid: {fileID: 1628262505}
   levelLoader: {fileID: 713652069}
-  leaderboard: {fileID: 1785449144}
 --- !u!1 &866572645
 GameObject:
   m_ObjectHideFlags: 0
@@ -2026,7 +2027,6 @@ MonoBehaviour:
     type: 3}
   leaderboardEntryPrefab: {fileID: 2556707462255075659, guid: f1ba10b36a0637f478888dbd4e933015,
     type: 3}
-  leaderboard: {fileID: 1785449144}
 --- !u!1 &999291324
 GameObject:
   m_ObjectHideFlags: 0
@@ -3807,18 +3807,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744401483}
   m_CullTransparentMesh: 1
---- !u!114 &1785449144 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2905093011957666926, guid: 84e5b8dd37691cd4bbb38113741f257c,
-    type: 3}
-  m_PrefabInstance: {fileID: 2248663369710999244}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 699e91565d6934142bb17c0559dd7c94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1818681142
 GameObject:
   m_ObjectHideFlags: 0
