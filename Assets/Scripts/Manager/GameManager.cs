@@ -71,12 +71,15 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerCollisions.startEvent += StartRecord;
-        PlayerCollisions.endEvent += UniTask.Action(StopRecord);
+        PlayerCollisions.StartEvent += StartRecord;
+        PlayerCollisions.EndEvent += UniTask.Action(StopRecord);
 
         Playback.playbackDoneEvent += UniTask.Action(StartRun);
 
-        levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
+        if(LevelLoader.levelLoaderInstance != null)
+        {
+            levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
+        }
     }
 
     private void Awake()
@@ -94,11 +97,11 @@ public class GameManager : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerCollisions.startEvent -= StartRecord;
-        PlayerCollisions.endEvent -= UniTask.Action(StopRecord);
+        PlayerCollisions.StartEvent -= StartRecord;
+        PlayerCollisions.EndEvent -= UniTask.Action(StopRecord);
         if (displayGhostDuring)
         {
-            PlayerCollisions.startEvent -= () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
+            PlayerCollisions.StartEvent -= () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
         }
 
         Playback.playbackDoneEvent -= UniTask.Action(StartRun);
@@ -130,6 +133,7 @@ public class GameManager : MonoBehaviour
 
     private void StartRecord()
     {
+        Debug.Log("Start Record");
         savePlayback.SetIsRecording(true);
     }
 
@@ -211,7 +215,7 @@ public class GameManager : MonoBehaviour
 
         if (displayGhostDuring)
         {
-            PlayerCollisions.startEvent += () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
+            PlayerCollisions.StartEvent += () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
         }
 
         ghostModeActionMap = inputAction.FindActionMap("GhostMode");

@@ -11,11 +11,10 @@ public class Playback : MonoBehaviour
 
     [SerializeField] private GameObject target;
     private Animator targetAnimator;
-    private static readonly int Move = Animator.StringToHash("Move");
-    private static readonly int JumpState = Animator.StringToHash("JumpState");
-    private static readonly int IsJumping = Animator.StringToHash("IsJumping");
-    private static readonly int WallGrabbing = Animator.StringToHash("WallGrabbing");
-    private static readonly int IsDashing = Animator.StringToHash("IsDashing");
+    private static readonly int IsMoving = Animator.StringToHash("IsMoving");
+    private static readonly int Jump = Animator.StringToHash("Jump");
+    private static readonly int Wall = Animator.StringToHash("Wall");
+    private static readonly int Land = Animator.StringToHash("Land");
 
     [SerializeField] private GameObject ghostPrefab;
     private GameObject ghost;
@@ -39,11 +38,10 @@ public class Playback : MonoBehaviour
         public float time;
         public Vector3 pos;
         public Quaternion rot;
-        public float moveSpeedAnimator;
-        public float jumpSpeedAnimator;
-        public bool isJumpingAnimator;
-        public bool isGrabbingAnimator;
-        public bool isDashingAnimator;
+        public bool isMovingAnimator;
+        public bool jumpAnimator;
+        public bool wallAnimator;
+        public bool landAnimator;
 
     }
 
@@ -103,11 +101,10 @@ public class Playback : MonoBehaviour
                 time = playerTimer,
                 pos = target.transform.position,
                 rot = target.transform.rotation,
-                moveSpeedAnimator = targetAnimator.GetFloat(Move),
-                jumpSpeedAnimator = targetAnimator.GetFloat(JumpState),
-                isJumpingAnimator = targetAnimator.GetBool(IsJumping),
-                isGrabbingAnimator = targetAnimator.GetBool(WallGrabbing),
-                isDashingAnimator = targetAnimator.GetBool(IsDashing)
+                isMovingAnimator = targetAnimator.GetBool(IsMoving),
+                jumpAnimator = targetAnimator.GetBool(Jump),
+                wallAnimator = targetAnimator.GetBool(Wall),
+                landAnimator = targetAnimator.GetBool(Land)
             };
 
             playbackKeyFrames.Add(frame);
@@ -171,11 +168,19 @@ public class Playback : MonoBehaviour
 
         ghost.transform.position = Vector3.Lerp(frameA.pos, frameB.pos, abPercent);
         ghost.transform.rotation = Quaternion.Slerp(frameA.rot, frameB.rot, abPercent);
-        ghostAnimator.SetFloat(Move, Mathf.Lerp(frameA.moveSpeedAnimator, frameB.moveSpeedAnimator, abPercent));
-        ghostAnimator.SetFloat(JumpState, Mathf.Lerp(frameA.jumpSpeedAnimator, frameB.jumpSpeedAnimator, abPercent));
-        ghostAnimator.SetBool(IsJumping, frameA.isJumpingAnimator);
-        ghostAnimator.SetBool(WallGrabbing, frameA.isGrabbingAnimator);
-        ghostAnimator.SetBool(IsDashing, frameA.isDashingAnimator);
+        ghostAnimator.SetBool(IsMoving, frameA.isMovingAnimator);
+        if (frameA.jumpAnimator)
+        {
+            ghostAnimator.SetTrigger(Jump);
+        }
+        if (frameA.wallAnimator)
+        {
+            ghostAnimator.SetTrigger(Wall);
+        }
+        if (frameA.landAnimator)
+        {
+            ghostAnimator.SetTrigger(Land);
+        }
     }
 
     public string GetSavedDatas()
@@ -185,8 +190,7 @@ public class Playback : MonoBehaviour
         for (int i = 0; i < playbackKeyFrames.Count; i++)
         {
             savedDatas += playbackKeyFrames[i].time.ToString() + "|" + SerializeVector3(playbackKeyFrames[i].pos) + "|" + SerializeQuarternion(playbackKeyFrames[i].rot) + "|" +
-                          playbackKeyFrames[i].moveSpeedAnimator.ToString() + "|" + playbackKeyFrames[i].jumpSpeedAnimator.ToString() + "|" + playbackKeyFrames[i].isJumpingAnimator + "|" +
-                           playbackKeyFrames[i].isGrabbingAnimator + "|" + playbackKeyFrames[i].isDashingAnimator;
+                          playbackKeyFrames[i].isMovingAnimator + "|" + playbackKeyFrames[i].jumpAnimator + "|" + playbackKeyFrames[i].wallAnimator + "|" + playbackKeyFrames[i].landAnimator;
             if (i < playbackKeyFrames.Count - 1)
             {
                 savedDatas += "/";
@@ -256,31 +260,28 @@ public class Playback : MonoBehaviour
                 string timeString = splitString.Split('|')[0];
                 string posString = splitString.Split('|')[1];
                 string rotString = splitString.Split('|')[2];
-                string moveSpeedAnimatorString = splitString.Split('|')[3];
-                string jumpSpeedAnimatorString = splitString.Split('|')[4];
-                string isJumpingAnimatorString = splitString.Split('|')[5];
-                string isGrabbingAnimatorString = splitString.Split('|')[6];
-                string isDashingAnimatorString = splitString.Split('|')[7];
+                string moveAnimatorString = splitString.Split('|')[3];
+                string jumpAnimatorString = splitString.Split('|')[4];
+                string wallAnimatorString = splitString.Split('|')[5];
+                string landAnimatorString = splitString.Split('|')[6];
 
                 float _time = float.Parse(timeString);
                 Vector3 _pos = DeserializeVector3(posString);
                 Quaternion _rot = DeserializeQuaternion(rotString);
-                float _moveSpeedAnimator = float.Parse(moveSpeedAnimatorString);
-                float _jumpSpeedAnimator = float.Parse(jumpSpeedAnimatorString);
-                bool isJumpingAnimator = bool.Parse(isJumpingAnimatorString);
-                bool isGrabbingAnimator = bool.Parse(isGrabbingAnimatorString);
-                bool isDashingAnimator = bool.Parse(isDashingAnimatorString);
+                bool _isMovingAnimator = bool.Parse(moveAnimatorString);
+                bool _jumpAnimator = bool.Parse(jumpAnimatorString);
+                bool _wallAnimator = bool.Parse(wallAnimatorString);
+                bool _landAnimator = bool.Parse(landAnimatorString);
 
                 PlaybackKeyFrame frame = new PlaybackKeyFrame()
                 {
                     time = _time,
                     pos = _pos,
                     rot = _rot,
-                    moveSpeedAnimator = _moveSpeedAnimator,
-                    jumpSpeedAnimator = _jumpSpeedAnimator,
-                    isJumpingAnimator = isJumpingAnimator,
-                    isGrabbingAnimator = isGrabbingAnimator,
-                    isDashingAnimator = isDashingAnimator
+                    isMovingAnimator = _isMovingAnimator,
+                    jumpAnimator = _jumpAnimator,
+                    wallAnimator = _wallAnimator,
+                    landAnimator = _landAnimator
                 };
 
                 localKeyFrames.Add(frame);

@@ -4,9 +4,8 @@ using UnityEngine.Events;
 
 public class PlayerCollisions : MonoBehaviour
 {
-
-    public static event Action startEvent;
-    public static event Action endEvent;
+    public static event Action StartEvent;
+    public static event Action EndEvent;
 
     private bool firstStart = true;
 
@@ -28,13 +27,13 @@ public class PlayerCollisions : MonoBehaviour
         {
             if (firstStart)
             {
-                startEvent?.Invoke();
+                StartEvent?.Invoke();
                 firstStart = false;
             }
         }
         else if(collision.tag == "EndFlag")
         {
-            endEvent?.Invoke();
+            EndEvent?.Invoke();
         }
     }
 }
