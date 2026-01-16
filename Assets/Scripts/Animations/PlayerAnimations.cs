@@ -13,6 +13,8 @@ public class PlayerAnimations : MonoBehaviour
 {
     [SerializeField] private Animator playerAnimator;
 
+    [SerializeField] private Playback savePlayback;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -33,6 +35,7 @@ public class PlayerAnimations : MonoBehaviour
                 playerAnimator.SetTrigger("Land");
                 playerAnimator.ResetTrigger("Jump");
                 playerAnimator.ResetTrigger("Wall");
+                savePlayback.NotifyTrigger(Playback.TriggerType.Land);
                 break;
             case AnimationType.Move:
                 playerAnimator.SetBool("IsMoving", true);
@@ -42,10 +45,12 @@ public class PlayerAnimations : MonoBehaviour
                 playerAnimator.SetTrigger("Jump");
                 playerAnimator.ResetTrigger("Land");
                 playerAnimator.ResetTrigger("Wall");
+                savePlayback.NotifyTrigger(Playback.TriggerType.Jump);
                 break;
             case AnimationType.Wall:
                 playerAnimator.SetTrigger("Wall");
                 playerAnimator.ResetTrigger("Jump");
+                savePlayback.NotifyTrigger(Playback.TriggerType.Wall);
                 break;
             default:
                 break;

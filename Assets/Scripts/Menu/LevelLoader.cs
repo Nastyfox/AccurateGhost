@@ -14,6 +14,8 @@ public class LevelLoader : MonoBehaviour
 
     private GameManager.LevelDifficulty selectedDifficulty;
 
+    [SerializeField] private GlobalDataScriptableObject globalDataScriptableObject;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -58,6 +60,12 @@ public class LevelLoader : MonoBehaviour
 
         crossFadeCanvasGroup.gameObject.SetActive(false);
 
-        GameManager.gameManagerInstance.StartLevel(difficulty);
+        globalDataScriptableObject.levelDifficulty = difficulty;
+        GameManager.gameManagerInstance.StartLevel();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

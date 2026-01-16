@@ -10,7 +10,6 @@ public class LevelsListFiller : MonoBehaviour
 {
     [SerializeField] private GameObject levelButtonPrefab;
     [SerializeField] private GameObject levelGrid;
-    [SerializeField] private LevelLoader levelLoader;
 
     private bool isSelected = false;
 
@@ -45,7 +44,7 @@ public class LevelsListFiller : MonoBehaviour
                 levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
                 levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + "\n" + difficulties[0];
                 levelButton.GetComponent<Button>().onClick.AddListener(async () => {
-                    await levelLoader.LoadLevel(sceneName, difficulties[0]);
+                    await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[0]);
                 });
 
                 if (!isSelected && myEventSystem != null)
@@ -67,7 +66,7 @@ public class LevelsListFiller : MonoBehaviour
                         levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
                         levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + "\n" + difficulties[j];
                         levelButton.GetComponent<Button>().onClick.AddListener(async () => {
-                            await levelLoader.LoadLevel(sceneName, difficulties[j]);
+                            await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[j]);
                         });
 
                         if (!isSelected && myEventSystem != null)

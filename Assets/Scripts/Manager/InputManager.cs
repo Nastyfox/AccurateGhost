@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -79,11 +80,13 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public void OnPause(InputAction.CallbackContext ctx)
+    public async void OnPause(InputAction.CallbackContext ctx)
     {
+        Debug.Log("Pause input received");
         if (ctx.performed)
         {
             playerInput.SwitchCurrentActionMap("PauseMode");
+            await OptionsMenu.optionsMenuInstance.SetPauseMenu();
         }
     }
 
@@ -92,7 +95,6 @@ public class InputManager : MonoBehaviour
         if (ctx.performed)
         {
             playerInput.SwitchCurrentActionMap("PlayMode");
-            GameManager.gameManagerInstance.PauseGame();
         }
     }
 }

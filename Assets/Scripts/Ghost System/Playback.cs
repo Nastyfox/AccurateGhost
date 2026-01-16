@@ -6,19 +6,32 @@ using UnityEngine.UIElements;
 
 public class Playback : MonoBehaviour
 {
+    public enum TriggerType
+    {
+        Jump,
+        Wall,
+        Land
+    }
+
     private List<PlaybackKeyFrame> playbackKeyFrames = new List<PlaybackKeyFrame>();
     private float playerTimer;
 
     [SerializeField] private GameObject target;
     private Animator targetAnimator;
+    private SpriteRenderer targetSpriteRenderer;
     private static readonly int IsMoving = Animator.StringToHash("IsMoving");
     private static readonly int Jump = Animator.StringToHash("Jump");
     private static readonly int Wall = Animator.StringToHash("Wall");
     private static readonly int Land = Animator.StringToHash("Land");
 
+    private bool pendingJump = false;
+    private bool pendingWall = false;
+    private bool pendingLand = false;
+
     [SerializeField] private GameObject ghostPrefab;
     private GameObject ghost;
     private Animator ghostAnimator;
+    private SpriteRenderer ghostSpriteRenderer;
 
     [Range(0f, 1f)]
     [SerializeField] private float timeBetweenKeyFrames;
@@ -37,7 +50,7 @@ public class Playback : MonoBehaviour
     {
         public float time;
         public Vector3 pos;
-        public Quaternion rot;
+        public bool flipXSprite;
         public bool isMovingAnimator;
         public bool jumpAnimator;
         public bool wallAnimator;
@@ -65,6 +78,7 @@ public class Playback : MonoBehaviour
         if (target != null)
         {
             targetAnimator = target.GetComponentInChildren<Animator>();
+            targetSpriteRenderer = target.GetComponentInChildren<SpriteRenderer>();
         }
     }
 
@@ -100,14 +114,18 @@ public class Playback : MonoBehaviour
             {
                 time = playerTimer,
                 pos = target.transform.position,
-                rot = target.transform.rotation,
+                flipXSprite = targetSpriteRenderer.flipX,
                 isMovingAnimator = targetAnimator.GetBool(IsMoving),
-                jumpAnimator = targetAnimator.GetBool(Jump),
-                wallAnimator = targetAnimator.GetBool(Wall),
-                landAnimator = targetAnimator.GetBool(Land)
+                jumpAnimator = pendingJump,
+                wallAnimator = pendingWall,
+                landAnimator = pendingLand
             };
 
             playbackKeyFrames.Add(frame);
+
+            pendingJump = false;
+            pendingWall = false;
+            pendingLand = false;
         }
     }
 
@@ -167,7 +185,7 @@ public class Playback : MonoBehaviour
         float abPercent = Mathf.InverseLerp(frameA.time, frameB.time, playTime);
 
         ghost.transform.position = Vector3.Lerp(frameA.pos, frameB.pos, abPercent);
-        ghost.transform.rotation = Quaternion.Slerp(frameA.rot, frameB.rot, abPercent);
+        ghostSpriteRenderer.flipX = frameA.flipXSprite;
         ghostAnimator.SetBool(IsMoving, frameA.isMovingAnimator);
         if (frameA.jumpAnimator)
         {
@@ -189,7 +207,7 @@ public class Playback : MonoBehaviour
 
         for (int i = 0; i < playbackKeyFrames.Count; i++)
         {
-            savedDatas += playbackKeyFrames[i].time.ToString() + "|" + SerializeVector3(playbackKeyFrames[i].pos) + "|" + SerializeQuarternion(playbackKeyFrames[i].rot) + "|" +
+            savedDatas += playbackKeyFrames[i].time.ToString() + "|" + SerializeVector3(playbackKeyFrames[i].pos) + "|" + playbackKeyFrames[i].flipXSprite + "|" +
                           playbackKeyFrames[i].isMovingAnimator + "|" + playbackKeyFrames[i].jumpAnimator + "|" + playbackKeyFrames[i].wallAnimator + "|" + playbackKeyFrames[i].landAnimator;
             if (i < playbackKeyFrames.Count - 1)
             {
@@ -226,8 +244,9 @@ public class Playback : MonoBehaviour
 
         playbackKeyFrames = GetPlaybackKeyFramesFromString(savedDatas);
 
-        ghost = Instantiate(ghostPrefab, playbackKeyFrames[0].pos, playbackKeyFrames[0].rot);
+        ghost = Instantiate(ghostPrefab, playbackKeyFrames[0].pos, Quaternion.identity);
         ghostAnimator = ghost.GetComponentInChildren<Animator>();
+        ghostSpriteRenderer = ghost.GetComponentInChildren<SpriteRenderer>();
         playerTimer = playbackKeyFrames[0].time;
         if (follow)
         {
@@ -259,7 +278,7 @@ public class Playback : MonoBehaviour
             {
                 string timeString = splitString.Split('|')[0];
                 string posString = splitString.Split('|')[1];
-                string rotString = splitString.Split('|')[2];
+                string flipXSpriteString = splitString.Split('|')[2];
                 string moveAnimatorString = splitString.Split('|')[3];
                 string jumpAnimatorString = splitString.Split('|')[4];
                 string wallAnimatorString = splitString.Split('|')[5];
@@ -267,7 +286,7 @@ public class Playback : MonoBehaviour
 
                 float _time = float.Parse(timeString);
                 Vector3 _pos = DeserializeVector3(posString);
-                Quaternion _rot = DeserializeQuaternion(rotString);
+                bool _flipXSprite = bool.Parse(flipXSpriteString);
                 bool _isMovingAnimator = bool.Parse(moveAnimatorString);
                 bool _jumpAnimator = bool.Parse(jumpAnimatorString);
                 bool _wallAnimator = bool.Parse(wallAnimatorString);
@@ -277,7 +296,7 @@ public class Playback : MonoBehaviour
                 {
                     time = _time,
                     pos = _pos,
-                    rot = _rot,
+                    flipXSprite = _flipXSprite,
                     isMovingAnimator = _isMovingAnimator,
                     jumpAnimator = _jumpAnimator,
                     wallAnimator = _wallAnimator,
@@ -374,5 +393,15 @@ public class Playback : MonoBehaviour
         }
 
         return sameValues;
+    }
+
+    public void NotifyTrigger(TriggerType type)
+    {
+        switch (type)
+        {
+            case TriggerType.Jump: pendingJump = true; break;
+            case TriggerType.Wall: pendingWall = true; break;
+            case TriggerType.Land: pendingLand = true; break;
+        }
     }
 }

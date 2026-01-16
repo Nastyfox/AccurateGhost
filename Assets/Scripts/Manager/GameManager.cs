@@ -45,9 +45,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private LevelDifficulty levelDifficulty;
 
-    [SerializeField] private bool saveRun;
-    [SerializeField] private bool displayGhostBefore;
-    [SerializeField] private bool displayGhostDuring;
+    private bool saveRun;
+    private bool displayGhostBefore;
+    private bool displayGhostDuring;
+    private int frameOffset;
 
     [SerializeField] private InputActionAsset inputAction;
     private InputActionMap playModeActionMap;
@@ -62,12 +63,9 @@ public class GameManager : MonoBehaviour
     private float time = 0f;
     private bool startTimer = false;
 
-    [Range(0, 100)]
-    [SerializeField] private int frameOffset;
-
     private string playerPseudo = "";
 
-    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject optionsMenu;
 
     private void OnEnable()
     {
@@ -204,19 +202,14 @@ public class GameManager : MonoBehaviour
         playback.SetIsPlaybacking(true);
     }
 
-    public void StartLevel(LevelDifficulty difficulty)
+    public void StartLevel()
     {
         playerPseudo = globalDataScriptableObject.pseudo;
         displayGhostBefore = globalDataScriptableObject.displayGhostBefore;
         displayGhostDuring = globalDataScriptableObject.displayGhostDuring;
         frameOffset = globalDataScriptableObject.frameOffset;
-
-        levelDifficulty = difficulty;
-
-        if (displayGhostDuring)
-        {
-            PlayerCollisions.StartEvent += () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
-        }
+        saveRun = globalDataScriptableObject.saveRun;
+        levelDifficulty = globalDataScriptableObject.levelDifficulty;
 
         ghostModeActionMap = inputAction.FindActionMap("GhostMode");
         playModeActionMap = inputAction.FindActionMap("PlayMode");
@@ -252,16 +245,16 @@ public class GameManager : MonoBehaviour
         {
             StartRun().Forget();
         }
+
+        if (displayGhostDuring)
+        {
+            PlayerCollisions.StartEvent += () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
+        }
     }
 
     public void ComparePlaybacks()
     {
         DisplayPlayback(ghostPlayback, true, false, 0, savedRun);
         DisplayPlayback(replayPlayback, false, false, 0, currentRun);
-    }
-
-    public void PauseGame()
-    {
-        pauseMenu.SetActive(true);
     }
 }
