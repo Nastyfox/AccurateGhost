@@ -15,13 +15,13 @@ public class ParticlesManager : MonoBehaviour
 {
     public static ParticlesManager particlesManagerInstance;
 
-    [SerializeField] private ParticleSystem landParticles;
-    [SerializeField] private ParticleSystem jumpParticles;
-    [SerializeField] private ParticleSystem moveParticles;
-    [SerializeField] private ParticleSystem wallSlideParticles;
-    [SerializeField] private ParticleSystem wallJumpParticles;
+    private ParticleSystem landParticles;
+    private ParticleSystem jumpParticles;
+    private ParticleSystem moveParticles;
+    private ParticleSystem wallSlideParticles;
+    private ParticleSystem wallJumpParticles;
     [SerializeField] private float moveParticlesOffsetX;
-    [SerializeField] private ParticleSystem speedParticles;
+    private ParticleSystem speedParticles;
     [SerializeField] private float speedParticlesOffsetX;
     [SerializeField] private float speedParticlesEmissionRotation;
     [SerializeField] private float speedParticlesSpeedFactor;
@@ -31,7 +31,7 @@ public class ParticlesManager : MonoBehaviour
 
     private float lastOffsetSign;
 
-    [SerializeField] private TrailRenderer dashTrail;
+    private TrailRenderer dashTrail;
     [SerializeField] private float dashTrailOffsetX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,6 +52,17 @@ public class ParticlesManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void SetPlayerParticles(ParticleSystem landParticles, ParticleSystem jumpParticles, ParticleSystem moveParticles, ParticleSystem wallSlideParticles, ParticleSystem wallJumpParticles, ParticleSystem speedParticles, TrailRenderer dashTrail)
+    {
+        this.landParticles = landParticles;
+        this.jumpParticles = jumpParticles;
+        this.moveParticles = moveParticles;
+        this.wallSlideParticles = wallSlideParticles;
+        this.wallJumpParticles = wallJumpParticles;
+        this.speedParticles = speedParticles;
+        this.dashTrail = dashTrail;
     }
 
     public void OffsetParticles(float signOffset)

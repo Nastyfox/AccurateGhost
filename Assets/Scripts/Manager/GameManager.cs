@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using System;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -56,7 +57,7 @@ public class GameManager : MonoBehaviour
 
     private string savedRun = "";
     private string currentRun = "";
-    [SerializeField] private RunDataScriptableObject runDataScriptableObject;
+    [SerializeField] private LevelDataScriptableObject levelDataScriptableObject;
 
     [SerializeField] GlobalDataScriptableObject globalDataScriptableObject;
 
@@ -65,10 +66,29 @@ public class GameManager : MonoBehaviour
 
     private string playerPseudo = "";
 
-    [SerializeField] private GameObject optionsMenu;
+    [SerializeField] private GameObject playerPrefab;
+    private GameObject player;
+    private Playback[] playbacks;
+
+    private CinemachineCamera cinemachineCamera;
+
+    private void SetLevel()
+    {
+        player = Instantiate(playerPrefab, levelDataScriptableObject.playerStartPosition, Quaternion.identity);
+        playbacks = FindObjectsByType<Playback>(FindObjectsSortMode.None);
+        foreach (Playback playback in playbacks)
+        {
+            playback.SetTarget(player);
+        }
+
+        cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
+        cinemachineCamera.Target.TrackingTarget = player.transform;
+    }
 
     private void OnEnable()
     {
+        SetLevel();
+
         PlayerCollisions.StartEvent += StartRecord;
         PlayerCollisions.EndEvent += UniTask.Action(StopRecord);
 
@@ -226,13 +246,13 @@ public class GameManager : MonoBehaviour
             switch (levelDifficulty)
             {
                 case LevelDifficulty.Easy:
-                    savedRun = runDataScriptableObject.easyRunData;
+                    savedRun = levelDataScriptableObject.easyRunData;
                     break;
                 case LevelDifficulty.Medium:
-                    savedRun = runDataScriptableObject.mediumRunData;
+                    savedRun = levelDataScriptableObject.mediumRunData;
                     break;
                 case LevelDifficulty.Hard:
-                    savedRun = runDataScriptableObject.hardRunData;
+                    savedRun = levelDataScriptableObject.hardRunData;
                     break;
             }
         }

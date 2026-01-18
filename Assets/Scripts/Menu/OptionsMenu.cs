@@ -12,7 +12,7 @@ public class OptionsMenu : MonoBehaviour
 {
     public static OptionsMenu optionsMenuInstance;
 
-    [SerializeField] private List<GameObject> difficultiesGO;
+    [SerializeField] private GameObject menuButtonPrefab;
     [SerializeField] private GameObject difficultyList;
     [SerializeField] private TextMeshProUGUI ghostDelayValueText;
 
@@ -56,7 +56,7 @@ public class OptionsMenu : MonoBehaviour
         {
             resultsModesDropdown.options.Add(new TMP_Dropdown.OptionData { text = resultsModes[i].ToString() });
         }
-            
+
         SetUIInitialValues();
     }
 
@@ -83,7 +83,7 @@ public class OptionsMenu : MonoBehaviour
         globalDataScriptableObject.displayGhostDuring = value;
     }
 
-    public void ChangeGhostDelayText(float sliderValue)
+    public void SetGhostDelay(float sliderValue)
     {
         globalDataScriptableObject.frameOffset = (int)sliderValue;
         ghostDelayValueText.text = "Ghost Delay : " + globalDataScriptableObject.frameOffset.ToString() + " frames";
@@ -125,6 +125,7 @@ public class OptionsMenu : MonoBehaviour
         GameObject difficultyGO = Instantiate(difficultyObject, difficultyList.transform);
         Button difficultyButton = difficultyGO.GetComponent<Button>();
         difficultyButton.onClick.AddListener(() => SelectDifficulty(difficulty));
+        difficultyGO.GetComponentInChildren<TextMeshProUGUI>().text = difficulty.ToString();
     }
 
     public void SetOptionsMenu()
@@ -152,7 +153,7 @@ public class OptionsMenu : MonoBehaviour
 
         GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
 
-        InstantiateDifficultyObject(difficultiesGO[0], GameManager.LevelDifficulty.Easy);
+        InstantiateDifficultyObject(menuButtonPrefab, GameManager.LevelDifficulty.Easy);
 
         for (int i = 1; i < difficulties.Length; i++)
         {
@@ -164,15 +165,21 @@ public class OptionsMenu : MonoBehaviour
 
             if (playerEntry != null)
             {
-                InstantiateDifficultyObject(difficultiesGO[i], currentLevelDifficulty);
+                InstantiateDifficultyObject(menuButtonPrefab, currentLevelDifficulty);
             }
         }
 
-        replayButton.onClick.AddListener(async () => {
+        replayButton.onClick.AddListener(async () =>
+        {
             optionsPanel.SetActive(false);
             await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
         });
 
         await MenuManager.menuManagerInstance.DisplayMenu(optionsPanel, false);
+    }
+
+    public async UniTask ResumeFromPauseMenu()
+    {
+        await MenuManager.menuManagerInstance.HideMenu(optionsPanel, false);
     }
 }

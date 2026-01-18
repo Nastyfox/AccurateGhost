@@ -11,6 +11,8 @@ public class LevelsListFiller : MonoBehaviour
     [SerializeField] private GameObject levelButtonPrefab;
     [SerializeField] private GameObject levelGrid;
 
+    [SerializeField] private GameObject backButton;
+
     private bool isSelected = false;
 
     private async UniTaskVoid Start()
@@ -44,6 +46,7 @@ public class LevelsListFiller : MonoBehaviour
                 levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
                 levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + "\n" + difficulties[0];
                 levelButton.GetComponent<Button>().onClick.AddListener(async () => {
+                    backButton.SetActive(false);
                     await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[0]);
                 });
 
@@ -79,11 +82,5 @@ public class LevelsListFiller : MonoBehaviour
                 }
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

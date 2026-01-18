@@ -23,7 +23,7 @@ public class PlayerCollisions : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "StartFlag")
+        if (collision.tag == "StartFlag")
         {
             if (firstStart)
             {

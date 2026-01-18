@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Playback : MonoBehaviour
 {
@@ -70,6 +69,11 @@ public class Playback : MonoBehaviour
     public void SetIsPlaybacking(bool value)
     {
         isPlaybacking = value;
+    }
+
+    public void SetTarget(GameObject playbackTarget)
+    {
+        target = playbackTarget;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

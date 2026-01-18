@@ -58,27 +58,32 @@ public class MenuManager : MonoBehaviour
 
     public async UniTask DisplayMenu(GameObject menuGO, bool mainMenu)
     {
+        backButtonGO.SetActive(true);
+        backButtonGO.GetComponent<Button>().onClick.RemoveAllListeners();
+        backButtonGO.GetComponent<Button>().onClick.AddListener(async () =>
+        {
+            await HideMenu(menuGO, mainMenu);
+        });
+
         menuGO.SetActive(true);
+
         if (mainMenu)
         {
             mainMenuGO.SetActive(false);
         }
-        await Tween.UIAnchoredPositionX(menuGO.GetComponent<RectTransform>(), displayAnimationSettings);
-        if(mainMenu)
-        {
-            backButtonGO.SetActive(true);
-            backButtonGO.GetComponent<Button>().onClick.AddListener(async () => {
-                await HideMenu(menuGO);
-            });
-        }
 
+        await Tween.UIAnchoredPositionX(menuGO.GetComponent<RectTransform>(), displayAnimationSettings);
     }
 
-    public async UniTask HideMenu(GameObject menuGO)
+    public async UniTask HideMenu(GameObject menuGO, bool mainMenu)
     {
-        backButtonGO.SetActive(false);
         await Tween.UIAnchoredPositionX(menuGO.GetComponent<RectTransform>(), hideAnimationSettings);
         menuGO.SetActive(false);
-        mainMenuGO.SetActive(true);
+        backButtonGO.SetActive(false);
+
+        if (mainMenu)
+        {
+            mainMenuGO.SetActive(true);
+        }
     }
 }

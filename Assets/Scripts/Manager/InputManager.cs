@@ -82,7 +82,6 @@ public class InputManager : MonoBehaviour
 
     public async void OnPause(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Pause input received");
         if (ctx.performed)
         {
             playerInput.SwitchCurrentActionMap("PauseMode");
@@ -90,11 +89,12 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public void OnResume(InputAction.CallbackContext ctx)
+    public async void OnResume(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)
         {
             playerInput.SwitchCurrentActionMap("PlayMode");
+            await OptionsMenu.optionsMenuInstance.ResumeFromPauseMenu();
         }
     }
 }
