@@ -29,14 +29,16 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private async UniTaskVoid Update()
     {
         if(jumpPressed)
         {
+            await UniTask.Yield();
             jumpPressed = false;
         }
         if(dashPressed)
         {
+            await UniTask.Yield();
             dashPressed = false;
         }
     }
@@ -84,8 +86,9 @@ public class InputManager : MonoBehaviour
     {
         if (ctx.performed)
         {
-            playerInput.SwitchCurrentActionMap("PauseMode");
-            await OptionsMenu.optionsMenuInstance.SetPauseMenu();
+            Time.timeScale = 0f;
+            playerInput.SwitchCurrentActionMap("MenuMode");
+            await OptionsMenu.optionsMenuInstance.PauseFromGame();
         }
     }
 
@@ -93,8 +96,9 @@ public class InputManager : MonoBehaviour
     {
         if (ctx.performed)
         {
+            Time.timeScale = 1f;
             playerInput.SwitchCurrentActionMap("PlayMode");
-            await OptionsMenu.optionsMenuInstance.ResumeFromPauseMenu();
+            await OptionsMenu.optionsMenuInstance.ResumeFromPause();
         }
     }
 }

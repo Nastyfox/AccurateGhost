@@ -54,7 +54,6 @@ public class Leaderboard : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () =>
         {
             playerID = AuthenticationService.Instance.PlayerId;
-            Debug.Log("Signed in as: " + AuthenticationService.Instance.PlayerId);
         };
         AuthenticationService.Instance.SignInFailed += s =>
         {

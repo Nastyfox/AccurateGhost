@@ -40,8 +40,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Playback ghostPlayback;
     [SerializeField] private Playback replayPlayback;
 
-    [SerializeField] private GameObject replayButton;
-
     private int remainingTimeBeforeStart;
 
     [SerializeField] private LevelDifficulty levelDifficulty;
@@ -53,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private InputActionAsset inputAction;
     private InputActionMap playModeActionMap;
-    private InputActionMap ghostModeActionMap;
+    private InputActionMap menuModeActionMap;
 
     private string savedRun = "";
     private string currentRun = "";
@@ -167,14 +165,14 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            DisablePlayerControls();
+
             float score = savePlayback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
             startTimer = false;
             string levelName = SceneManager.GetActiveScene().name + "_" + levelDifficulty.ToString();
 
             int scorePercent = (int)(score * 100);
-            string scoreText = scorePercent.ToString() + "%";
-            textMeshProUGUI.text = scoreText;
-            textMeshProUGUI.enabled = true;
+            await ResultsMenu.resultsMenuInstance.ResultsLevel(scorePercent);
 
             int timeInSecondsInt = (int)time;  //We don't care about fractions of a second, so easy to drop them by just converting to an int
             int minutes = timeInSecondsInt / 60;  //Get total minutes
@@ -183,9 +181,6 @@ public class GameManager : MonoBehaviour
             string timeText = minutes.ToString("D2") + ":" + seconds.ToString("D2") + ":" + milliSeconds.ToString("D2");
             
             await Leaderboard.leaderboardInstance.AddScoreWithMetadata(levelName, scorePercent, timeText, playerPseudo);
-
-            DisablePlayerControls();
-            replayButton.SetActive(true);
         }
     }
 
@@ -196,14 +191,14 @@ public class GameManager : MonoBehaviour
 
     private void EnablePlayerControls()
     {
-        ghostModeActionMap.Disable();
+        menuModeActionMap.Disable();
         playModeActionMap.Enable();
     }
 
     private void DisablePlayerControls()
     {
         playModeActionMap.Disable();
-        ghostModeActionMap.Enable();
+        menuModeActionMap.Enable();
     }
 
     private async UniTaskVoid StartRun()
@@ -231,12 +226,12 @@ public class GameManager : MonoBehaviour
         saveRun = globalDataScriptableObject.saveRun;
         levelDifficulty = globalDataScriptableObject.levelDifficulty;
 
-        ghostModeActionMap = inputAction.FindActionMap("GhostMode");
+        menuModeActionMap = inputAction.FindActionMap("MenuMode");
         playModeActionMap = inputAction.FindActionMap("PlayMode");
 
         if (!saveRun)
         {
-            ghostModeActionMap.Enable();
+            menuModeActionMap.Enable();
             playModeActionMap.Disable();
         }
 

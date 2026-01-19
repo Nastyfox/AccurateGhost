@@ -2,14 +2,31 @@ using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
+using static MenuManager;
 
 public class MenuManager : MonoBehaviour
 {
+    public enum AnimationType
+    {
+        Position,
+        Scale
+    }
+
     public static MenuManager menuManagerInstance;
 
-    [SerializeField] TweenSettings<float> displayAnimationSettings;
-    [SerializeField] TweenSettings<float> hideAnimationSettings;
+    [Header("Position Animation Settings")]
+    [SerializeField] TweenSettings<float> positionDisplayAnimationSettings;
+    [SerializeField] TweenSettings<float> positionHideAnimationSettings;
 
+    [Header("Scale Animation Settings")]
+    [SerializeField] TweenSettings<float> scaleDisplayAnimationSettings;
+    [SerializeField] TweenSettings<float> scaleHideAnimationSettings;
+
+    [Header("Back Button Animation Settings")]
+    [SerializeField] TweenSettings<float> backButtonDisplaySettings;
+    [SerializeField] TweenSettings<float> backButtonHideSettings;
+
+    [Header("Menu elements")]
     [SerializeField] Button levelsButton;
     [SerializeField] GameObject levelGrid;
 
@@ -39,30 +56,30 @@ public class MenuManager : MonoBehaviour
         }
 
         levelsButton.onClick.AddListener(async () => {
-            await DisplayMenu(levelGrid, true);
+            await DisplayMenu(levelGrid, true, AnimationType.Position);
         });
 
         leaderboardButton.onClick.AddListener(async () => {
-            await DisplayMenu(leaderboardPanel, true);
+            await DisplayMenu(leaderboardPanel, true, AnimationType.Position);
         });
 
         pseudoButton.onClick.AddListener(async () => {
-            await DisplayMenu(pseudoPanel, true);
+            await DisplayMenu(pseudoPanel, true, AnimationType.Position);
         });
 
         optionsButton.onClick.AddListener(async () => {
             OptionsMenu.optionsMenuInstance.SetOptionsMenu();
-            await DisplayMenu(optionsPanel, true);
+            await DisplayMenu(optionsPanel, true, AnimationType.Position);
         });
     }
 
-    public async UniTask DisplayMenu(GameObject menuGO, bool mainMenu)
+    public async UniTask DisplayMenu(GameObject menuGO, bool mainMenu, AnimationType animationType)
     {
         backButtonGO.SetActive(true);
         backButtonGO.GetComponent<Button>().onClick.RemoveAllListeners();
         backButtonGO.GetComponent<Button>().onClick.AddListener(async () =>
         {
-            await HideMenu(menuGO, mainMenu);
+            await HideMenu(menuGO, mainMenu, animationType);
         });
 
         menuGO.SetActive(true);
@@ -72,14 +89,36 @@ public class MenuManager : MonoBehaviour
             mainMenuGO.SetActive(false);
         }
 
-        await Tween.UIAnchoredPositionX(menuGO.GetComponent<RectTransform>(), displayAnimationSettings);
+        backButtonDisplaySettings.settings.useUnscaledTime = positionDisplayAnimationSettings.settings.useUnscaledTime;
+
+        switch (animationType)
+        {
+            case AnimationType.Position:
+                await Sequence.Create(useUnscaledTime: true)
+                    .Group(Tween.UIAnchoredPositionY(menuGO.GetComponent<RectTransform>(), positionDisplayAnimationSettings))
+                    .Group(Tween.UIAnchoredPositionY(backButtonGO.GetComponent<RectTransform>(), backButtonDisplaySettings));
+                break;
+            case AnimationType.Scale:
+                await Tween.Scale(menuGO.GetComponent<RectTransform>(), scaleDisplayAnimationSettings);
+                break;
+        }
     }
 
-    public async UniTask HideMenu(GameObject menuGO, bool mainMenu)
+    public async UniTask HideMenu(GameObject menuGO, bool mainMenu, AnimationType animationType)
     {
-        await Tween.UIAnchoredPositionX(menuGO.GetComponent<RectTransform>(), hideAnimationSettings);
+        switch(animationType)
+        {
+            case AnimationType.Position:
+                await Sequence.Create(useUnscaledTime: true)
+                    .Group(Tween.UIAnchoredPositionY(menuGO.GetComponent<RectTransform>(), positionHideAnimationSettings))
+                    .Group(Tween.UIAnchoredPositionY(backButtonGO.GetComponent<RectTransform>(), backButtonHideSettings));
+                break;
+            case AnimationType.Scale:
+                await Tween.Scale(menuGO.GetComponent<RectTransform>(), scaleHideAnimationSettings);
+                break;
+        }
+
         menuGO.SetActive(false);
-        backButtonGO.SetActive(false);
 
         if (mainMenu)
         {

@@ -56,6 +56,8 @@ public class LevelLoader : MonoBehaviour
             await UniTask.Yield();
         }
 
+        await OptionsMenu.optionsMenuInstance.SetPauseMenu();
+
         await Tween.Alpha(crossFadeCanvasGroup, fadeOutAnimationSettings);
 
         crossFadeCanvasGroup.gameObject.SetActive(false);

@@ -37,6 +37,7 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] private TMP_Dropdown resultsModesDropdown;
 
     [SerializeField] private GameObject optionsPanel;
+    [SerializeField] private GameObject backButton;
 
     private void Start()
     {
@@ -137,9 +138,11 @@ public class OptionsMenu : MonoBehaviour
 
     public async UniTask SetPauseMenu()
     {
+        backButton.transform.SetParent(optionsPanel.transform);
         replayButton.gameObject.SetActive(true);
         panelText.text = "Pause";
         difficultyList.gameObject.SetActive(true);
+        optionsPanel.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         while (!Leaderboard.leaderboardInstance.GetIsInitialized())
         {
@@ -174,12 +177,15 @@ public class OptionsMenu : MonoBehaviour
             optionsPanel.SetActive(false);
             await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
         });
-
-        await MenuManager.menuManagerInstance.DisplayMenu(optionsPanel, false);
     }
 
-    public async UniTask ResumeFromPauseMenu()
+    public async UniTask PauseFromGame()
     {
-        await MenuManager.menuManagerInstance.HideMenu(optionsPanel, false);
+        await MenuManager.menuManagerInstance.DisplayMenu(optionsPanel, false, MenuManager.AnimationType.Scale);
+    }
+
+    public async UniTask ResumeFromPause()
+    {
+        await MenuManager.menuManagerInstance.HideMenu(optionsPanel, false, MenuManager.AnimationType.Scale);
     }
 }
