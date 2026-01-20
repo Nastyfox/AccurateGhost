@@ -45,6 +45,7 @@ public class Playback : MonoBehaviour
     private int frameOffset = 0;
 
     [SerializeField] private CinemachineCamera virtualCamera;
+
     public struct PlaybackKeyFrame
     {
         public float time;
@@ -86,9 +87,15 @@ public class Playback : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+
+    }
+
+    private void FixedUpdate()
+    {
+        playerTimer += Time.fixedDeltaTime;
+
         if (isPlaybacking && !isPlaybackDone)
         {
             PlaybackUpdate(playerTimer);
@@ -97,16 +104,16 @@ public class Playback : MonoBehaviour
         {
             Destroy(ghost);
         }
-    }
-
-    private void FixedUpdate()
-    {
-        playerTimer += Time.fixedDeltaTime;
 
         if (isRecording)
         {
             Record();
         }
+    }
+
+    public bool IsPlaybackDone()
+    {
+        return isPlaybackDone;
     }
 
 
@@ -145,7 +152,7 @@ public class Playback : MonoBehaviour
         while (true)
         {
             // t lies to left
-            if (playTime <= playbackKeyFrames[i].time)
+            if (playTime <= playbackKeyFrames[i + frameOffset].time)
             {
                 nextIndex = i;
             }
@@ -174,10 +181,7 @@ public class Playback : MonoBehaviour
         {
             isPlaybackDone = true;
             isPlaybacking = false;
-            if (target != null)
-            {
-                virtualCamera.Follow = target.transform;
-            }
+
             if(startRunAfterPlayback)
             {
                 playbackDoneEvent?.Invoke();
@@ -254,7 +258,7 @@ public class Playback : MonoBehaviour
         playerTimer = playbackKeyFrames[0].time;
         if (follow)
         {
-            virtualCamera.Follow = ghost.transform;
+            virtualCamera.Target.TrackingTarget = ghost.transform;
         }
         startRunAfterPlayback = startRun;
         this.frameOffset = frameOffset;

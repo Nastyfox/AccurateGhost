@@ -56,6 +56,8 @@ public class LevelLoader : MonoBehaviour
             await UniTask.Yield();
         }
 
+        GameManager.gameManagerInstance.SetLevel();
+
         await OptionsMenu.optionsMenuInstance.SetPauseMenu();
 
         await Tween.Alpha(crossFadeCanvasGroup, fadeOutAnimationSettings);
@@ -63,7 +65,7 @@ public class LevelLoader : MonoBehaviour
         crossFadeCanvasGroup.gameObject.SetActive(false);
 
         globalDataScriptableObject.levelDifficulty = difficulty;
-        GameManager.gameManagerInstance.StartLevel();
+        await GameManager.gameManagerInstance.StartLevel();
     }
 
     public void QuitGame()

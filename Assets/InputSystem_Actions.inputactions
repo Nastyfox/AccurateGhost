@@ -236,19 +236,19 @@
             "id": "e5c9efdf-59e9-4020-8b23-07c636969f03",
             "actions": [
                 {
-                    "name": "Resume",
-                    "type": "Button",
-                    "id": "25eab4ba-14ca-41bd-a781-2e291622d68d",
-                    "expectedControlType": "",
+                    "name": "TrackedDeviceOrientation",
+                    "type": "PassThrough",
+                    "id": "89a2082d-9beb-4f43-9f87-98214b89d60e",
+                    "expectedControlType": "Quaternion",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TrackedDeviceOrientation",
-                    "type": "PassThrough",
-                    "id": "89a2082d-9beb-4f43-9f87-98214b89d60e",
-                    "expectedControlType": "Quaternion",
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "a961869d-ba17-4f27-b9e6-cda5c6ff49fe",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -338,34 +338,34 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "c6c2c0f1-9351-4fd9-96d3-1c6d3d53a962",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Resume",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "266c4619-5ef4-4252-9c06-4fe35c784fa6",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Resume",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "1cc03fd4-5d05-4019-9a4d-de64b628ff23",
                     "path": "<XRController>/deviceRotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44536f2b-8bd9-46de-b99c-a3c75feaa72f",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f87577d-80e7-458e-81f4-3809618a3da7",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

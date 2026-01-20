@@ -113,19 +113,19 @@ public class OptionsMenu : MonoBehaviour
         globalDataScriptableObject.resultsMode = (GameManager.CompareMode)modeIndex;
     }
 
-    private void SelectDifficulty(GameManager.LevelDifficulty difficulty)
+    private async UniTask SelectDifficulty(GameManager.LevelDifficulty difficulty)
     {
         string pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
         optionsPanel.SetActive(false);
         globalDataScriptableObject.levelDifficulty = difficulty;
-        GameManager.gameManagerInstance.StartLevel();
+        await GameManager.gameManagerInstance.StartLevel();
     }
 
     private void InstantiateDifficultyObject(GameObject difficultyObject, GameManager.LevelDifficulty difficulty)
     {
         GameObject difficultyGO = Instantiate(difficultyObject, difficultyList.transform);
         Button difficultyButton = difficultyGO.GetComponent<Button>();
-        difficultyButton.onClick.AddListener(() => SelectDifficulty(difficulty));
+        difficultyButton.onClick.AddListener(async () => await SelectDifficulty(difficulty));
         difficultyGO.GetComponentInChildren<TextMeshProUGUI>().text = difficulty.ToString();
     }
 
@@ -174,6 +174,7 @@ public class OptionsMenu : MonoBehaviour
 
         replayButton.onClick.AddListener(async () =>
         {
+            Time.timeScale = 1f;
             optionsPanel.SetActive(false);
             await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
         });

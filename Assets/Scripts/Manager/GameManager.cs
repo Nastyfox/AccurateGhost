@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using System;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -49,9 +50,7 @@ public class GameManager : MonoBehaviour
     private bool displayGhostDuring;
     private int frameOffset;
 
-    [SerializeField] private InputActionAsset inputAction;
-    private InputActionMap playModeActionMap;
-    private InputActionMap menuModeActionMap;
+    [SerializeField] private PlayerInput playerInput;
 
     private string savedRun = "";
     private string currentRun = "";
@@ -69,10 +68,17 @@ public class GameManager : MonoBehaviour
     private Playback[] playbacks;
 
     private CinemachineCamera cinemachineCamera;
+    private bool isCameraFollowingGhost = false;
 
-    private void SetLevel()
+    public bool GetIsCameraFollowingGhost()
+    {
+        return isCameraFollowingGhost;
+    }
+
+    public void SetLevel()
     {
         player = Instantiate(playerPrefab, levelDataScriptableObject.playerStartPosition, Quaternion.identity);
+        ResultsMenu.resultsMenuInstance.SetPlayer(player);
         playbacks = FindObjectsByType<Playback>(FindObjectsSortMode.None);
         foreach (Playback playback in playbacks)
         {
@@ -85,8 +91,6 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        SetLevel();
-
         PlayerCollisions.StartEvent += StartRecord;
         PlayerCollisions.EndEvent += UniTask.Action(StopRecord);
 
@@ -117,7 +121,8 @@ public class GameManager : MonoBehaviour
         PlayerCollisions.EndEvent -= UniTask.Action(StopRecord);
         if (displayGhostDuring)
         {
-            PlayerCollisions.StartEvent -= () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
+            isCameraFollowingGhost = false;
+            PlayerCollisions.StartEvent -= async () => await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun);
         }
 
         Playback.playbackDoneEvent -= UniTask.Action(StartRun);
@@ -191,14 +196,13 @@ public class GameManager : MonoBehaviour
 
     private void EnablePlayerControls()
     {
-        menuModeActionMap.Disable();
-        playModeActionMap.Enable();
+        playerInput.SwitchCurrentActionMap("PlayMode");
     }
 
     private void DisablePlayerControls()
     {
-        playModeActionMap.Disable();
-        menuModeActionMap.Enable();
+        playerInput.SwitchCurrentActionMap("MenuMode");
+
     }
 
     private async UniTaskVoid StartRun()
@@ -211,13 +215,25 @@ public class GameManager : MonoBehaviour
         textMeshProUGUI.enabled = false;
     }
 
-    private void DisplayPlayback(Playback playback, bool follow, bool startRun, int frameOffset, string run)
+    private async UniTask DisplayPlayback(Playback playback, bool follow, bool startRun, int frameOffset, string run)
     {
         playback.SetGhostPlayback(follow, startRun, frameOffset, run);
         playback.SetIsPlaybacking(true);
+
+        while (!playback.IsPlaybackDone())
+        {
+            await UniTask.Yield();
+        }
     }
 
-    public void StartLevel()
+    public async UniTask RewatchRun()
+    {
+        DisablePlayerControls();
+        isCameraFollowingGhost = true;
+        await (DisplayPlayback(ghostPlayback, false, false, 0, savedRun), DisplayPlayback(replayPlayback, true, true, 0, currentRun));
+    }
+
+    public async UniTask StartLevel()
     {
         playerPseudo = globalDataScriptableObject.pseudo;
         displayGhostBefore = globalDataScriptableObject.displayGhostBefore;
@@ -226,13 +242,9 @@ public class GameManager : MonoBehaviour
         saveRun = globalDataScriptableObject.saveRun;
         levelDifficulty = globalDataScriptableObject.levelDifficulty;
 
-        menuModeActionMap = inputAction.FindActionMap("MenuMode");
-        playModeActionMap = inputAction.FindActionMap("PlayMode");
-
         if (!saveRun)
         {
-            menuModeActionMap.Enable();
-            playModeActionMap.Disable();
+            DisablePlayerControls();
         }
 
         savedRun = runSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
@@ -254,7 +266,9 @@ public class GameManager : MonoBehaviour
 
         if (displayGhostBefore)
         {
-            DisplayPlayback(ghostPlayback, true, true, 0, savedRun);
+            isCameraFollowingGhost = true;
+            await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, true, 0, savedRun);
+            cinemachineCamera.Target.TrackingTarget = player.transform;
         }
         else
         {
@@ -263,13 +277,8 @@ public class GameManager : MonoBehaviour
 
         if (displayGhostDuring)
         {
-            PlayerCollisions.StartEvent += () => DisplayPlayback(ghostPlayback, false, false, frameOffset, savedRun);
+            isCameraFollowingGhost = false;
+            PlayerCollisions.StartEvent += async () => await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun);
         }
-    }
-
-    public void ComparePlaybacks()
-    {
-        DisplayPlayback(ghostPlayback, true, false, 0, savedRun);
-        DisplayPlayback(replayPlayback, false, false, 0, currentRun);
     }
 }

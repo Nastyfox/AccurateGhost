@@ -14,6 +14,9 @@ public class InputManager : MonoBehaviour
     public static bool runHeld;
     public static bool dashPressed;
 
+    public static bool isGamePaused;
+
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -86,19 +89,22 @@ public class InputManager : MonoBehaviour
     {
         if (ctx.performed)
         {
-            Time.timeScale = 0f;
-            playerInput.SwitchCurrentActionMap("MenuMode");
-            await OptionsMenu.optionsMenuInstance.PauseFromGame();
-        }
-    }
+            if(!isGamePaused)
+            {
+                isGamePaused = true;
 
-    public async void OnResume(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed)
-        {
-            Time.timeScale = 1f;
-            playerInput.SwitchCurrentActionMap("PlayMode");
-            await OptionsMenu.optionsMenuInstance.ResumeFromPause();
+                Time.timeScale = 0f;
+                playerInput.SwitchCurrentActionMap("MenuMode");
+                await OptionsMenu.optionsMenuInstance.PauseFromGame();
+            }
+            else
+            {
+                isGamePaused = false;
+
+                Time.timeScale = 1f;
+                playerInput.SwitchCurrentActionMap("PlayMode");
+                await OptionsMenu.optionsMenuInstance.ResumeFromPause();
+            }
         }
     }
 }
