@@ -23,8 +23,15 @@ public class MenuManager : MonoBehaviour
     [SerializeField] TweenSettings<float> scaleHideAnimationSettings;
 
     [Header("Back Button Animation Settings")]
-    [SerializeField] TweenSettings<float> backButtonDisplaySettings;
-    [SerializeField] TweenSettings<float> backButtonHideSettings;
+    [SerializeField] TweenSettings<float> backButtonDisplayAnimationSettings;
+    [SerializeField] TweenSettings<float> backButtonHideAnimationSettings;
+
+    [Header("Pseudo Button Animation Settings")]
+    [SerializeField] TweenSettings<float> pseudoScaleButtonAnimationSettings;
+    private Tween pseudoScaleButtonTween;
+
+    [Header("Countdown Animation Settings")]
+    [SerializeField] TweenSettings<float> countdownScaleAnimationSettings;
 
     [Header("Menu elements")]
     [SerializeField] Button levelsButton;
@@ -89,14 +96,14 @@ public class MenuManager : MonoBehaviour
             mainMenuGO.SetActive(false);
         }
 
-        backButtonDisplaySettings.settings.useUnscaledTime = positionDisplayAnimationSettings.settings.useUnscaledTime;
+        backButtonDisplayAnimationSettings.settings.useUnscaledTime = positionDisplayAnimationSettings.settings.useUnscaledTime;
 
         switch (animationType)
         {
             case AnimationType.Position:
                 await Sequence.Create(useUnscaledTime: true)
                     .Group(Tween.UIAnchoredPositionY(menuGO.GetComponent<RectTransform>(), positionDisplayAnimationSettings))
-                    .Group(Tween.UIAnchoredPositionY(backButtonGO.GetComponent<RectTransform>(), backButtonDisplaySettings));
+                    .Group(Tween.UIAnchoredPositionY(backButtonGO.GetComponent<RectTransform>(), backButtonDisplayAnimationSettings));
                 break;
             case AnimationType.Scale:
                 await Tween.Scale(menuGO.GetComponent<RectTransform>(), scaleDisplayAnimationSettings);
@@ -106,12 +113,14 @@ public class MenuManager : MonoBehaviour
 
     public async UniTask HideMenu(GameObject menuGO, bool mainMenu, AnimationType animationType)
     {
+        Time.timeScale = 1f;
+
         switch(animationType)
         {
             case AnimationType.Position:
                 await Sequence.Create(useUnscaledTime: true)
                     .Group(Tween.UIAnchoredPositionY(menuGO.GetComponent<RectTransform>(), positionHideAnimationSettings))
-                    .Group(Tween.UIAnchoredPositionY(backButtonGO.GetComponent<RectTransform>(), backButtonHideSettings));
+                    .Group(Tween.UIAnchoredPositionY(backButtonGO.GetComponent<RectTransform>(), backButtonHideAnimationSettings));
                 break;
             case AnimationType.Scale:
                 await Tween.Scale(menuGO.GetComponent<RectTransform>(), scaleHideAnimationSettings);
@@ -124,5 +133,24 @@ public class MenuManager : MonoBehaviour
         {
             mainMenuGO.SetActive(true);
         }
+    }
+
+    public void PseudoScaleButton(GameObject menuGO)
+    {
+        pseudoScaleButtonTween = Tween.Scale(menuGO.GetComponent<RectTransform>(), pseudoScaleButtonAnimationSettings);
+    }
+
+    public void StopPseudoScaleButton()
+    {
+        if(pseudoScaleButtonTween.isAlive)
+        {
+            pseudoScaleButtonTween.Stop();
+        }
+    }
+
+    public async UniTask CountdownScaleButton(GameObject menuGO, float duration)
+    {
+        countdownScaleAnimationSettings.settings.duration = duration;
+        await Tween.Scale(menuGO.GetComponent<RectTransform>(), countdownScaleAnimationSettings);
     }
 }

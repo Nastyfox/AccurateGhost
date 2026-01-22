@@ -11,10 +11,7 @@ public class PseudoMenu : MonoBehaviour
     [SerializeField] private TMP_InputField pseudoInputField;
 
     [SerializeField] private GameObject pseudoButton;
-    [SerializeField] private float animationScaleFactor;
-    [SerializeField] private float animationScaleDuration;
     private Tween buttonScaleAnimation;
-    private Vector3 pseudoButtonStartLocalScale;
 
     private string pseudo = "";
 
@@ -23,8 +20,6 @@ public class PseudoMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        pseudoButtonStartLocalScale = pseudoButton.transform.localScale;
-
         pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
 
         if (!string.IsNullOrEmpty(pseudo))
@@ -34,7 +29,7 @@ public class PseudoMenu : MonoBehaviour
         }
         else
         {
-            buttonScaleAnimation = Tween.Scale(pseudoButton.transform, endValue: pseudoButton.transform.localScale * animationScaleFactor, duration: animationScaleDuration, ease: Ease.InOutSine, cycles: -1, cycleMode: CycleMode.Yoyo);
+            MenuManager.menuManagerInstance.PseudoScaleButton(pseudoButton);
         }
     }
 
@@ -43,8 +38,7 @@ public class PseudoMenu : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(pseudo))
         {
-            buttonScaleAnimation.Stop();
-            pseudoButton.transform.localScale = pseudoButtonStartLocalScale;
+            MenuManager.menuManagerInstance.StopPseudoScaleButton();
         }
     }
 

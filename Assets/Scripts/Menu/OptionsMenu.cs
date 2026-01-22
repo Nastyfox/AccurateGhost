@@ -117,8 +117,7 @@ public class OptionsMenu : MonoBehaviour
     {
         string pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
         optionsPanel.SetActive(false);
-        globalDataScriptableObject.levelDifficulty = difficulty;
-        await GameManager.gameManagerInstance.StartLevel();
+        await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, difficulty);
     }
 
     private void InstantiateDifficultyObject(GameObject difficultyObject, GameManager.LevelDifficulty difficulty)

@@ -44,7 +44,7 @@ public class Playback : MonoBehaviour
 
     private int frameOffset = 0;
 
-    [SerializeField] private CinemachineCamera virtualCamera;
+    private CinemachineCamera virtualCamera;
 
     public struct PlaybackKeyFrame
     {
@@ -72,23 +72,17 @@ public class Playback : MonoBehaviour
         isPlaybacking = value;
     }
 
+    public void SetPlayback(GameObject playbackTarget, CinemachineCamera virtualCam)
+    {
+        SetTarget(playbackTarget);
+        virtualCamera = virtualCam;
+    }
+
     public void SetTarget(GameObject playbackTarget)
     {
         target = playbackTarget;
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        if (target != null)
-        {
-            targetAnimator = target.GetComponentInChildren<Animator>();
-            targetSpriteRenderer = target.GetComponentInChildren<SpriteRenderer>();
-        }
-    }
-
-    private void Update()
-    {
+        targetAnimator = target.GetComponentInChildren<Animator>();
+        targetSpriteRenderer = target.GetComponentInChildren<SpriteRenderer>();
 
     }
 
@@ -151,8 +145,15 @@ public class Playback : MonoBehaviour
 
         while (true)
         {
+            int indexWithOffset = i + frameOffset;
+
+            if(indexWithOffset >= playbackKeyFrames.Count)
+            {
+                indexWithOffset = playbackKeyFrames.Count - 1;
+            }
+
             // t lies to left
-            if (playTime <= playbackKeyFrames[i + frameOffset].time)
+            if (playTime <= playbackKeyFrames[indexWithOffset].time)
             {
                 nextIndex = i;
             }
@@ -177,7 +178,7 @@ public class Playback : MonoBehaviour
             }
         }
 
-        if ((nextIndex + frameOffset) == playbackKeyFrames.Count - 1)
+        if ((nextIndex + frameOffset) >= playbackKeyFrames.Count - 1)
         {
             isPlaybackDone = true;
             isPlaybacking = false;

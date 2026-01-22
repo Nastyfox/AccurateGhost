@@ -27,19 +27,19 @@ public class GameManager : MonoBehaviour
 
     public static GameManager gameManagerInstance;
 
-    [SerializeField] private ESaveSystem runSaveSystem;
-    [SerializeField] private SaveFileSetup runSaveFileSetup;
+    private ESaveSystem runSaveSystem;
+    private SaveFileSetup runSaveFileSetup;
 
     [Range(0f, 1f)]
     [SerializeField] private float accuracyThreshold;
     [Range(1, 5)]
     [SerializeField] private int frameThreshold;
 
-    [SerializeField] private TextMeshProUGUI textMeshProUGUI;
+    private TextMeshProUGUI countdownText;
 
     [SerializeField] private Playback savePlayback;
-    [SerializeField] private Playback ghostPlayback;
-    [SerializeField] private Playback replayPlayback;
+    private Playback ghostPlayback;
+    private Playback replayPlayback;
 
     private int remainingTimeBeforeStart;
 
@@ -70,6 +70,12 @@ public class GameManager : MonoBehaviour
     private CinemachineCamera cinemachineCamera;
     private bool isCameraFollowingGhost = false;
 
+    [SerializeField] private GameObject ghostPlaybackPrefab;
+    [SerializeField] private GameObject replayPlaybackPrefab;
+    [SerializeField] private GameObject runSavePrefab;
+
+    private event Action displayGhostDuringDelegate;
+
     public bool GetIsCameraFollowingGhost()
     {
         return isCameraFollowingGhost;
@@ -79,14 +85,23 @@ public class GameManager : MonoBehaviour
     {
         player = Instantiate(playerPrefab, levelDataScriptableObject.playerStartPosition, Quaternion.identity);
         ResultsMenu.resultsMenuInstance.SetPlayer(player);
-        playbacks = FindObjectsByType<Playback>(FindObjectsSortMode.None);
-        foreach (Playback playback in playbacks)
-        {
-            playback.SetTarget(player);
-        }
 
         cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
         cinemachineCamera.Target.TrackingTarget = player.transform;
+
+        ghostPlayback = Instantiate(ghostPlaybackPrefab).GetComponent<Playback>();
+        replayPlayback = Instantiate(replayPlaybackPrefab).GetComponent<Playback>();
+        GameObject runSaveGO = Instantiate(runSavePrefab);
+        runSaveSystem = runSaveGO.GetComponent<ESaveSystem>();
+        runSaveFileSetup = runSaveGO.GetComponent<SaveFileSetup>();
+
+        playbacks = FindObjectsByType<Playback>(FindObjectsSortMode.None);
+        foreach (Playback playback in playbacks)
+        {
+            playback.SetPlayback(player, cinemachineCamera);
+        }
+
+        countdownText = GameObject.Find("Countdown").GetComponent<TextMeshProUGUI>();
     }
 
     private void OnEnable()
@@ -100,6 +115,8 @@ public class GameManager : MonoBehaviour
         {
             levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
         }
+
+        Debug.Log(levelDifficulty.ToString());
     }
 
     private void Awake()
@@ -115,17 +132,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    public void UnsubscribeGhostDuring()
     {
-        PlayerCollisions.StartEvent -= StartRecord;
-        PlayerCollisions.EndEvent -= UniTask.Action(StopRecord);
-        if (displayGhostDuring)
-        {
-            isCameraFollowingGhost = false;
-            PlayerCollisions.StartEvent -= async () => await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun);
-        }
-
-        Playback.playbackDoneEvent -= UniTask.Action(StartRun);
+        PlayerCollisions.StartEvent -= displayGhostDuringDelegate;
     }
 
     // Update is called once per frame
@@ -140,21 +149,23 @@ public class GameManager : MonoBehaviour
     private async UniTask StartCountdown(int countdownValue)
     {
         remainingTimeBeforeStart = countdownValue;
+        countdownText.gameObject.SetActive(true);
 
         while (remainingTimeBeforeStart > 0)
         {
-            textMeshProUGUI.text = remainingTimeBeforeStart.ToString();
-            await UniTask.Delay(1000);
+            countdownText.text = remainingTimeBeforeStart.ToString();
+            await MenuManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 0.5f);
             remainingTimeBeforeStart--;
         }
 
-        textMeshProUGUI.text = "GO !";
+        countdownText.text = "GO !";
         startTimer = true;
+        await MenuManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 1f);
+        countdownText.gameObject.SetActive(false);
     }
 
     private void StartRecord()
     {
-        Debug.Log("Start Record");
         savePlayback.SetIsRecording(true);
     }
 
@@ -207,12 +218,12 @@ public class GameManager : MonoBehaviour
 
     private async UniTaskVoid StartRun()
     {
-        await StartCountdown(3);
+        if (globalDataScriptableObject.countdownDuration > 0)
+        {
+            await StartCountdown(globalDataScriptableObject.countdownDuration);
+        }
 
         EnablePlayerControls();
-
-        await UniTask.Delay(1000);
-        textMeshProUGUI.enabled = false;
     }
 
     private async UniTask DisplayPlayback(Playback playback, bool follow, bool startRun, int frameOffset, string run)
@@ -230,7 +241,7 @@ public class GameManager : MonoBehaviour
     {
         DisablePlayerControls();
         isCameraFollowingGhost = true;
-        await (DisplayPlayback(ghostPlayback, false, false, 0, savedRun), DisplayPlayback(replayPlayback, true, true, 0, currentRun));
+        await (DisplayPlayback(ghostPlayback, false, false, 0, savedRun), DisplayPlayback(replayPlayback, true, false, 0, currentRun));
     }
 
     public async UniTask StartLevel()
@@ -241,6 +252,8 @@ public class GameManager : MonoBehaviour
         frameOffset = globalDataScriptableObject.frameOffset;
         saveRun = globalDataScriptableObject.saveRun;
         levelDifficulty = globalDataScriptableObject.levelDifficulty;
+
+        savePlayback.ResetPlayback();
 
         if (!saveRun)
         {
@@ -278,7 +291,12 @@ public class GameManager : MonoBehaviour
         if (displayGhostDuring)
         {
             isCameraFollowingGhost = false;
-            PlayerCollisions.StartEvent += async () => await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun);
+            displayGhostDuringDelegate = async () =>
+            {
+                await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun);
+            };
+
+            PlayerCollisions.StartEvent += displayGhostDuringDelegate;
         }
     }
 }

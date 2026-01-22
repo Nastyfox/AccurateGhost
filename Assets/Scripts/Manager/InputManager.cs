@@ -101,7 +101,6 @@ public class InputManager : MonoBehaviour
             {
                 isGamePaused = false;
 
-                Time.timeScale = 1f;
                 playerInput.SwitchCurrentActionMap("PlayMode");
                 await OptionsMenu.optionsMenuInstance.ResumeFromPause();
             }

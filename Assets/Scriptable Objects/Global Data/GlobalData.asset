@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ab18bf97987df4491ddafc361fe5cd, type: 3}
   m_Name: GlobalData
   m_EditorClassIdentifier: 
-  pseudo: Julien
-  displayGhostBefore: 1
+  pseudo: TEST
+  displayGhostBefore: 0
   displayGhostDuring: 1
-  frameOffset: 5
+  frameOffset: 0
   saveRun: 0
+  countdownDuration: 0
   levelDifficulty: 0
   resultsMode: 0
   masterVolume: 0.7244175

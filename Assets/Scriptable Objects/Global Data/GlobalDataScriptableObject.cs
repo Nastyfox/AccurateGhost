@@ -11,6 +11,7 @@ public class GlobalDataScriptableObject : ScriptableObject
     public bool displayGhostDuring;
     public int frameOffset;
     public bool saveRun;
+    public int countdownDuration;
     public GameManager.LevelDifficulty levelDifficulty;
     public GameManager.CompareMode resultsMode;
 
