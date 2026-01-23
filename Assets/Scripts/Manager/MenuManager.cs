@@ -15,39 +15,30 @@ public class MenuManager : MonoBehaviour
     public static MenuManager menuManagerInstance;
 
     [Header("Position Animation Settings")]
-    [SerializeField] TweenSettings<float> positionDisplayAnimationSettings;
-    [SerializeField] TweenSettings<float> positionHideAnimationSettings;
+    [SerializeField] private TweenSettings<float> positionDisplayAnimationSettings;
+    [SerializeField] private TweenSettings<float> positionHideAnimationSettings;
 
     [Header("Scale Animation Settings")]
-    [SerializeField] TweenSettings<float> scaleDisplayAnimationSettings;
-    [SerializeField] TweenSettings<float> scaleHideAnimationSettings;
+    [SerializeField] private TweenSettings<float> scaleDisplayAnimationSettings;
+    [SerializeField] private TweenSettings<float> scaleHideAnimationSettings;
 
     [Header("Back Button Animation Settings")]
-    [SerializeField] TweenSettings<float> backButtonDisplayAnimationSettings;
-    [SerializeField] TweenSettings<float> backButtonHideAnimationSettings;
+    [SerializeField] private TweenSettings<float> backButtonDisplayAnimationSettings;
+    [SerializeField] private TweenSettings<float> backButtonHideAnimationSettings;
 
     [Header("Pseudo Button Animation Settings")]
-    [SerializeField] TweenSettings<float> pseudoScaleButtonAnimationSettings;
+    [SerializeField] private TweenSettings<float> pseudoScaleButtonAnimationSettings;
     private Tween pseudoScaleButtonTween;
 
     [Header("Countdown Animation Settings")]
-    [SerializeField] TweenSettings<float> countdownScaleAnimationSettings;
+    [SerializeField] private TweenSettings<float> countdownScaleAnimationSettings;
+
+    [Header("Cross Fade Animation Settings")]
+    [SerializeField] private TweenSettings<float> fadeInAnimationSettings;
+    [SerializeField] private TweenSettings<float> fadeOutAnimationSettings;
 
     [Header("Menu elements")]
-    [SerializeField] Button levelsButton;
-    [SerializeField] GameObject levelGrid;
-
-    [SerializeField] Button leaderboardButton;
-    [SerializeField] GameObject leaderboardPanel;
-
-    [SerializeField] Button pseudoButton;
-    [SerializeField] GameObject pseudoPanel;
-
-    [SerializeField] Button optionsButton;
-    [SerializeField] GameObject optionsPanel;
-
-    [SerializeField] GameObject backButtonGO;
-    [SerializeField] GameObject mainMenuGO;
+    [SerializeField] private GameObject backButtonGO;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -61,37 +52,27 @@ public class MenuManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-
-        levelsButton.onClick.AddListener(async () => {
-            await DisplayMenu(levelGrid, true, AnimationType.Position);
-        });
-
-        leaderboardButton.onClick.AddListener(async () => {
-            await DisplayMenu(leaderboardPanel, true, AnimationType.Position);
-        });
-
-        pseudoButton.onClick.AddListener(async () => {
-            await DisplayMenu(pseudoPanel, true, AnimationType.Position);
-        });
-
-        optionsButton.onClick.AddListener(async () => {
-            OptionsMenu.optionsMenuInstance.SetOptionsMenu();
-            await DisplayMenu(optionsPanel, true, AnimationType.Position);
-        });
     }
 
-    public async UniTask DisplayMenu(GameObject menuGO, bool mainMenu, AnimationType animationType)
+    public async UniTask DisplayMenu(GameObject menuGO, GameObject mainMenuGO, AnimationType animationType)
     {
         backButtonGO.SetActive(true);
         backButtonGO.GetComponent<Button>().onClick.RemoveAllListeners();
         backButtonGO.GetComponent<Button>().onClick.AddListener(async () =>
         {
-            await HideMenu(menuGO, mainMenu, animationType);
+            if(mainMenuGO ==  null)
+            {
+                await OptionsMenu.optionsMenuInstance.ResumeFromPause();
+            }
+            else
+            {
+                await HideMenu(menuGO, mainMenuGO, animationType);
+            }
         });
 
         menuGO.SetActive(true);
 
-        if (mainMenu)
+        if (mainMenuGO != null)
         {
             mainMenuGO.SetActive(false);
         }
@@ -111,7 +92,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public async UniTask HideMenu(GameObject menuGO, bool mainMenu, AnimationType animationType)
+    public async UniTask HideMenu(GameObject menuGO, GameObject mainMenuGO, AnimationType animationType)
     {
         Time.timeScale = 1f;
 
@@ -129,7 +110,7 @@ public class MenuManager : MonoBehaviour
 
         menuGO.SetActive(false);
 
-        if (mainMenu)
+        if (mainMenuGO != null)
         {
             mainMenuGO.SetActive(true);
         }
@@ -152,5 +133,15 @@ public class MenuManager : MonoBehaviour
     {
         countdownScaleAnimationSettings.settings.duration = duration;
         await Tween.Scale(menuGO.GetComponent<RectTransform>(), countdownScaleAnimationSettings);
+    }
+
+    public async UniTask FadeInTransition(CanvasGroup image)
+    {
+        await Tween.Alpha(image, fadeInAnimationSettings);
+    }
+
+    public async UniTask FadeOutTransition(CanvasGroup image)
+    {
+        await Tween.Alpha(image, fadeOutAnimationSettings);
     }
 }

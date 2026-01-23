@@ -17,4 +17,12 @@ public static class Extensions
     {
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
+
+    public static void DeleteChildren(this Transform t)
+    {
+        foreach(Transform child in t)
+        {
+            UnityEngine.Object.Destroy(child.gameObject);
+        }
+    }
 }

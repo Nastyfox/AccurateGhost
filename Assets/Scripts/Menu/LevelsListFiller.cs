@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class LevelsListFiller : MonoBehaviour
 {
     [SerializeField] private GameObject levelButtonPrefab;
-    [SerializeField] private GameObject levelGrid;
+    [SerializeField] private Transform levelGrid;
 
     private bool isSelected = false;
 
@@ -20,10 +20,7 @@ public class LevelsListFiller : MonoBehaviour
             await UniTask.Yield();
         }
 
-        while (levelGrid.transform.childCount > 0)
-        {
-            DestroyImmediate(levelGrid.transform.GetChild(0).gameObject);
-        }
+        levelGrid.DeleteChildren();
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
@@ -41,7 +38,7 @@ public class LevelsListFiller : MonoBehaviour
 
             if (sceneName.Contains("Level"))
             {
-                levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
+                levelButton = Instantiate(levelButtonPrefab, levelGrid);
                 levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + "\n" + difficulties[0];
                 levelButton.GetComponent<Button>().onClick.AddListener(async () => {
                     await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[0]);
@@ -63,7 +60,7 @@ public class LevelsListFiller : MonoBehaviour
 
                     if (playerEntry != null)
                     {
-                        levelButton = Instantiate(levelButtonPrefab, levelGrid.transform);
+                        levelButton = Instantiate(levelButtonPrefab, levelGrid);
                         levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + "\n" + difficulties[j];
                         levelButton.GetComponent<Button>().onClick.AddListener(async () => {
                             await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[j]);

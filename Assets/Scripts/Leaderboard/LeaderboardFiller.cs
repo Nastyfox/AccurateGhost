@@ -1,14 +1,9 @@
 using Cysharp.Threading.Tasks;
-using Esper.ESave;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -65,15 +60,8 @@ public class LeaderboardFiller : MonoBehaviour
         }
         playerID = Leaderboard.leaderboardInstance.GetPlayerID();
 
-        while (levelsContainer.transform.childCount > 0)
-        {
-            DestroyImmediate(levelsContainer.transform.GetChild(0).gameObject);
-        }
-
-        while (levelsTabsContainer.transform.childCount > 0)
-        {
-            DestroyImmediate(levelsTabsContainer.transform.GetChild(0).gameObject);
-        }
+        levelsContainer.DeleteChildren();
+        levelsTabsContainer.DeleteChildren();
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];

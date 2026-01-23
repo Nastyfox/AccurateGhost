@@ -12,13 +12,17 @@ public class ResultsMenu : MonoBehaviour
     [SerializeField] private GameObject resultsPanel;
     [SerializeField] private Slider resultsSlider;
     [SerializeField] private TextMeshProUGUI resultsText;
-    [SerializeField] TweenSettings<float> resultsSliderAnimationSettings;
+    [SerializeField] private TweenSettings<float> resultsSliderAnimationSettings;
 
     [SerializeField] private Button rewatchButton;
     [SerializeField] private Button replayButton;
     [SerializeField] private Button nextButton;
+    [SerializeField] private Button mainMenuButton;
+    [SerializeField] private Button quitButton;
 
-    [SerializeField] GlobalDataScriptableObject globalDataScriptableObject;
+    [SerializeField] private GameObject backButton;
+
+    [SerializeField] private GlobalDataScriptableObject globalDataScriptableObject;
 
     private GameObject player;
 
@@ -29,33 +33,47 @@ public class ResultsMenu : MonoBehaviour
         {
             resultsMenuInstance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            rewatchButton.onClick.AddListener(async () => {
+                resultsPanel.SetActive(false);
+                await GameManager.gameManagerInstance.RewatchRun();
+                resultsPanel.SetActive(true);
+            });
+
+            replayButton.onClick.AddListener(async () => {
+                resultsPanel.SetActive(false);
+                await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
+            });
+
+            nextButton.onClick.AddListener(async () => {
+                resultsPanel.SetActive(false);
+                string sceneName = SceneManager.GetActiveScene().name;
+                if (globalDataScriptableObject.levelDifficulty.Next() == GameManager.LevelDifficulty.Easy)
+                {
+                    int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+                    sceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex).name;
+                }
+                await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty.Next());
+            });
+
+            mainMenuButton.onClick.AddListener(async () =>
+            {
+                Time.timeScale = 1f;
+                resultsPanel.SetActive(false);
+                backButton.SetActive(false);
+                backButton.transform.SetParent(backButton.transform.parent.parent);
+                await LevelLoader.levelLoaderInstance.LoadMainMenu();
+            });
+
+            quitButton.onClick.AddListener(() =>
+            {
+                LevelLoader.levelLoaderInstance.QuitGame();
+            });
         }
         else
         {
             Destroy(this.gameObject);
         }
-
-        rewatchButton.onClick.AddListener(async () => {
-            resultsPanel.SetActive(false);
-            await GameManager.gameManagerInstance.RewatchRun();
-            resultsPanel.SetActive(true);
-        });
-
-        replayButton.onClick.AddListener(async () => {
-            resultsPanel.SetActive(false);
-            await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
-        });
-
-        nextButton.onClick.AddListener(async () => {
-            resultsPanel.SetActive(false);
-            string sceneName = SceneManager.GetActiveScene().name;
-            if (globalDataScriptableObject.levelDifficulty.Next() == GameManager.LevelDifficulty.Easy)
-            {
-                int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-                sceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex).name;
-            }
-            await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty.Next());
-        });
     }
 
     // Update is called once per frame
@@ -74,7 +92,7 @@ public class ResultsMenu : MonoBehaviour
         GameManager.gameManagerInstance.UnsubscribeGhostDuring();
         ResetResults();
         player.SetActive(false);
-        await MenuManager.menuManagerInstance.DisplayMenu(resultsPanel, false, MenuManager.AnimationType.Scale);
+        await MenuManager.menuManagerInstance.DisplayMenu(resultsPanel, null, MenuManager.AnimationType.Scale);
         resultsSliderAnimationSettings.endValue = result;
         await Tween.UISliderValue(resultsSlider, resultsSliderAnimationSettings);
         resultsText.text = result.ToString() + "%";

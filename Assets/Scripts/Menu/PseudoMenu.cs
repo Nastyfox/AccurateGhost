@@ -2,6 +2,7 @@ using Esper.ESave;
 using TMPro;
 using UnityEngine;
 using PrimeTween;
+using UnityEngine.UI;
 
 public class PseudoMenu : MonoBehaviour
 {
@@ -11,11 +12,10 @@ public class PseudoMenu : MonoBehaviour
     [SerializeField] private TMP_InputField pseudoInputField;
 
     [SerializeField] private GameObject pseudoButton;
-    private Tween buttonScaleAnimation;
 
     private string pseudo = "";
 
-    [SerializeField] GlobalDataScriptableObject globalDataScriptableObject;
+    [SerializeField] private GlobalDataScriptableObject globalDataScriptableObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

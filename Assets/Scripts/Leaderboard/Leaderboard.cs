@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Leaderboards;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Leaderboard : MonoBehaviour
@@ -38,15 +39,15 @@ public class Leaderboard : MonoBehaviour
         {
             leaderboardInstance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            await UnityServices.InitializeAsync();
+
+            await SignInAnonymously();
         }
-        else
+        else if(leaderboardInstance != this)
         {
             Destroy(this.gameObject);
         }
-
-        await UnityServices.InitializeAsync();
-        
-        await SignInAnonymously();
     }
 
     async UniTask SignInAnonymously()

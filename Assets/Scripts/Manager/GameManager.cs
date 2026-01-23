@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Esper.ESave;
 using System;
-using System.Threading.Tasks;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -115,8 +114,6 @@ public class GameManager : MonoBehaviour
         {
             levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
         }
-
-        Debug.Log(levelDifficulty.ToString());
     }
 
     private void Awake()

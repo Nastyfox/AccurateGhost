@@ -18,16 +18,16 @@ public class CameraManager : MonoBehaviour
         {
             cameraManagerInstance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            await UniTask.DelayFrame(1);
+            cinemachineCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineCamera;
+            cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();
+            cinemachinePositionComposer.TargetOffset = Vector3.zero;
         }
         else
         {
             Destroy(this.gameObject);
         }
-
-        await UniTask.DelayFrame(1);
-        cinemachineCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineCamera;
-        cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();
-        cinemachinePositionComposer.TargetOffset = Vector3.zero;
     }
 
     // Update is called once per frame

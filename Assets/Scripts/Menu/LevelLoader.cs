@@ -9,8 +9,6 @@ public class LevelLoader : MonoBehaviour
     public static LevelLoader levelLoaderInstance;
 
     [SerializeField] private CanvasGroup crossFadeCanvasGroup;
-    [SerializeField] private TweenSettings<float> fadeInAnimationSettings;
-    [SerializeField] private TweenSettings<float> fadeOutAnimationSettings;
 
     private GameManager.LevelDifficulty selectedDifficulty;
 
@@ -47,7 +45,7 @@ public class LevelLoader : MonoBehaviour
 
         crossFadeCanvasGroup.gameObject.SetActive(true);
 
-        await Tween.Alpha(crossFadeCanvasGroup, fadeInAnimationSettings);
+        await MenuManager.menuManagerInstance.FadeInTransition(crossFadeCanvasGroup);
 
         AsyncOperation sceneLoading = SceneManager.LoadSceneAsync(levelName);
 
@@ -60,12 +58,28 @@ public class LevelLoader : MonoBehaviour
 
         await OptionsMenu.optionsMenuInstance.SetPauseMenu();
 
-        await Tween.Alpha(crossFadeCanvasGroup, fadeOutAnimationSettings);
-
+        await MenuManager.menuManagerInstance.FadeOutTransition(crossFadeCanvasGroup);
         crossFadeCanvasGroup.gameObject.SetActive(false);
 
         globalDataScriptableObject.levelDifficulty = difficulty;
         await GameManager.gameManagerInstance.StartLevel();
+    }
+
+    public async UniTask LoadMainMenu()
+    {
+        crossFadeCanvasGroup.gameObject.SetActive(true);
+
+        await MenuManager.menuManagerInstance.FadeInTransition(crossFadeCanvasGroup);
+
+        AsyncOperation sceneLoading = SceneManager.LoadSceneAsync("MainMenu");
+
+        while (!sceneLoading.isDone)
+        {
+            await UniTask.Yield();
+        }
+
+        await MenuManager.menuManagerInstance.FadeOutTransition(crossFadeCanvasGroup);
+        crossFadeCanvasGroup.gameObject.SetActive(false);
     }
 
     public void QuitGame()

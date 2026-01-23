@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class InputManager : MonoBehaviour
 {
@@ -14,17 +15,14 @@ public class InputManager : MonoBehaviour
     public static bool runHeld;
     public static bool dashPressed;
 
-    public static bool isGamePaused;
-
-
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
-
         if (inputManagerInstance == null)
         {
             inputManagerInstance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            playerInput = GetComponent<PlayerInput>();
         }
         else
         {
@@ -89,18 +87,13 @@ public class InputManager : MonoBehaviour
     {
         if (ctx.performed)
         {
-            if(!isGamePaused)
+            if(!OptionsMenu.isGamePaused)
             {
-                isGamePaused = true;
-
-                Time.timeScale = 0f;
                 playerInput.SwitchCurrentActionMap("MenuMode");
                 await OptionsMenu.optionsMenuInstance.PauseFromGame();
             }
             else
             {
-                isGamePaused = false;
-
                 playerInput.SwitchCurrentActionMap("PlayMode");
                 await OptionsMenu.optionsMenuInstance.ResumeFromPause();
             }

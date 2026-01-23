@@ -24,6 +24,8 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] TextMeshProUGUI panelText;
 
     [SerializeField] private Button replayButton;
+    [SerializeField] private Button mainMenuButton;
+    [SerializeField] private Button quitButton;
 
     [SerializeField] private Toggle ghostBeforeToggle;
     [SerializeField] private Toggle ghostDuringToggle;
@@ -39,26 +41,43 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] private GameObject optionsPanel;
     [SerializeField] private GameObject backButton;
 
+    public static bool isGamePaused;
+
     private void Start()
     {
         if (optionsMenuInstance == null)
         {
             optionsMenuInstance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            GameManager.CompareMode[] resultsModes = (GameManager.CompareMode[])Enum.GetValues(typeof(GameManager.CompareMode));
+
+            for (int i = 0; i < resultsModes.Length; i++)
+            {
+                resultsModesDropdown.options.Add(new TMP_Dropdown.OptionData { text = resultsModes[i].ToString() });
+            }
+
+            SetUIInitialValues();
+
+            mainMenuButton.onClick.AddListener(async () =>
+            {
+                Time.timeScale = 1f;
+                optionsPanel.SetActive(false);
+                backButton.SetActive(false);
+                backButton.transform.SetParent(backButton.transform.parent.parent);
+                GameManager.gameManagerInstance.UnsubscribeGhostDuring();
+                await LevelLoader.levelLoaderInstance.LoadMainMenu();
+            });
+
+            quitButton.onClick.AddListener(() =>
+            {
+                LevelLoader.levelLoaderInstance.QuitGame();
+            });
         }
         else
         {
             Destroy(this.gameObject);
         }
-
-        GameManager.CompareMode[] resultsModes = (GameManager.CompareMode[])Enum.GetValues(typeof(GameManager.CompareMode));
-
-        for (int i = 0; i < resultsModes.Length; i++)
-        {
-            resultsModesDropdown.options.Add(new TMP_Dropdown.OptionData { text = resultsModes[i].ToString() });
-        }
-
-        SetUIInitialValues();
     }
 
     private void SetUIInitialValues()
@@ -132,7 +151,7 @@ public class OptionsMenu : MonoBehaviour
     {
         replayButton.gameObject.SetActive(false);
         panelText.text = "Options";
-        difficultyList.gameObject.SetActive(false);
+        difficultyList.SetActive(false);
     }
 
     public async UniTask SetPauseMenu()
@@ -140,7 +159,7 @@ public class OptionsMenu : MonoBehaviour
         backButton.transform.SetParent(optionsPanel.transform);
         replayButton.gameObject.SetActive(true);
         panelText.text = "Pause";
-        difficultyList.gameObject.SetActive(true);
+        difficultyList.SetActive(true);
         optionsPanel.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         while (!Leaderboard.leaderboardInstance.GetIsInitialized())
@@ -148,10 +167,7 @@ public class OptionsMenu : MonoBehaviour
             await UniTask.Yield();
         }
 
-        while (difficultyList.transform.childCount > 0)
-        {
-            DestroyImmediate(difficultyList.transform.GetChild(0).gameObject);
-        }
+        difficultyList.transform.DeleteChildren();
 
         GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
 
@@ -175,17 +191,22 @@ public class OptionsMenu : MonoBehaviour
         {
             Time.timeScale = 1f;
             optionsPanel.SetActive(false);
+            GameManager.gameManagerInstance.UnsubscribeGhostDuring();
             await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
         });
     }
 
     public async UniTask PauseFromGame()
     {
-        await MenuManager.menuManagerInstance.DisplayMenu(optionsPanel, false, MenuManager.AnimationType.Scale);
+        isGamePaused = true;
+        Time.timeScale = 0f;
+        await MenuManager.menuManagerInstance.DisplayMenu(optionsPanel, null, MenuManager.AnimationType.Scale);
     }
 
     public async UniTask ResumeFromPause()
     {
-        await MenuManager.menuManagerInstance.HideMenu(optionsPanel, false, MenuManager.AnimationType.Scale);
+        isGamePaused = false;
+        Time.timeScale = 1f;
+        await MenuManager.menuManagerInstance.HideMenu(optionsPanel, null, MenuManager.AnimationType.Scale);
     }
 }

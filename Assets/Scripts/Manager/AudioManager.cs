@@ -28,13 +28,13 @@ public class AudioManager : MonoBehaviour
         {
             audioManagerInstance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            PlayBackgroundMusic();
         }
         else
         {
             Destroy(this.gameObject);
         }
-
-        PlayBackgroundMusic();
     }
 
     // Update is called once per frame
