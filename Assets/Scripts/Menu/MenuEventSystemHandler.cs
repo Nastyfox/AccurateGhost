@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -15,8 +16,14 @@ public class MenuEventSystemHandler : MonoBehaviour
     protected Selectable lastSelected;
 
     [SerializeField] protected InputActionReference navigateReference;
+    [SerializeField] protected InputActionReference submitReference;
 
     [SerializeField] protected List<GameObject> animationExclusions = new List<GameObject>();
+
+    private bool isSliderActive = false;
+    private Slider activeSlider;
+
+    private Navigation previousNav;
 
     protected virtual void Awake()
     {
@@ -29,6 +36,7 @@ public class MenuEventSystemHandler : MonoBehaviour
     protected virtual void OnEnable()
     {
         navigateReference.action.performed += OnNavigate;
+        submitReference.action.performed += OnSubmit;
 
         if(lastSelected != null)
         {
@@ -44,6 +52,7 @@ public class MenuEventSystemHandler : MonoBehaviour
     protected virtual void OnDisable()
     {
         navigateReference.action.performed -= OnNavigate;
+        submitReference.action.performed -= OnSubmit;
     }
 
     public virtual void SetFirstSelected(Selectable selectable)
@@ -110,7 +119,14 @@ public class MenuEventSystemHandler : MonoBehaviour
 
         lastSelected = selectedGO.GetComponent<Selectable>();
 
-        if(animationExclusions.Contains(selectedGO))
+        activeSlider = selectedGO.GetComponent<Slider>();
+
+        if (activeSlider != null)
+        {
+            previousNav = activeSlider.navigation;
+        }
+
+        if (animationExclusions.Contains(selectedGO))
         {
             return;
         }
@@ -121,6 +137,11 @@ public class MenuEventSystemHandler : MonoBehaviour
     public void OnDeselect(BaseEventData baseEventData)
     {
         GameObject selectedGO = baseEventData.selectedObject;
+
+        if (activeSlider != null)
+        {
+            isSliderActive = false;
+        }
 
         if (animationExclusions.Contains(selectedGO))
         {
@@ -141,7 +162,6 @@ public class MenuEventSystemHandler : MonoBehaviour
             {
                 selectable = pointerEventData.pointerEnter.GetComponentInChildren<Selectable>();
             }
-
             pointerEventData.selectedObject = selectable.gameObject;
         }
     }
@@ -158,9 +178,29 @@ public class MenuEventSystemHandler : MonoBehaviour
 
     protected virtual void OnNavigate(InputAction.CallbackContext context)
     {
-        if(EventSystem.current.currentSelectedGameObject == null && lastSelected != null)
+        if (EventSystem.current.currentSelectedGameObject == null && lastSelected != null)
         {
             EventSystem.current.SetSelectedGameObject(lastSelected.gameObject);
+        }
+    }
+
+    protected virtual void OnSubmit(InputAction.CallbackContext context)
+    {
+        Navigation newNav = new Navigation();
+
+        if (activeSlider != null)
+        {
+            isSliderActive = !isSliderActive;
+
+            if (isSliderActive)
+            {
+                newNav.mode = Navigation.Mode.None;
+                activeSlider.navigation = newNav;
+            }
+            else
+            {
+                activeSlider.navigation = previousNav;
+            }
         }
     }
 }

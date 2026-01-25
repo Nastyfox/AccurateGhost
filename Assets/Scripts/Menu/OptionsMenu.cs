@@ -13,7 +13,6 @@ public class OptionsMenu : MonoBehaviour
     public static OptionsMenu optionsMenuInstance;
 
     [SerializeField] private GameObject menuButtonPrefab;
-    [SerializeField] private GameObject difficultyList;
     [SerializeField] private TextMeshProUGUI ghostDelayValueText;
 
     [SerializeField] private ESaveSystem playerDataSaveSystem;
@@ -140,19 +139,10 @@ public class OptionsMenu : MonoBehaviour
         await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, difficulty);
     }
 
-    private void InstantiateDifficultyObject(GameObject difficultyObject, GameManager.LevelDifficulty difficulty)
-    {
-        GameObject difficultyGO = Instantiate(difficultyObject, difficultyList.transform);
-        Button difficultyButton = difficultyGO.GetComponent<Button>();
-        difficultyButton.onClick.AddListener(async () => await SelectDifficulty(difficulty));
-        difficultyGO.GetComponentInChildren<TextMeshProUGUI>().text = difficulty.ToString();
-    }
-
     public void SetOptionsMenu()
     {
         replayButton.gameObject.SetActive(false);
         panelText.text = "Options";
-        difficultyList.SetActive(false);
         mainMenuAndQuitButton.SetActive(false);
     }
 
@@ -162,32 +152,11 @@ public class OptionsMenu : MonoBehaviour
         replayButton.gameObject.SetActive(true);
         mainMenuAndQuitButton.SetActive(true);
         panelText.text = "Pause";
-        difficultyList.SetActive(true);
         optionsPanel.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         while (!Leaderboard.leaderboardInstance.GetIsInitialized())
         {
             await UniTask.Yield();
-        }
-
-        difficultyList.transform.DeleteChildren();
-
-        GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
-
-        InstantiateDifficultyObject(menuButtonPrefab, GameManager.LevelDifficulty.Easy);
-
-        for (int i = 1; i < difficulties.Length; i++)
-        {
-            GameManager.LevelDifficulty previousLevelDifficulty = difficulties[i - 1];
-            GameManager.LevelDifficulty currentLevelDifficulty = difficulties[i];
-
-            string levelName = SceneManager.GetActiveScene().name + "_" + previousLevelDifficulty;
-            Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await Leaderboard.leaderboardInstance.GetPlayerScoreWithMetadata(levelName);
-
-            if (playerEntry != null)
-            {
-                InstantiateDifficultyObject(menuButtonPrefab, currentLevelDifficulty);
-            }
         }
 
         replayButton.onClick.RemoveAllListeners();
