@@ -36,6 +36,11 @@ public class LeaderboardFiller : MonoBehaviour
 
     private string playerID;
 
+    [SerializeField] private MenuEventSystemHandler menuEventSystemHandler;
+
+    private bool firstSelected;
+
+
     private class LeaderboardResult
     {
         public int rank;
@@ -66,8 +71,6 @@ public class LeaderboardFiller : MonoBehaviour
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
 
-        GameObject myEventSystem = GameObject.Find("EventSystem");
-
         GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
 
         for (int i = 0; i < sceneCount; i++)
@@ -93,6 +96,13 @@ public class LeaderboardFiller : MonoBehaviour
                     levelTabButton.onClick.AddListener(() => SelectLevelTab(capturedIndex));
                     levelTabsButtonsList.Add(levelTab);
                     currentTabIndex++;
+                    menuEventSystemHandler.AddSelectable(levelTab.GetComponent<Selectable>());
+                    menuEventSystemHandler.AddAnimationExclusion(levelTab.GetComponent<Selectable>());
+                    if(!firstSelected)
+                    {
+                        menuEventSystemHandler.SetFirstSelected(levelTab.GetComponent<Selectable>());
+                        firstSelected = true;
+                    }
 
                     currentScore = levelResults[0].score;
 
@@ -145,6 +155,12 @@ public class LeaderboardFiller : MonoBehaviour
         SelectLevelTab(0);
     }
 
+    private void OnDisable()
+    {
+        levelsContainer.DeleteChildren();
+        levelsTabsContainer.DeleteChildren();
+    }
+
     private List<LeaderboardResult> LeaderboardDataToResults()
     {
         List<LeaderboardResult> result = new List<LeaderboardResult>();
@@ -189,9 +205,7 @@ public class LeaderboardFiller : MonoBehaviour
         foreach (GameObject levelLeaderboard in levelLeaderboardsList)
         {
             levelLeaderboard.SetActive(false);
-            levelTabsButtonsList[index].GetComponent<Image>().color = Color.gray;
         }
         levelLeaderboardsList[index].SetActive(true);
-        levelTabsButtonsList[index].GetComponent<Image>().color = Color.white;
     }
 }

@@ -29,27 +29,27 @@ public class PlayerAnimations : MonoBehaviour
 
     public void PlayAnimation(AnimationType animationType, float animationSpeed)
     {
-        switch(animationType)
+        switch (animationType)
         {
             case AnimationType.Land:
-                playerAnimator.SetTrigger("Land");
                 playerAnimator.ResetTrigger("Jump");
                 playerAnimator.ResetTrigger("Wall");
+                playerAnimator.SetTrigger("Land");
                 savePlayback.NotifyTrigger(Playback.TriggerType.Land);
                 break;
             case AnimationType.Move:
-                playerAnimator.SetBool("IsMoving", true);
                 playerAnimator.ResetTrigger("Land");
+                playerAnimator.SetBool("IsMoving", true);
                 break;
             case AnimationType.Jump:
-                playerAnimator.SetTrigger("Jump");
                 playerAnimator.ResetTrigger("Land");
                 playerAnimator.ResetTrigger("Wall");
+                playerAnimator.SetTrigger("Jump");
                 savePlayback.NotifyTrigger(Playback.TriggerType.Jump);
                 break;
             case AnimationType.Wall:
-                playerAnimator.SetTrigger("Wall");
                 playerAnimator.ResetTrigger("Jump");
+                playerAnimator.SetTrigger("Wall");
                 savePlayback.NotifyTrigger(Playback.TriggerType.Wall);
                 break;
             default:

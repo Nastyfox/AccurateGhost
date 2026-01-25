@@ -40,6 +40,7 @@ public class OptionsMenu : MonoBehaviour
 
     [SerializeField] private GameObject optionsPanel;
     [SerializeField] private GameObject backButton;
+    [SerializeField] private GameObject mainMenuAndQuitButton;
 
     public static bool isGamePaused;
 
@@ -152,12 +153,14 @@ public class OptionsMenu : MonoBehaviour
         replayButton.gameObject.SetActive(false);
         panelText.text = "Options";
         difficultyList.SetActive(false);
+        mainMenuAndQuitButton.SetActive(false);
     }
 
     public async UniTask SetPauseMenu()
     {
         backButton.transform.SetParent(optionsPanel.transform);
         replayButton.gameObject.SetActive(true);
+        mainMenuAndQuitButton.SetActive(true);
         panelText.text = "Pause";
         difficultyList.SetActive(true);
         optionsPanel.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
@@ -187,10 +190,10 @@ public class OptionsMenu : MonoBehaviour
             }
         }
 
+        replayButton.onClick.RemoveAllListeners();
         replayButton.onClick.AddListener(async () =>
         {
-            Time.timeScale = 1f;
-            optionsPanel.SetActive(false);
+            ResumeFromPause().Forget();
             GameManager.gameManagerInstance.UnsubscribeGhostDuring();
             await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
         });

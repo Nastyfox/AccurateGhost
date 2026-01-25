@@ -11,6 +11,8 @@ public class LevelsListFiller : MonoBehaviour
     [SerializeField] private GameObject levelButtonPrefab;
     [SerializeField] private Transform levelGrid;
 
+    [SerializeField] private MenuEventSystemHandler menuEventSystemHandler;
+
     private bool isSelected = false;
 
     private async UniTaskVoid Start()
@@ -24,8 +26,6 @@ public class LevelsListFiller : MonoBehaviour
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
-
-        GameObject myEventSystem = GameObject.Find("EventSystem");
 
         GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
 
@@ -44,9 +44,11 @@ public class LevelsListFiller : MonoBehaviour
                     await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[0]);
                 });
 
-                if (!isSelected && myEventSystem != null)
+                menuEventSystemHandler.AddSelectable(levelButton.GetComponent<Selectable>());
+
+                if (!isSelected)
                 {
-                    myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(levelButton);
+                    menuEventSystemHandler.SetFirstSelected(levelButton.GetComponent<Selectable>());
                     isSelected = true;
                 }
 
@@ -66,15 +68,16 @@ public class LevelsListFiller : MonoBehaviour
                             await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[j]);
                         });
 
-                        if (!isSelected && myEventSystem != null)
-                        {
-                            myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(levelButton);
-                            isSelected = true;
-                        }
+                        menuEventSystemHandler.AddSelectable(levelButton.GetComponent<Selectable>());
                     }
-                    
+
                 }
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        levelGrid.DeleteChildren();
     }
 }

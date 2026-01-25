@@ -1,8 +1,10 @@
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
 
 public class AudioManager : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip jumpSFX;
     [SerializeField] private AudioClip landSFX;
     [SerializeField] private AudioClip[] walkSFX;
+    [SerializeField] private AudioClip startWallSlideSFX;
+    [SerializeField] private AudioClip loopWallSlideSFX;
 
     [SerializeField] private float walkSFXDelay;
     [SerializeField] private float maxDelay;
@@ -85,5 +89,27 @@ public class AudioManager : MonoBehaviour
             delay = Mathf.Min(delay, maxDelay * 1000);
             await UniTask.Delay((int)(delay));
         }
+    }
+
+    public void PlayWallSlideSFX()
+    {
+        if(sfxSource.isPlaying && (sfxSource.clip == loopWallSlideSFX || sfxSource.clip == startWallSlideSFX))
+        {
+             return;
+        }
+
+        sfxSource.clip = startWallSlideSFX;
+        sfxSource.Play();
+
+        sfxSource.loop = true;
+        sfxSource.clip = loopWallSlideSFX;
+        sfxSource.Play();
+    }
+
+    public void StopWallSlideSFX()
+    {
+        sfxSource.Stop();
+        sfxSource.clip = null;
+        sfxSource.loop = false;
     }
 }

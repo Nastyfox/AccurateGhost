@@ -168,6 +168,8 @@ public class GameManager : MonoBehaviour
 
     private async UniTaskVoid StopRecord()
     {
+        AudioManager.audioManagerInstance.StopWalkSFX();
+
         savePlayback.SetIsRecording(false);
 
         currentRun = savePlayback.GetSavedDatas();

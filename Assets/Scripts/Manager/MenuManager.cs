@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using static MenuManager;
@@ -36,6 +37,10 @@ public class MenuManager : MonoBehaviour
     [Header("Cross Fade Animation Settings")]
     [SerializeField] private TweenSettings<float> fadeInAnimationSettings;
     [SerializeField] private TweenSettings<float> fadeOutAnimationSettings;
+
+    [Header("Scale Button Selection Animation Settings")]
+    [SerializeField] private TweenSettings<float> selectedButtonAnimationSettings;
+    [SerializeField] private TweenSettings<float> deselectedButtonAnimationSettings;
 
     [Header("Menu elements")]
     [SerializeField] private GameObject backButtonGO;
@@ -143,5 +148,15 @@ public class MenuManager : MonoBehaviour
     public async UniTask FadeOutTransition(CanvasGroup image)
     {
         await Tween.Alpha(image, fadeOutAnimationSettings);
+    }
+
+    public async UniTask ButtonSelected(GameObject buttonGO)
+    {
+        await Tween.Scale(buttonGO.GetComponent<RectTransform>(), selectedButtonAnimationSettings);
+    }
+
+    public async UniTask ButtonDeselected(GameObject buttonGO)
+    {
+        await Tween.Scale(buttonGO.GetComponent<RectTransform>(), deselectedButtonAnimationSettings);
     }
 }

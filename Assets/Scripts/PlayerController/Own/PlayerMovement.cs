@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -339,6 +341,7 @@ public class PlayerMovement : MonoBehaviour
 
                 playerAnimation.PlayAnimation(AnimationType.Wall, 1f);
                 ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.WallSlide);
+                AudioManager.audioManagerInstance.PlayWallSlideSFX();
 
                 if (movementStats.resetJumpsOnWallJump)
                 {
@@ -349,10 +352,9 @@ public class PlayerMovement : MonoBehaviour
         else if(isWallSliding && !isTouchingWall && !isGrounded)
         {
             isWallSlideFalling = true;
-
             StopWallSlide();
         }
-        else
+        else if(isWallSliding)
         {
             StopWallSlide();
         }
@@ -374,12 +376,15 @@ public class PlayerMovement : MonoBehaviour
         {
             numberOfJumpsUsed++;
         }
+
+        ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.WallSlide);
+        AudioManager.audioManagerInstance.StopWallSlideSFX();
     }
 
     #endregion
 
     #region WallJump
-    
+
     private void ResetWallJumpValues()
     {
         isWallJumping = false;
@@ -437,7 +442,6 @@ public class PlayerMovement : MonoBehaviour
 
         playerAnimation.PlayAnimation(AnimationType.Jump, 1f);
         ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.WallJump);
-        ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.WallSlide);
         AudioManager.audioManagerInstance.PlayJumpSFX();
 
         StopWallSlide();
@@ -749,7 +753,10 @@ public class PlayerMovement : MonoBehaviour
         Vector2 boxCastSize = new Vector2(movementStats.wallDetectionRayLength, adjustedHeight);
 
         wallHit = Physics2D.BoxCast(boxCastOrigin, boxCastSize, 0f, transform.right, movementStats.wallDetectionRayLength, movementStats.groundLayer);
-        lastWallHit = wallHit;
+        if(wallHit)
+        {
+            lastWallHit = wallHit;
+        }
 
 #if UNITY_EDITOR
         if (movementStats.DebugWallCollisionRays)
@@ -809,7 +816,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void LandCheck()
     {
-        if ((isFalling || isJumping || isWallJumping || isWallJumpFalling || isWallSliding || isWallSlideFalling || isDashFastFalling) && isGrounded && verticalVelocity <= 0.01f)
+        if ((isFalling || isJumping || isWallJumping || isWallJumpFalling || isWallSliding || isWallSlideFalling || isDashFastFalling || isDashing || isDashOver) && isGrounded && verticalVelocity <= 0.01f)
         {
             ResetJumpValues();
             ResetWallJumpValues();
@@ -820,14 +827,13 @@ public class PlayerMovement : MonoBehaviour
 
             verticalVelocity = Physics2D.gravity.y;
 
-            if(isDashFastFalling && isGrounded)
-            {
-                return;
-            }
+            //if (isDashFastFalling && isGrounded)
+            //{
+            //    return;
+            //}
 
             playerAnimation.PlayAnimation(AnimationType.Land, 1f);
             ParticlesManager.particlesManagerInstance.PlayParticles(ParticleType.Land);
-            ParticlesManager.particlesManagerInstance.StopParticles(ParticleType.WallSlide);
             AudioManager.audioManagerInstance.PlayLandSFX();
         }
     }

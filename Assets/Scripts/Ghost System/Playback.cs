@@ -324,8 +324,8 @@ public class Playback : MonoBehaviour
         List<PlaybackKeyFrame> currentRunKeyFrames = new List<PlaybackKeyFrame>();
         List<PlaybackKeyFrame> savedRunKeyFrames = new List<PlaybackKeyFrame>();
 
-        Debug.Log(currentRun);
-        Debug.Log(savedRun);
+        //Debug.Log(currentRun);
+        //Debug.Log(savedRun);
 
         currentRunKeyFrames = GetPlaybackKeyFramesFromString(currentRun);
         savedRunKeyFrames = GetPlaybackKeyFramesFromString(savedRun);
@@ -339,7 +339,7 @@ public class Playback : MonoBehaviour
 
         for (int i = 0; i < minFrameCount; i++)
         {
-            Debug.Log("Comparing frame " + i);
+            //Debug.Log("Comparing frame " + i);
             for (int j = 0; j < frameThreshold; j++)
             {
                 if (i + j < currentRunKeyFrames.Count)
@@ -350,8 +350,8 @@ public class Playback : MonoBehaviour
                         sameValues++;
                         break;
                     }
-                    Debug.Log("Distance at frame " + (i + j) + " is " + distanceToGhostPos);
-                    Debug.Log("Pos are " + currentRunKeyFrames[i + j].pos + " compared to " + savedRunKeyFrames[i].pos);
+                    //Debug.Log("Distance at frame " + (i + j) + " is " + distanceToGhostPos);
+                    //Debug.Log("Pos are " + currentRunKeyFrames[i + j].pos + " compared to " + savedRunKeyFrames[i].pos);
                 }
                 if (i - j >= 0)
                 {
@@ -361,13 +361,13 @@ public class Playback : MonoBehaviour
                         sameValues++;
                         break;
                     }
-                    Debug.Log("Distance at frame " + (i - j) + " is " + distanceToGhostPos);
-                    Debug.Log("Pos are " + currentRunKeyFrames[i - j].pos + " compared to " + savedRunKeyFrames[i].pos);
+                    //Debug.Log("Distance at frame " + (i - j) + " is " + distanceToGhostPos);
+                    //Debug.Log("Pos are " + currentRunKeyFrames[i - j].pos + " compared to " + savedRunKeyFrames[i].pos);
                 }
             }
         }
 
-        Debug.Log(sameValues + "/" + savedRunKeyFrames.Count);
+        //Debug.Log(sameValues + "/" + savedRunKeyFrames.Count);
 
         return sameValues / savedRunKeyFrames.Count;
     }
