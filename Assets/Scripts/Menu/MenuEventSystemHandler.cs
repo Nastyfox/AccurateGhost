@@ -25,6 +25,8 @@ public class MenuEventSystemHandler : MonoBehaviour
 
     private Navigation previousNav;
 
+    private bool onNavigateMode;
+
     protected virtual void Awake()
     {
         foreach(Selectable selectable in selectables)
@@ -131,6 +133,11 @@ public class MenuEventSystemHandler : MonoBehaviour
             return;
         }
 
+        if (onNavigateMode)
+        {
+            return;
+        }
+
         MenuManager.menuManagerInstance.ButtonSelected(selectedGO).Forget();
     }
 
@@ -145,6 +152,12 @@ public class MenuEventSystemHandler : MonoBehaviour
 
         if (animationExclusions.Contains(selectedGO))
         {
+            return;
+        }
+
+        if(onNavigateMode)
+        {
+            onNavigateMode = false;
             return;
         }
 
@@ -180,6 +193,7 @@ public class MenuEventSystemHandler : MonoBehaviour
     {
         if (EventSystem.current.currentSelectedGameObject == null && lastSelected != null)
         {
+            onNavigateMode = true;
             EventSystem.current.SetSelectedGameObject(lastSelected.gameObject);
         }
     }

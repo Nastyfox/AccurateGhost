@@ -35,7 +35,7 @@ public class ParticlesManager : MonoBehaviour
     [SerializeField] private float dashTrailOffsetX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         if (particlesManagerInstance == null)
         {

@@ -32,23 +32,23 @@ public class PlayerAnimations : MonoBehaviour
         switch (animationType)
         {
             case AnimationType.Land:
-                playerAnimator.ResetTrigger("Jump");
-                playerAnimator.ResetTrigger("Wall");
+                //playerAnimator.ResetTrigger("Jump");
+                //playerAnimator.ResetTrigger("Wall");
                 playerAnimator.SetTrigger("Land");
                 savePlayback.NotifyTrigger(Playback.TriggerType.Land);
                 break;
             case AnimationType.Move:
-                playerAnimator.ResetTrigger("Land");
+                //playerAnimator.ResetTrigger("Land");
                 playerAnimator.SetBool("IsMoving", true);
                 break;
             case AnimationType.Jump:
-                playerAnimator.ResetTrigger("Land");
+                //playerAnimator.ResetTrigger("Land");
                 playerAnimator.ResetTrigger("Wall");
                 playerAnimator.SetTrigger("Jump");
                 savePlayback.NotifyTrigger(Playback.TriggerType.Jump);
                 break;
             case AnimationType.Wall:
-                playerAnimator.ResetTrigger("Jump");
+                //playerAnimator.ResetTrigger("Jump");
                 playerAnimator.SetTrigger("Wall");
                 savePlayback.NotifyTrigger(Playback.TriggerType.Wall);
                 break;
@@ -65,9 +65,6 @@ public class PlayerAnimations : MonoBehaviour
         {
             case AnimationType.Move:
                 playerAnimator.SetBool("IsMoving", false);
-                break;
-            case AnimationType.Land:
-                playerAnimator.ResetTrigger("Land");
                 break;
             default:
                 break;

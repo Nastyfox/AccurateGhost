@@ -129,16 +129,12 @@ public class PlayerMovementStats : ScriptableObject
 
     [Header("Grounded/Collisions")]
     public LayerMask groundLayer;
-    [Range(0.01f, 0.5f)] public float groundDetectionRayLength = 0.02f;
-    [Range(0.01f, 0.5f)] public float headDetectionRayLength = 0.02f;
-    [Range(0.01f, 0.5f)] public float wallDetectionRayLength = 0.125f;
-    [Range(0.01f, 1f)] public float wallDetectionRayHeightMultiplier = 0.9f;
-    [Range(0f, 1f)] public float headWidth = 0.75f;
 
     [Header("Debug")]
-    public bool DebugGroundCollisionRays = false;
-    public bool DebugHeadBumpCollisionRays = false;
-    public bool DebugWallCollisionRays = false;
+    public bool DebugShowIsGrounded = false;
+    public bool DebugShowHeadRays = false;
+    public bool DebugShowWallHit = false;
+    [Range(0f, 1f)] public float ExtraRayDebugDistance = 0.25f;
 
     [Header ("Jump Visualization Tool")]
     public bool showJumpArc = false;

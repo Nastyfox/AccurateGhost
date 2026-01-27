@@ -55,14 +55,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  groundDetectionRayLength: 0.1
-  headDetectionRayLength: 0.02
-  wallDetectionRayLength: 0.15
-  wallDetectionRayHeightMultiplier: 0.9
-  headWidth: 0.75
-  DebugGroundCollisionRays: 1
-  DebugHeadBumpCollisionRays: 0
-  DebugWallCollisionRays: 0
+  DebugShowIsGrounded: 1
+  DebugShowHeadRays: 1
+  DebugShowWallHit: 1
+  ExtraRayDebugDistance: 0.25
   showJumpArc: 0
   stopOnCollision: 1
   arcResolution: 20

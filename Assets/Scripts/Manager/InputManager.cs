@@ -30,7 +30,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private async UniTaskVoid Update()
+    private async UniTaskVoid FixedUpdate()
     {
         if(jumpPressed)
         {
