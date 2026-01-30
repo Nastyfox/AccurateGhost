@@ -44,9 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ae9b6ec462d1e478a14a387c113fd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayAnimationSettings:
+  positionDisplayAnimationSettings:
     startFromCurrent: 0
-    startValue: -1920
+    startValue: 1080
     endValue: 0
     settings:
       duration: 0.5
@@ -61,16 +61,16 @@ MonoBehaviour:
       cycleMode: 0
       startDelay: 0
       endDelay: 0
-      useUnscaledTime: 0
+      useUnscaledTime: 1
       _useFixedUpdate: 0
       _updateType: 0
-  hideAnimationSettings:
+  positionHideAnimationSettings:
     startFromCurrent: 0
     startValue: 0
-    endValue: -1920
+    endValue: 1080
     settings:
       duration: 0.5
-      ease: 0
+      ease: 7
       customEase:
         serializedVersion: 2
         m_Curve: []
@@ -81,16 +81,207 @@ MonoBehaviour:
       cycleMode: 0
       startDelay: 0
       endDelay: 0
-      useUnscaledTime: 0
+      useUnscaledTime: 1
       _useFixedUpdate: 0
       _updateType: 0
-  levelsButton: {fileID: 0}
-  levelGrid: {fileID: 0}
-  leaderboardButton: {fileID: 0}
-  leaderboardPanel: {fileID: 0}
-  pseudoButton: {fileID: 0}
-  pseudoPanel: {fileID: 0}
-  optionsButton: {fileID: 0}
-  optionsPanel: {fileID: 0}
+  scaleDisplayAnimationSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 1
+    settings:
+      duration: 0.5
+      ease: 27
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  scaleHideAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1
+    endValue: 0
+    settings:
+      duration: 0.5
+      ease: 26
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  backButtonDisplayAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1080
+    endValue: -100
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  backButtonHideAnimationSettings:
+    startFromCurrent: 0
+    startValue: -100
+    endValue: 1080
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  pseudoScaleButtonAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1
+    endValue: 1.25
+    settings:
+      duration: 0.75
+      ease: 4
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: -1
+      cycleMode: 1
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  countdownScaleAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1
+    endValue: 2
+    settings:
+      duration: 1
+      ease: 18
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 2
+      cycleMode: 3
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  fadeInAnimationSettings:
+    startFromCurrent: 0
+    startValue: 0
+    endValue: 1
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  fadeOutAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1
+    endValue: 0
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  selectedButtonAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1
+    endValue: 1.25
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
+  deselectedButtonAnimationSettings:
+    startFromCurrent: 0
+    startValue: 1.25
+    endValue: 1
+    settings:
+      duration: 0.5
+      ease: 7
+      customEase:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      cycles: 1
+      cycleMode: 0
+      startDelay: 0
+      endDelay: 0
+      useUnscaledTime: 1
+      _useFixedUpdate: 0
+      _updateType: 0
   backButtonGO: {fileID: 0}
-  mainMenuGO: {fileID: 0}

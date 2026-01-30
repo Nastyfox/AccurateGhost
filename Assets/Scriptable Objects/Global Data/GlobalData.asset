@@ -19,7 +19,8 @@ MonoBehaviour:
   saveRun: 0
   countdownDuration: 0
   levelDifficulty: 0
-  resultsMode: 0
+  resultsMode: 1
+  resultsModeValues: {x: 5, y: 0.5}
   masterVolume: 0.7244175
   musicVolume: 0.80750674
   sfxVolume: 0.61108994

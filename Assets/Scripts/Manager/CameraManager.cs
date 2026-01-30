@@ -12,6 +12,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Vector3 offsetFactor;
     [SerializeField] private float transitionSpeed;
 
+    [SerializeField] private float offsetWall;
+
     private async UniTaskVoid Awake()
     {
         if (cameraManagerInstance == null)
@@ -36,12 +38,19 @@ public class CameraManager : MonoBehaviour
         
     }
 
-    public void SetCameraOffset(Vector3 newOffset)
+    public void SetCameraOffset(float velocityX, int wallDirection)
     {
         if(cinemachineCamera != null)
         {
             cinemachinePositionComposer = cinemachineCamera.GetComponent<CinemachinePositionComposer>();
-            cinemachinePositionComposer.TargetOffset.x = Mathf.Lerp(cinemachinePositionComposer.TargetOffset.x, offsetFactor.x * newOffset.x, transitionSpeed * Time.fixedDeltaTime);
+            if (wallDirection != 0)
+            {
+                cinemachinePositionComposer.TargetOffset.x = Mathf.Lerp(cinemachinePositionComposer.TargetOffset.x, offsetWall * -wallDirection, transitionSpeed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                cinemachinePositionComposer.TargetOffset.x = Mathf.Lerp(cinemachinePositionComposer.TargetOffset.x, offsetFactor.x * velocityX, transitionSpeed * Time.fixedDeltaTime);
+            }
         }
     }
 }

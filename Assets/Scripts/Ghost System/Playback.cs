@@ -46,6 +46,8 @@ public class Playback : MonoBehaviour
 
     private CinemachineCamera virtualCamera;
 
+    [SerializeField] private GlobalDataScriptableObject globalDataScriptableObject;
+
     public struct PlaybackKeyFrame
     {
         public float time;

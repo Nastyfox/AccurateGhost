@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
         Hard
     }
 
-    public enum  CompareMode
+    public enum  ResultsMode
     {
         Easy,
         Medium,
@@ -28,11 +28,6 @@ public class GameManager : MonoBehaviour
 
     private ESaveSystem runSaveSystem;
     private SaveFileSetup runSaveFileSetup;
-
-    [Range(0f, 1f)]
-    [SerializeField] private float accuracyThreshold;
-    [Range(1, 5)]
-    [SerializeField] private int frameThreshold;
 
     private TextMeshProUGUI countdownText;
 
@@ -181,6 +176,9 @@ public class GameManager : MonoBehaviour
         else
         {
             DisablePlayerControls();
+
+            int frameThreshold = (int)globalDataScriptableObject.resultsModeValues.x;
+            float accuracyThreshold = globalDataScriptableObject.resultsModeValues.y;
 
             float score = savePlayback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
             startTimer = false;

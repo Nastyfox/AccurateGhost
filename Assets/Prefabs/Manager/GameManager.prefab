@@ -144,21 +144,45 @@ MonoBehaviour:
     m_ActionId: 2592cbe7-a0dd-4276-8099-9df8729879a7
     m_ActionName: 'PlayMode/Pause[/Keyboard/escape]'
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8344241064577593361}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnResume
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 25eab4ba-14ca-41bd-a781-2e291622d68d
-    m_ActionName: 'PauseMode/Resume[/Keyboard/escape]'
+      m_Calls: []
+    m_ActionId: 89a2082d-9beb-4f43-9f87-98214b89d60e
+    m_ActionName: MenuMode/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8d47d88f-ddaf-424a-bcbe-a79497973e69
+    m_ActionName: MenuMode/TrackedDevicePosition
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f081afdd-9863-4e46-be54-826e6f984c7a
+    m_ActionName: 'MenuMode/RightClick[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 53889c76-477a-42c2-b686-9c684a5c0a59
+    m_ActionName: 'MenuMode/MiddleClick[/Mouse/middleButton]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 257647e7-8ebd-4199-b295-4e0c75582bf6
+    m_ActionName: 'MenuMode/ScrollWheel[/Mouse/scroll]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b59724cf-4ccf-434d-ad05-3b7b5a0a97e5
+    m_ActionName: 'MenuMode/Click[/Mouse/leftButton,/Pen/tip]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d17c2c85-ad07-4c31-84f5-73e17d43e631
+    m_ActionName: 'MenuMode/Point[/Mouse/position,/Pen/position]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 30d81024-9fc5-40c7-8323-da80e6def2a1
+    m_ActionName: 'MenuMode/Cancel[/Keyboard/escape]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 74a20264-68ac-4dcd-80c3-af2a5ca7a287
+    m_ActionName: 'MenuMode/Submit[/Keyboard/enter]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 969256c2-129b-45bc-84ed-2f676f46985b
+    m_ActionName: 'MenuMode/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8344241064577593361}
@@ -173,11 +197,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: 87f93635-8b97-488e-8483-2199ccd3246d
-    m_ActionName: 'GhostMode/Pause[/Keyboard/escape]'
+    m_ActionId: a961869d-ba17-4f27-b9e6-cda5c6ff49fe
+    m_ActionName: 'MenuMode/Pause[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: PlayMode
+  m_DefaultActionMap: MenuMode
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &5827021054063076114
@@ -192,27 +216,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 649587a989b48f540bcd29bd1c0bf544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSaveSystem: {fileID: 0}
-  runSaveFileSetup: {fileID: 0}
-  accuracyThreshold: 0.1
-  frameThreshold: 5
-  textMeshProUGUI: {fileID: 0}
   savePlayback: {fileID: 3430494971680656794}
-  ghostPlayback: {fileID: 0}
-  replayPlayback: {fileID: 0}
-  replayButton: {fileID: 0}
   levelDifficulty: 0
-  saveRun: 1
-  displayGhostBefore: 0
-  displayGhostDuring: 0
-  inputAction: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100,
-    type: 3}
-  runDataScriptableObject: {fileID: 11400000, guid: d0742681d68c9ca42bb1555c30a6d702,
+  playerInput: {fileID: 4143752834417863104}
+  levelDataScriptableObject: {fileID: 11400000, guid: d0742681d68c9ca42bb1555c30a6d702,
     type: 2}
   globalDataScriptableObject: {fileID: 11400000, guid: 794bf381934561b41944e18d07b476b1,
     type: 2}
-  frameOffset: 0
-  pauseMenu: {fileID: 0}
+  playerPrefab: {fileID: 1133367838122955813, guid: 9934ba1accc6ac143ad15c2ce87d919a,
+    type: 3}
+  ghostPlaybackPrefab: {fileID: 5653392776868555289, guid: 53e8d12334ec5014680af2d4a90bef24,
+    type: 3}
+  replayPlaybackPrefab: {fileID: 241647785293993088, guid: d5b05183365e8c349b8c4f1f5ed6f70c,
+    type: 3}
+  runSavePrefab: {fileID: 1897771327488330492, guid: ab6f0a330e1fb4943b2c0d1fb523908c,
+    type: 3}
+  resultsModeValues:
+  - {x: 10, y: 1}
+  - {x: 5, y: 0.5}
+  - {x: 2, y: 0.1}
 --- !u!114 &3430494971680656794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,7 +250,7 @@ MonoBehaviour:
   target: {fileID: 0}
   ghostPrefab: {fileID: 0}
   timeBetweenKeyFrames: 0.02
-  virtualCamera: {fileID: 0}
+  globalDataScriptableObject: {fileID: 0}
 --- !u!114 &8344241064577593361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,20 +275,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6000f49a2998421438fb23e71d00e36e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landParticles: {fileID: 0}
-  jumpParticles: {fileID: 0}
-  moveParticles: {fileID: 0}
-  wallSlideParticles: {fileID: 0}
-  wallJumpParticles: {fileID: 0}
   moveParticlesOffsetX: 0.4
-  speedParticles: {fileID: 0}
   speedParticlesOffsetX: 11
   speedParticlesEmissionRotation: 90
   speedParticlesSpeedFactor: 0.75
   minSpeedParticlesStartSpeed: {x: 5, y: 10}
   wallSlideParticlesOffsetX: 0.6
   wallJumpParticlesOffsetX: 0.3
-  dashTrail: {fileID: 0}
   dashTrailOffsetX: 0.6
 --- !u!114 &2685761836178677224
 MonoBehaviour:

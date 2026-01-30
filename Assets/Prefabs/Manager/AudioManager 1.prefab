@@ -39,13 +39,13 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1027292390350656167}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -4679603435753899365, guid: 66aeea254ee7f914ead6b6cbed9f28c1,
     type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
@@ -175,7 +175,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -317,5 +317,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 94a5abf3d258ea9429ce5e5eeab781d8, type: 3}
   - {fileID: 8300000, guid: edb9377efd1afa2439d3e70a6f59fc7e, type: 3}
   - {fileID: 8300000, guid: 96c5da09f13476a448ea18fa7d55daad, type: 3}
+  startWallSlideSFX: {fileID: 8300000, guid: 13320870fde523c47bbeb5a4ded3a078, type: 3}
+  loopWallSlideSFX: {fileID: 8300000, guid: f1c499558c112d94a910e626372a2b9e, type: 3}
   walkSFXDelay: 5
   maxDelay: 1

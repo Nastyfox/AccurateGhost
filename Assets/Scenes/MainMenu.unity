@@ -2000,6 +2000,7 @@ GameObject:
   - component: {fileID: 221932713}
   - component: {fileID: 221932712}
   - component: {fileID: 221932711}
+  - component: {fileID: 221932716}
   m_Layer: 5
   m_Name: Options Menu Canvas
   m_TagString: Untagged
@@ -2041,6 +2042,10 @@ MonoBehaviour:
   optionsPanel: {fileID: 1610222733}
   backButton: {fileID: 1555176455}
   mainMenuAndQuitButton: {fileID: 2082263240}
+  resultsModeValues:
+  - {x: 10, y: 1}
+  - {x: 5, y: 0.5}
+  - {x: 2, y: 0.1}
 --- !u!114 &221932712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2126,6 +2131,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &221932716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221932710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd8a1b9e1b21cf4ba12edc62d5bdb23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectables:
+  - {fileID: 1555176457}
+  firstSelected: {fileID: 0}
+  navigateReference: {fileID: 415577019146699718, guid: 2bcd2660ca9b64942af0de543d8d7100,
+    type: 3}
+  submitReference: {fileID: 4005412982470921431, guid: 2bcd2660ca9b64942af0de543d8d7100,
+    type: 3}
+  animationExclusions: []
 --- !u!1 &223779648
 GameObject:
   m_ObjectHideFlags: 0
@@ -14820,35 +14845,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1939964907}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1610222737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610222733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cd8a1b9e1b21cf4ba12edc62d5bdb23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectables:
-  - {fileID: 562214233}
-  - {fileID: 551947157}
-  - {fileID: 2147061778}
-  - {fileID: 273088799}
-  - {fileID: 555496428}
-  - {fileID: 1947020436}
-  - {fileID: 321408327}
-  - {fileID: 915549644}
-  - {fileID: 903486017}
-  - {fileID: 1188794524}
-  firstSelected: {fileID: 1947020436}
-  navigateReference: {fileID: 415577019146699718, guid: 2bcd2660ca9b64942af0de543d8d7100,
-    type: 3}
-  submitReference: {fileID: 4005412982470921431, guid: 2bcd2660ca9b64942af0de543d8d7100,
-    type: 3}
-  animationExclusions: []
 --- !u!1 &1625317831
 GameObject:
   m_ObjectHideFlags: 0
@@ -17278,105 +17274,80 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 221932715}
     m_Modifications:
-    - target: {fileID: 106572447102454088, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 106572447102454088, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 106572447102454088, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 110.308014
-      objectReference: {fileID: 0}
-    - target: {fileID: 106572447102454088, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 1187.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 106572447102454088, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -55.154007
-      objectReference: {fileID: 0}
     - target: {fileID: 590623249675222520, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 590623249675222520, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 590623249675222520, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 140.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 590623249675222520, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 291.66666
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 590623249675222520, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.192505
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 768614570603096053, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 768614570603096053, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 768614570603096053, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 290.385
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 768614570603096053, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 768614570603096053, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -644.4225
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339398004129112854, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339398004129112854, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339398004129112854, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 190.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339398004129112854, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1339398004129112854, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -354.0375
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1470571768058651007, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
@@ -17385,9 +17356,9 @@ PrefabInstance:
       objectReference: {fileID: 1555176457}
     - target: {fileID: 1470571768058651007, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
-      propertyPath: m_Navigation.m_SelectOnDown
+      propertyPath: m_Navigation.m_SelectOnRight
       value: 
-      objectReference: {fileID: 555496428}
+      objectReference: {fileID: 915549644}
     - target: {fileID: 1470571768058651007, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -17396,37 +17367,37 @@ PrefabInstance:
     - target: {fileID: 1607102070547550657, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1607102070547550657, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1607102070547550657, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 140.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1607102070547550657, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 291.66666
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1607102070547550657, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.192505
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1743754094132245927, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1743754094132245927, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1991864905634561399, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
@@ -17528,50 +17499,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2551731083234448008, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2566461203130894234, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2566461203130894234, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2566461203130894234, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 110.308014
-      objectReference: {fileID: 0}
-    - target: {fileID: 2566461203130894234, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 562.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2566461203130894234, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -55.154007
-      objectReference: {fileID: 0}
     - target: {fileID: 2807771151383677610, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3002217606769274305, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3002217606769274305, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3388067642457146106, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
@@ -17581,53 +17522,53 @@ PrefabInstance:
     - target: {fileID: 3591952102021965222, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3591952102021965222, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3591952102021965222, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 140.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3591952102021965222, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1458.3333
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3591952102021965222, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.192505
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3610483402405367418, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3610483402405367418, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3610483402405367418, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 875
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3610483402405367418, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -120.192505
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4248088219919306330, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
-      propertyPath: m_Navigation.m_SelectOnUp
+      propertyPath: m_Navigation.m_SelectOnLeft
       value: 
-      objectReference: {fileID: 555496428}
+      objectReference: {fileID: 551947157}
     - target: {fileID: 4248088219919306330, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -17641,33 +17582,28 @@ PrefabInstance:
     - target: {fileID: 4390895912730590328, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4390895912730590328, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4390895912730590328, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 140.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4390895912730590328, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1458.3333
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4390895912730590328, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.192505
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4731754080173093697, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_Navigation.m_SelectOnUp
-      value: 
-      objectReference: {fileID: 555496428}
     - target: {fileID: 4731754080173093697, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -17676,27 +17612,27 @@ PrefabInstance:
     - target: {fileID: 5287882584125408627, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5287882584125408627, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5287882584125408627, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 140.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5287882584125408627, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 875
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5287882584125408627, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.192505
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5301327952438520130, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
@@ -17708,85 +17644,35 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 221932711}
-    - target: {fileID: 5347464283221801173, guid: 44e10104da4fe4440b092f99a2290ce7,
+    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5347464283221801173, guid: 44e10104da4fe4440b092f99a2290ce7,
+    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5347464283221801173, guid: 44e10104da4fe4440b092f99a2290ce7,
+    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5347464283221801173, guid: 44e10104da4fe4440b092f99a2290ce7,
+    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5347464283221801173, guid: 44e10104da4fe4440b092f99a2290ce7,
+    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 140.38501
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 960
-      objectReference: {fileID: 0}
-    - target: {fileID: 5370951265929706878, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -909.8075
-      objectReference: {fileID: 0}
-    - target: {fileID: 5707027122082081525, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5707027122082081525, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5707027122082081525, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 160.30801
-      objectReference: {fileID: 0}
-    - target: {fileID: 5707027122082081525, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 960
-      objectReference: {fileID: 0}
-    - target: {fileID: 5707027122082081525, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -999.846
       objectReference: {fileID: 0}
     - target: {fileID: 5749388396440550651, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5897535573981706922, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
@@ -17796,68 +17682,63 @@ PrefabInstance:
     - target: {fileID: 6547039566682511274, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7364625840549346843, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      propertyPath: firstSelected
-      value: 
-      objectReference: {fileID: 1947020436}
     - target: {fileID: 7532308771888664949, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7532308771888664949, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7532308771888664949, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 140.38501
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7532308771888664949, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 875
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7532308771888664949, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70.192505
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7543849981550187527, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7543849981550187527, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7543849981550187527, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 208.845
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7543849981550187527, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7543849981550187527, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -104.4225
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7766779144429081303, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
-      propertyPath: m_Navigation.m_SelectOnUp
+      propertyPath: m_Navigation.m_SelectOnRight
       value: 
-      objectReference: {fileID: 555496428}
+      objectReference: {fileID: 273088799}
     - target: {fileID: 7766779144429081303, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -17866,12 +17747,12 @@ PrefabInstance:
     - target: {fileID: 7777564985952066860, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7777564985952066860, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8122909186181223804, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
@@ -17886,28 +17767,22 @@ PrefabInstance:
     - target: {fileID: 8364441452568258141, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8364441452568258141, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8368557441245109765, guid: 44e10104da4fe4440b092f99a2290ce7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7364625840549346843, guid: 44e10104da4fe4440b092f99a2290ce7, type: 3}
-    m_RemovedGameObjects:
-    - {fileID: 5398210533951929970, guid: 44e10104da4fe4440b092f99a2290ce7, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5897535573981706922, guid: 44e10104da4fe4440b092f99a2290ce7,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1610222737}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 44e10104da4fe4440b092f99a2290ce7, type: 3}
 --- !u!114 &1947020436 stripped
 MonoBehaviour:
@@ -19704,11 +19579,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LeaderboardSystem
       objectReference: {fileID: 0}
-    - target: {fileID: 1509246430177827429, guid: 84e5b8dd37691cd4bbb38113741f257c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8939907106021552029, guid: 84e5b8dd37691cd4bbb38113741f257c,
         type: 3}
       propertyPath: m_Pivot.x
@@ -19945,21 +19815,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
-    - target: {fileID: 2973225929731015386, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: Loop
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973225929731015386, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: m_Resource
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973225929731015386, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4462135103884552148, guid: f210367a2af8e4c4caef7fac69bbe75f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -20010,26 +19865,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5261658893401230174, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: loopWallSlideSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: f1c499558c112d94a910e626372a2b9e, type: 3}
-    - target: {fileID: 5261658893401230174, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: startWallSlideSFX
-      value: 
-      objectReference: {fileID: 8300000, guid: 13320870fde523c47bbeb5a4ded3a078, type: 3}
-    - target: {fileID: 7393579401979999765, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7393579401979999765, guid: f210367a2af8e4c4caef7fac69bbe75f,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20050,504 +19885,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
         type: 3}
-      propertyPath: levelGrid
-      value: 
-      objectReference: {fileID: 1628262505}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: mainMenuGO
-      value: 
-      objectReference: {fileID: 1587802545}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoPanel
-      value: 
-      objectReference: {fileID: 2081982983}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
       propertyPath: backButtonGO
       value: 
       objectReference: {fileID: 1555176455}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: levelsButton
-      value: 
-      objectReference: {fileID: 398666636}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: optionsPanel
-      value: 
-      objectReference: {fileID: 1610222733}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoButton
-      value: 
-      objectReference: {fileID: 1669461469}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: optionsButton
-      value: 
-      objectReference: {fileID: 1730147911}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: leaderboardPanel
-      value: 
-      objectReference: {fileID: 928317036}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: leaderboardButton
-      value: 
-      objectReference: {fileID: 1744401485}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideSettings.endValue
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleAnimationSettings.endValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeInAnimationSettings.endValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideSettings.startValue
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplaySettings.endValue
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeOutAnimationSettings.startValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: hideAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplaySettings.startValue
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleAnimationSettings.settings.ease
-      value: 27
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeInAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleHideAnimationSettings.startValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeOutAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionHideAnimationSettings.endValue
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleDisplayAnimationSettings.endValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplaySettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeInAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideAnimationSettings.endValue
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.endValue
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeOutAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleHideAnimationSettings.settings.ease
-      value: 26
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: selectedButtonAnimationSettings.endValue
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplaySettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeInAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideAnimationSettings.startValue
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.startValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: deselectedButtonAnimationSettings.endValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeOutAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleHideAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: selectedButtonAnimationSettings.startValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplayAnimationSettings.endValue
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplaySettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionDisplayAnimationSettings.startValue
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionHideAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.endValue
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleDisplayAnimationSettings.settings.ease
-      value: 27
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: deselectedButtonAnimationSettings.startValue
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleButtonAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleHideAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplayAnimationSettings.startValue
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.settings.ease
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionHideAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.startValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleDisplayAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: selectedButtonAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: hideAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionDisplayAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleButtonAnimationSettings.settings.duration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.settings.cycles
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: deselectedButtonAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionHideAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleDisplayAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: selectedButtonAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplayAnimationSettings.settings.ease
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeInAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionDisplayAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.settings.ease
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.settings.duration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: deselectedButtonAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: displayAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: fadeOutAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: selectedButtonAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplayAnimationSettings.settings.cycles
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplaySettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.settings.cycleMode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionDisplayAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.settings.cycles
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: deselectedButtonAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleHideAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplayAnimationSettings.settings.duration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.settings.duration
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.settings.cycleMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionHideAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: scaleDisplayAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonHideAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: countdownScaleAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: selectedButtonAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: positionDisplayAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: deselectedButtonAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: backButtonDisplayAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5801735247393095852, guid: 2d4ae7501b01d594d8bad7dcf3442641,
-        type: 3}
-      propertyPath: pseudoScaleButtonAnimationSettings.settings.useUnscaledTime
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6305320847491738723, guid: 2d4ae7501b01d594d8bad7dcf3442641,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -33,7 +33,7 @@ MonoBehaviour:
   timeForUpwardsCancel: 0.03
   apexThreshold: 0.95
   apexHangDuration: 0.025
-  jumpBufferDuration: 1
+  jumpBufferDuration: 0.125
   jumpCoyoteDuration: 0.15
   resetJumpsOnWallJump: 0
   wallJumpDirection: {x: -15, y: 5}
@@ -52,6 +52,7 @@ MonoBehaviour:
   resetDashesOnWallJump: 1
   dashDurationForUpwardsCancel: 0.03
   dashGravityOnReleaseMultiplier: 1.1
+  dashBufferDuration: 0.125
   groundLayer:
     serializedVersion: 2
     m_Bits: 256

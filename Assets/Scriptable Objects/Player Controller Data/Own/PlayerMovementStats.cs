@@ -17,6 +17,7 @@ public class PlayerMovementStats : ScriptableObject
     [Range(0.25f, 50f)] public float airDeceleration = 5f;
     [Range(0.25f, 50f)] public float wallJumpMoveAcceleration = 5f;
     [Range(0.25f, 50f)] public float wallJumpMoveDeceleration = 5f;
+    [Range(-5f, 0f)] public float groundedGravity = -2f;
 
     [Header("Run")]
     [Range(1f, 100f)] public float maxRunSpeed = 20f;
@@ -29,7 +30,7 @@ public class PlayerMovementStats : ScriptableObject
     [Range(0.01f, 5f)] public float jumpCutGravityMultiplier = 2f;
     [Range(5f, 50f)] public float maxFallSpeed = 26f;
     [Range(5f, 50f)] public float maxJumpSpeed = 50f;
-    [Range(1, 5)] public int numberOfJumpsAllowed = 1;
+    [Range(0, 5)] public int numberOfAirJumpsAllowed = 0;
     [Header("Jump Cut")]
     [Range(0.02f, 0.3f)] public float timeForUpwardsCancel = 0.027f;
     [Header("Jump Apex")]
@@ -89,6 +90,7 @@ public class PlayerMovementStats : ScriptableObject
     [Header("Dash Cancel")]
     [Range(0.01f, 0.5f)] public float dashDurationForUpwardsCancel = 0.03f;
     [Range(0.01f, 5f)] public float dashGravityOnReleaseMultiplier = 1f;
+    [Range(0f, 1f)] public float dashBufferDuration = 0.125f;
 
     public readonly Vector2[] dashDirections = new Vector2[]
     {

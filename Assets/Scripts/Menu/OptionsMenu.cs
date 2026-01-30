@@ -43,6 +43,8 @@ public class OptionsMenu : MonoBehaviour
 
     public static bool isGamePaused;
 
+    [SerializeField] private Vector2[] resultsModeValues;
+
     private void Start()
     {
         if (optionsMenuInstance == null)
@@ -50,7 +52,7 @@ public class OptionsMenu : MonoBehaviour
             optionsMenuInstance = this;
             DontDestroyOnLoad(this.gameObject);
 
-            GameManager.CompareMode[] resultsModes = (GameManager.CompareMode[])Enum.GetValues(typeof(GameManager.CompareMode));
+            GameManager.ResultsMode[] resultsModes = (GameManager.ResultsMode[])Enum.GetValues(typeof(GameManager.ResultsMode));
 
             for (int i = 0; i < resultsModes.Length; i++)
             {
@@ -129,7 +131,8 @@ public class OptionsMenu : MonoBehaviour
 
     public void SetResultsMode(int modeIndex)
     {
-        globalDataScriptableObject.resultsMode = (GameManager.CompareMode)modeIndex;
+        globalDataScriptableObject.resultsMode = (GameManager.ResultsMode)modeIndex;
+        globalDataScriptableObject.resultsModeValues = resultsModeValues[(int)globalDataScriptableObject.resultsMode];
     }
 
     private async UniTask SelectDifficulty(GameManager.LevelDifficulty difficulty)

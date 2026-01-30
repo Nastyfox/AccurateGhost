@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GlobalData", menuName= "ScriptableObjects/GlobalData")]
@@ -13,7 +14,8 @@ public class GlobalDataScriptableObject : ScriptableObject
     public bool saveRun;
     public int countdownDuration;
     public GameManager.LevelDifficulty levelDifficulty;
-    public GameManager.CompareMode resultsMode;
+    public GameManager.ResultsMode resultsMode;
+    public Vector2 resultsModeValues;
 
     [Header("Audio Settings")]
     [Range(0.0001f, 1f)] public float masterVolume;
