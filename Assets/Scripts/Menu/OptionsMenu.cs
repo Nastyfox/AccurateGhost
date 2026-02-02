@@ -54,6 +54,7 @@ public class OptionsMenu : MonoBehaviour
 
             GameManager.ResultsMode[] resultsModes = (GameManager.ResultsMode[])Enum.GetValues(typeof(GameManager.ResultsMode));
 
+            resultsModesDropdown.ClearOptions();
             for (int i = 0; i < resultsModes.Length; i++)
             {
                 resultsModesDropdown.options.Add(new TMP_Dropdown.OptionData { text = resultsModes[i].ToString() });

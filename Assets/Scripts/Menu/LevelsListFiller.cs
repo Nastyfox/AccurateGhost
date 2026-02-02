@@ -65,7 +65,7 @@ public class LevelsListFiller : MonoBehaviour
                         levelButton = Instantiate(levelButtonPrefab, levelGrid);
                         levelButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + "\n" + difficulties[j];
                         levelButton.GetComponent<Button>().onClick.AddListener(async () => {
-                            await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, difficulties[j]);
+                            await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, currentLevelDifficulty);
                         });
 
                         menuEventSystemHandler.AddSelectable(levelButton.GetComponent<Selectable>());

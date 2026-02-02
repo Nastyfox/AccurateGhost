@@ -13,12 +13,11 @@ public class LeaderboardFiller : MonoBehaviour
     [SerializeField] private List<Sprite> medalSprites;
 
     [SerializeField] private Transform levelsContainer;
-    [SerializeField] private Transform levelsTabsContainer;
+    [SerializeField] private TMP_Dropdown levelsDropdown;
+    [SerializeField] private TMP_Dropdown ghostDropdown;
 
     [SerializeField] private GameObject leaderboardDataContainerPrefab;
     [SerializeField] private GameObject levelTabButtonPrefab;
-    private List<GameObject> levelLeaderboardsList = new List<GameObject>();
-    private List<GameObject> levelTabsButtonsList = new List<GameObject>();
 
     [SerializeField] private GameObject rankTextPrefab;
     [SerializeField] private GameObject pseudoTextPrefab;
@@ -28,18 +27,16 @@ public class LeaderboardFiller : MonoBehaviour
 
     private List<Unity.Services.Leaderboards.Models.LeaderboardEntry> scoreData;
 
-    private int currentTabIndex = 0;
-
     private double currentScore = 0;
     private int currentRank = 1;
     private Dictionary<double, int> sameScoreCount = new Dictionary<double, int>();
 
     private string playerID;
 
-    [SerializeField] private MenuEventSystemHandler menuEventSystemHandler;
-
-    private bool firstSelected;
-
+    private Dictionary<string, List<string>> ghostListPerLevel = new Dictionary<string, List<string>>();
+    private bool firstLevelGhostDropdownSet;
+    private Dictionary<string, GameObject> leaderboardTabPerName = new Dictionary<string, GameObject>();
+    private List<GameObject> leaderboardTabs = new List<GameObject>();
 
     private class LeaderboardResult
     {
@@ -66,12 +63,15 @@ public class LeaderboardFiller : MonoBehaviour
         playerID = Leaderboard.leaderboardInstance.GetPlayerID();
 
         levelsContainer.DeleteChildren();
-        levelsTabsContainer.DeleteChildren();
+        levelsDropdown.ClearOptions();
+        ghostDropdown.ClearOptions();
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
 
         GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
+
+        string firstTabSelected = "";
 
         for (int i = 0; i < sceneCount; i++)
         {
@@ -80,29 +80,25 @@ public class LeaderboardFiller : MonoBehaviour
 
             if (sceneName.Contains("Level"))
             {
-                for(int j = 0; j < difficulties.Length; j++)
+                levelsDropdown.options.Add(new TMP_Dropdown.OptionData { text = sceneName });
+                SetGhostDropdownList(sceneName, difficulties);
+
+                for (int j = 0; j < difficulties.Length; j++)
                 {
-                    string levelName = sceneName + "_" + difficulties[j];
+                    if(!firstLevelGhostDropdownSet && j == 0)
+                    {
+                        firstTabSelected = GetTabName(sceneName, difficulties[j].ToString());
+                        SetGhostDropdown(sceneName);
+                    }
+
+                    string levelName = GetTabName(sceneName, difficulties[j].ToString());
 
                     scoreData = await Leaderboard.leaderboardInstance.GetScoresWithMetadata(levelName);
                     List<LeaderboardResult> levelResults = LeaderboardDataToResults();
                     SetNumberSameScore(levelResults);
                     GameObject levelLeaderboard = Instantiate(leaderboardDataContainerPrefab, levelsContainer);
-                    levelLeaderboardsList.Add(levelLeaderboard);
-                    GameObject levelTab = Instantiate(levelTabButtonPrefab, levelsTabsContainer);
-                    Button levelTabButton = levelTab.GetComponent<Button>();
-                    levelTabButton.GetComponentInChildren<TextMeshProUGUI>().text = sceneName + " " + difficulties[j];
-                    int capturedIndex = currentTabIndex;
-                    levelTabButton.onClick.AddListener(() => SelectLevelTab(capturedIndex));
-                    levelTabsButtonsList.Add(levelTab);
-                    currentTabIndex++;
-                    menuEventSystemHandler.AddSelectable(levelTab.GetComponent<Selectable>());
-                    menuEventSystemHandler.AddAnimationExclusion(levelTab.GetComponent<Selectable>());
-                    if(!firstSelected)
-                    {
-                        menuEventSystemHandler.SetFirstSelected(levelTab.GetComponent<Selectable>());
-                        firstSelected = true;
-                    }
+                    leaderboardTabPerName.Add(levelName, levelLeaderboard);
+                    leaderboardTabs.Add(levelLeaderboard);
 
                     currentScore = levelResults[0].score;
 
@@ -150,15 +146,15 @@ public class LeaderboardFiller : MonoBehaviour
                 }
             }
         }
-
-        currentTabIndex = 0;
-        SelectLevelTab(0);
+    
+        DisplayLevelGhostLeaderboard(firstTabSelected);
     }
 
     private void OnDisable()
     {
         levelsContainer.DeleteChildren();
-        levelsTabsContainer.DeleteChildren();
+        levelsDropdown.ClearOptions();
+        ghostDropdown.ClearOptions();
     }
 
     private List<LeaderboardResult> LeaderboardDataToResults()
@@ -172,6 +168,11 @@ public class LeaderboardFiller : MonoBehaviour
         return result;
     }
 
+    private string GetTabName(string levelName, string ghostName)
+    {
+        return levelName + "_" + ghostName;
+    }
+
     private void SetNumberSameScore(List<LeaderboardResult> levelResults)
     {
         foreach (var group in levelResults.GroupBy(i => i.score))
@@ -180,13 +181,70 @@ public class LeaderboardFiller : MonoBehaviour
         }
     }
 
+    private void SetGhostDropdown(string levelName)
+    {
+        ghostDropdown.ClearOptions();
+
+        foreach (string ghostName in ghostListPerLevel[levelName])
+        {
+            ghostDropdown.options.Add(new TMP_Dropdown.OptionData { text = ghostName.ToString() });
+        }
+
+        firstLevelGhostDropdownSet = true;
+    }
+
+    private void SetGhostDropdownList(string levelName, GameManager.LevelDifficulty[] difficulties)
+    {
+        List<string> ghostList = new List<string>();
+
+        for (int i = 0; i < difficulties.Length; i++)
+        {
+            ghostList.Add(difficulties[i].ToString());
+        }
+
+        ghostListPerLevel.Add(levelName, ghostList);
+    }
+
+    public void OnChangeLevelDropdown(int levelIndex)
+    {
+        string levelName = levelsDropdown.options[levelIndex].text;
+        SetGhostDropdown(levelName);
+
+        string firstGhostName = ghostListPerLevel[levelName][0];
+
+        string tabName = GetTabName(levelName, firstGhostName);
+        
+        DisplayLevelGhostLeaderboard(tabName);
+    }
+
+    public void OnChangeGhostDropdown(int ghostIndex)
+    {
+        string levelName = levelsDropdown.options[levelsDropdown.value].text;
+
+        string ghostName = ghostDropdown.options[ghostIndex].text;
+
+        string tabName = GetTabName(levelName, ghostName);
+
+        DisplayLevelGhostLeaderboard(tabName);
+    }
+
+    private void DisplayLevelGhostLeaderboard(string tabName)
+    {
+        foreach(GameObject leaderboardTab in leaderboardTabs)
+        {
+            leaderboardTab.SetActive(false);
+        }
+
+        leaderboardTabPerName[tabName].SetActive(true);
+    }
+
     private string GetMedalFromScore(double score)
     {
-        if (score >= 80.0)
+        if (score > 20.0)
         {
             return "Gold";
         }
-        else if (score >= 50.0)
+        else if (score > 100.0)
         {
             return "Silver";
         }
@@ -198,14 +256,5 @@ public class LeaderboardFiller : MonoBehaviour
         {
             return "None";
         }
-    }
-
-    private void SelectLevelTab(int index)
-    {
-        foreach (GameObject levelLeaderboard in levelLeaderboardsList)
-        {
-            levelLeaderboard.SetActive(false);
-        }
-        levelLeaderboardsList[index].SetActive(true);
     }
 }

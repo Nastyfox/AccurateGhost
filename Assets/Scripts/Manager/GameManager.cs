@@ -152,6 +152,8 @@ public class GameManager : MonoBehaviour
 
         countdownText.text = "GO !";
         startTimer = true;
+        EnablePlayerControls();
+
         await MenuManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 1f);
         countdownText.gameObject.SetActive(false);
     }
@@ -186,6 +188,7 @@ public class GameManager : MonoBehaviour
 
             int scorePercent = (int)(score * 100);
             await ResultsMenu.resultsMenuInstance.ResultsLevel(scorePercent);
+            int scoreLeaderboard = scorePercent * ((int)globalDataScriptableObject.resultsMode + 1);
 
             int timeInSecondsInt = (int)time;  //We don't care about fractions of a second, so easy to drop them by just converting to an int
             int minutes = timeInSecondsInt / 60;  //Get total minutes
@@ -219,8 +222,6 @@ public class GameManager : MonoBehaviour
         {
             await StartCountdown(globalDataScriptableObject.countdownDuration);
         }
-
-        EnablePlayerControls();
     }
 
     private async UniTask DisplayPlayback(Playback playback, bool follow, bool startRun, int frameOffset, string run)
@@ -278,6 +279,7 @@ public class GameManager : MonoBehaviour
         {
             isCameraFollowingGhost = true;
             await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, true, 0, savedRun);
+            isCameraFollowingGhost = false;
             cinemachineCamera.Target.TrackingTarget = player.transform;
         }
         else

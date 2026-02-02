@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ab18bf97987df4491ddafc361fe5cd, type: 3}
   m_Name: GlobalData
   m_EditorClassIdentifier: 
-  pseudo: TEST
-  displayGhostBefore: 0
-  displayGhostDuring: 1
+  pseudo: Julien
+  displayGhostBefore: 1
+  displayGhostDuring: 0
   frameOffset: 0
   saveRun: 0
-  countdownDuration: 0
+  countdownDuration: 3
   levelDifficulty: 0
-  resultsMode: 1
+  resultsMode: 0
   resultsModeValues: {x: 5, y: 0.5}
   masterVolume: 0.7244175
   musicVolume: 0.80750674
