@@ -20,7 +20,7 @@ public class PseudoMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
+        pseudo = globalDataScriptableObject.pseudo;
 
         if (!string.IsNullOrEmpty(pseudo))
         {

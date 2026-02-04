@@ -1,12 +1,4 @@
-using Cysharp.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
-using UnityEngine.Rendering;
-using static UnityEngine.UI.Image;
 
 public class PlayerMovement : MonoBehaviour
 {
