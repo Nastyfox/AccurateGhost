@@ -1,8 +1,6 @@
 using Esper.ESave;
 using TMPro;
 using UnityEngine;
-using PrimeTween;
-using UnityEngine.UI;
 
 public class PseudoMenu : MonoBehaviour
 {

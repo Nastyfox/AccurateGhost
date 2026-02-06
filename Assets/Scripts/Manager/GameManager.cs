@@ -3,6 +3,8 @@ using Esper.ESave;
 using System;
 using TMPro;
 using Unity.Cinemachine;
+using Unity.Services.CloudCode;
+using Unity.Services.CloudCode.GeneratedBindings;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -70,6 +72,8 @@ public class GameManager : MonoBehaviour
 
     private event Action displayGhostDuringDelegate;
 
+    private GhostSaveBindings ghostSaveBindings;
+
     public bool GetIsCameraFollowingGhost()
     {
         return isCameraFollowingGhost;
@@ -109,6 +113,8 @@ public class GameManager : MonoBehaviour
         {
             levelDifficulty = LevelLoader.levelLoaderInstance.GetSelectedDifficulty();
         }
+
+        ghostSaveBindings = new GhostSaveBindings(CloudCodeService.Instance);
     }
 
     private void Awake()
@@ -173,7 +179,10 @@ public class GameManager : MonoBehaviour
 
         if (saveRun)
         {
+            string ghostName = SceneManager.GetActiveScene().name + "_" + globalDataScriptableObject.pseudo;
             runSaveSystem.SaveRun(currentRun, levelDifficulty, SceneManager.GetActiveScene().name, runSaveFileSetup);
+            await ghostSaveBindings.SaveGhostData(currentRun, ghostName);
+            //await ghostSaveBindings.InitGhostData();
         }
         else
         {
