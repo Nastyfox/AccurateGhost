@@ -42,18 +42,18 @@ public class ResultsMenu : MonoBehaviour
 
             replayButton.onClick.AddListener(async () => {
                 resultsPanel.SetActive(false);
-                await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
+                await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.ghostName);
             });
 
             nextButton.onClick.AddListener(async () => {
                 resultsPanel.SetActive(false);
                 string sceneName = SceneManager.GetActiveScene().name;
-                if (globalDataScriptableObject.levelDifficulty.Next() == GameManager.LevelDifficulty.Easy)
+                if (globalDataScriptableObject.levelGhostsNames.IndexOf(globalDataScriptableObject.ghostName) == globalDataScriptableObject.levelGhostsNames.Count - 1)
                 {
                     int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
                     sceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex).name;
                 }
-                await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty.Next());
+                await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, GameManager.LevelDifficulty.Easy.ToString());
             });
 
             mainMenuButton.onClick.AddListener(async () =>
@@ -92,7 +92,7 @@ public class ResultsMenu : MonoBehaviour
         GameManager.gameManagerInstance.UnsubscribeGhostDuring();
         ResetResults();
         player.SetActive(false);
-        await MenuManager.menuManagerInstance.DisplayMenu(resultsPanel, null, MenuManager.AnimationType.Scale);
+        await MenuAnimationManager.menuManagerInstance.DisplayMenu(resultsPanel, null, MenuAnimationManager.AnimationType.Scale);
         resultsSliderAnimationSettings.endValue = result;
         await Tween.UISliderValue(resultsSlider, resultsSliderAnimationSettings);
         resultsText.text = result.ToString() + "%";

@@ -27,7 +27,7 @@ public class PseudoMenu : MonoBehaviour
         }
         else
         {
-            MenuManager.menuManagerInstance.PseudoScaleButton(pseudoButton);
+            MenuAnimationManager.menuManagerInstance.PseudoScaleButton(pseudoButton);
         }
     }
 
@@ -36,7 +36,7 @@ public class PseudoMenu : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(pseudo))
         {
-            MenuManager.menuManagerInstance.StopPseudoScaleButton();
+            MenuAnimationManager.menuManagerInstance.StopPseudoScaleButton();
         }
     }
 

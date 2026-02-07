@@ -8,17 +8,17 @@
     ".NETCoreApp,Version=v6.0": {
       "CloudSave/1.0.0": {
         "dependencies": {
-          "Com.Unity.Services.CloudCode.Apis": "0.0.9",
-          "Com.Unity.Services.CloudCode.Core": "0.0.1",
+          "Com.Unity.Services.CloudCode.Apis": "0.0.21",
+          "Com.Unity.Services.CloudCode.Core": "0.0.2",
           "Microsoft.Extensions.Logging.Abstractions": "7.0.1"
         },
         "runtime": {
           "CloudSave.dll": {}
         }
       },
-      "Com.Unity.Services.CloudCode.Apis/0.0.9": {
+      "Com.Unity.Services.CloudCode.Apis/0.0.21": {
         "dependencies": {
-          "Com.Unity.Services.CloudCode.Core": "0.0.1",
+          "Com.Unity.Services.CloudCode.Core": "0.0.2",
           "Google.Protobuf": "3.22.1",
           "Grpc.Net.Client": "2.52.0",
           "JsonSubTypes": "2.0.1",
@@ -26,19 +26,19 @@
         },
         "runtime": {
           "lib/netstandard2.1/Unity.Services.CloudCode.Apis.dll": {
-            "assemblyVersion": "0.0.9.0",
-            "fileVersion": "0.0.9.0"
+            "assemblyVersion": "0.0.21.0",
+            "fileVersion": "0.0.21.0"
           }
         }
       },
-      "Com.Unity.Services.CloudCode.Core/0.0.1": {
+      "Com.Unity.Services.CloudCode.Core/0.0.2": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0"
         },
         "runtime": {
           "lib/netstandard2.1/Unity.Services.CloudCode.Core.dll": {
-            "assemblyVersion": "0.0.1.0",
-            "fileVersion": "0.0.1.0"
+            "assemblyVersion": "0.0.2.0",
+            "fileVersion": "0.0.2.0"
           }
         }
       },
@@ -124,19 +124,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Com.Unity.Services.CloudCode.Apis/0.0.9": {
+    "Com.Unity.Services.CloudCode.Apis/0.0.21": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-U2DsEKU8lEgf3+oPQ/F3P8MNlVVD5TyVq8v8Khk86W5INQdXr3QHL0mblVIoDSFiHiBV6lID3EmgorUcwsJQ2w==",
-      "path": "com.unity.services.cloudcode.apis/0.0.9",
-      "hashPath": "com.unity.services.cloudcode.apis.0.0.9.nupkg.sha512"
+      "sha512": "sha512-azsIm/+iD+xYv2nEV0FGSmwhU4nI91sjdDp63qyfl97oBw+icKfhI3s/N2nDrHHvTVn1fagOUwYLvsySjBggJA==",
+      "path": "com.unity.services.cloudcode.apis/0.0.21",
+      "hashPath": "com.unity.services.cloudcode.apis.0.0.21.nupkg.sha512"
     },
-    "Com.Unity.Services.CloudCode.Core/0.0.1": {
+    "Com.Unity.Services.CloudCode.Core/0.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-pgr0nf+PcmAYDL8ey3fBwIUlZSUcVEa98dkWJI0/1jupxaNFQinUwUkBdSIdhmes8Emx6tds7qvPGBTdvm93fA==",
-      "path": "com.unity.services.cloudcode.core/0.0.1",
-      "hashPath": "com.unity.services.cloudcode.core.0.0.1.nupkg.sha512"
+      "sha512": "sha512-kMwbiwsrd/Z8iiaXPMHgb98itFOu70iRwXjb8IYkdLAAbHJPjiC5USij49bV5iB2xI6FUgaGvMawMTOkHF9ubA==",
+      "path": "com.unity.services.cloudcode.core/0.0.2",
+      "hashPath": "com.unity.services.cloudcode.core.0.0.2.nupkg.sha512"
     },
     "Google.Protobuf/3.22.1": {
       "type": "package",

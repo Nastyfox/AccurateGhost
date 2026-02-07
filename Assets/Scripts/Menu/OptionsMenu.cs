@@ -136,11 +136,11 @@ public class OptionsMenu : MonoBehaviour
         globalDataScriptableObject.resultsModeValues = resultsModeValues[(int)globalDataScriptableObject.resultsMode];
     }
 
-    private async UniTask SelectDifficulty(GameManager.LevelDifficulty difficulty)
+    private async UniTask SelectGhost(string ghostName)
     {
         string pseudo = playerDataSaveSystem.LoadPlayerData(playerDataSaveFileSetup, "Pseudo");
         optionsPanel.SetActive(false);
-        await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, difficulty);
+        await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, ghostName);
     }
 
     public void SetOptionsMenu()
@@ -168,7 +168,7 @@ public class OptionsMenu : MonoBehaviour
         {
             ResumeFromPause().Forget();
             GameManager.gameManagerInstance.UnsubscribeGhostDuring();
-            await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.levelDifficulty);
+            await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.ghostName);
         });
     }
 
@@ -176,13 +176,13 @@ public class OptionsMenu : MonoBehaviour
     {
         isGamePaused = true;
         Time.timeScale = 0f;
-        await MenuManager.menuManagerInstance.DisplayMenu(optionsPanel, null, MenuManager.AnimationType.Scale);
+        await MenuAnimationManager.menuManagerInstance.DisplayMenu(optionsPanel, null, MenuAnimationManager.AnimationType.Scale);
     }
 
     public async UniTask ResumeFromPause()
     {
         isGamePaused = false;
         Time.timeScale = 1f;
-        await MenuManager.menuManagerInstance.HideMenu(optionsPanel, null, MenuManager.AnimationType.Scale);
+        await MenuAnimationManager.menuManagerInstance.HideMenu(optionsPanel, null, MenuAnimationManager.AnimationType.Scale);
     }
 }

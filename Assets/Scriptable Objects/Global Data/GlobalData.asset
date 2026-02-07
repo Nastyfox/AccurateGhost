@@ -16,11 +16,18 @@ MonoBehaviour:
   displayGhostBefore: 0
   displayGhostDuring: 0
   frameOffset: 0
-  saveRun: 1
+  saveCustomRun: 0
+  saveClassicRun: 0
   countdownDuration: 3
+  ghostName: Easy
   levelDifficulty: 0
   resultsMode: 0
   resultsModeValues: {x: 10, y: 1}
   masterVolume: 0.8
   musicVolume: 0.8
   sfxVolume: 0.8
+  levelGhostsNames:
+  - Easy
+  - Medium
+  - Hard
+  - Julien

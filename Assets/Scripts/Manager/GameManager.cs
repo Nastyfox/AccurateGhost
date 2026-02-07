@@ -39,9 +39,11 @@ public class GameManager : MonoBehaviour
 
     private int remainingTimeBeforeStart;
 
-    [SerializeField] private LevelDifficulty levelDifficulty;
+    private LevelDifficulty levelDifficulty;
+    private string ghostName;
 
-    private bool saveRun;
+    private bool saveClassicRun;
+    private bool saveCustomRun;
     private bool displayGhostBefore;
     private bool displayGhostDuring;
     private int frameOffset;
@@ -73,6 +75,7 @@ public class GameManager : MonoBehaviour
     private event Action displayGhostDuringDelegate;
 
     private GhostSaveBindings ghostSaveBindings;
+    private LeaderboardAdmin leaderboardAdmin;
 
     public bool GetIsCameraFollowingGhost()
     {
@@ -115,6 +118,7 @@ public class GameManager : MonoBehaviour
         }
 
         ghostSaveBindings = new GhostSaveBindings(CloudCodeService.Instance);
+        leaderboardAdmin = new LeaderboardAdmin(CloudCodeService.Instance);
     }
 
     private void Awake()
@@ -152,7 +156,7 @@ public class GameManager : MonoBehaviour
         while (remainingTimeBeforeStart > 0)
         {
             countdownText.text = remainingTimeBeforeStart.ToString();
-            await MenuManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 0.5f);
+            await MenuAnimationManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 0.5f);
             remainingTimeBeforeStart--;
         }
 
@@ -160,7 +164,7 @@ public class GameManager : MonoBehaviour
         startTimer = true;
         EnablePlayerControls();
 
-        await MenuManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 1f);
+        await MenuAnimationManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 1f);
         countdownText.gameObject.SetActive(false);
     }
 
@@ -177,12 +181,41 @@ public class GameManager : MonoBehaviour
 
         currentRun = savePlayback.GetSavedDatas();
 
-        if (saveRun)
+        if (saveClassicRun)
+        {
+            runSaveSystem.SaveRun(currentRun, levelDifficulty, SceneManager.GetActiveScene().name, runSaveFileSetup);
+        }
+        else if(saveCustomRun)
         {
             string ghostName = SceneManager.GetActiveScene().name + "_" + globalDataScriptableObject.pseudo;
-            runSaveSystem.SaveRun(currentRun, levelDifficulty, SceneManager.GetActiveScene().name, runSaveFileSetup);
-            await ghostSaveBindings.SaveGhostData(currentRun, ghostName);
-            //await ghostSaveBindings.InitGhostData();
+
+            try
+            {
+                await ghostSaveBindings.SaveGhostData(currentRun, ghostName);
+                Debug.Log("Ghost data saved");
+            }
+            catch
+            {
+                Debug.Log("Saving ghost data failed");
+            }
+
+            try
+            {
+                await Leaderboard.leaderboardInstance.GetScoresWithMetadata(ghostName);
+                Debug.Log("Leaderboard already exists");
+            }
+            catch
+            {
+                try
+                {
+                    await leaderboardAdmin.CreateLeaderboard(ghostName);
+                    Debug.Log("Leaderboad created");
+                }
+                catch
+                {
+                    Debug.Log("Leaderboard creation failed");
+                }
+            }
         }
         else
         {
@@ -193,7 +226,7 @@ public class GameManager : MonoBehaviour
 
             float score = savePlayback.CompareRuns(currentRun, savedRun, accuracyThreshold, frameThreshold);
             startTimer = false;
-            string levelName = SceneManager.GetActiveScene().name + "_" + levelDifficulty.ToString();
+            string levelName = SceneManager.GetActiveScene().name + "_" + ghostName;
 
             int scorePercent = (int)(score * 100);
             await ResultsMenu.resultsMenuInstance.ResultsLevel(scorePercent);
@@ -204,7 +237,7 @@ public class GameManager : MonoBehaviour
             int seconds = timeInSecondsInt - (minutes * 60);  //Get seconds for display alongside minutes
             int milliSeconds = timeInSecondsInt - (minutes * 60 + seconds);  //Get seconds for display alongside minutes
             string timeText = minutes.ToString("D2") + ":" + seconds.ToString("D2") + ":" + milliSeconds.ToString("D2");
-            
+
             await Leaderboard.leaderboardInstance.AddScoreWithMetadata(levelName, scorePercent, timeText, playerPseudo);
         }
     }
@@ -257,18 +290,24 @@ public class GameManager : MonoBehaviour
         displayGhostBefore = globalDataScriptableObject.displayGhostBefore;
         displayGhostDuring = globalDataScriptableObject.displayGhostDuring;
         frameOffset = globalDataScriptableObject.frameOffset;
-        saveRun = globalDataScriptableObject.saveRun;
+        saveClassicRun = globalDataScriptableObject.saveClassicRun;
+        saveCustomRun = globalDataScriptableObject.saveCustomRun;
         levelDifficulty = globalDataScriptableObject.levelDifficulty;
+        ghostName = globalDataScriptableObject.ghostName;
 
         savePlayback.ResetPlayback();
 
-        if (!saveRun)
+        if (!saveClassicRun && !saveCustomRun)
         {
             DisablePlayerControls();
         }
 
-        savedRun = runSaveSystem.LoadRun(runSaveFileSetup, levelDifficulty, SceneManager.GetActiveScene().name);
-        if (savedRun == null)
+        //savedRun = runSaveSystem.LoadRun(runSaveFileSetup, ghostName, SceneManager.GetActiveScene().name);
+        try
+        {
+            savedRun = globalDataScriptableObject.ghostsDatas[SceneManager.GetActiveScene().name + "_" + ghostName];
+        }
+        catch
         {
             switch (levelDifficulty)
             {

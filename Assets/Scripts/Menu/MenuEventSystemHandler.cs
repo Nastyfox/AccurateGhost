@@ -138,7 +138,7 @@ public class MenuEventSystemHandler : MonoBehaviour
             return;
         }
 
-        MenuManager.menuManagerInstance.ButtonSelected(selectedGO).Forget();
+        MenuAnimationManager.menuManagerInstance.ButtonSelected(selectedGO).Forget();
     }
 
     public void OnDeselect(BaseEventData baseEventData)
@@ -161,7 +161,7 @@ public class MenuEventSystemHandler : MonoBehaviour
             return;
         }
 
-        MenuManager.menuManagerInstance.ButtonDeselected(selectedGO).Forget();
+        MenuAnimationManager.menuManagerInstance.ButtonDeselected(selectedGO).Forget();
     }
 
     public void OnPointerEnter(BaseEventData baseEventData)

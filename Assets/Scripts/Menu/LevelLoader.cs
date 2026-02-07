@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,13 +40,11 @@ public class LevelLoader : MonoBehaviour
         return selectedDifficulty;
     }
 
-    public async UniTask LoadLevel(string levelName, GameManager.LevelDifficulty difficulty)
+    public async UniTask LoadLevel(string levelName, string ghostName)
     {
-        selectedDifficulty = difficulty;
-
         crossFadeCanvasGroup.gameObject.SetActive(true);
 
-        await MenuManager.menuManagerInstance.FadeInTransition(crossFadeCanvasGroup);
+        await MenuAnimationManager.menuManagerInstance.FadeInTransition(crossFadeCanvasGroup);
 
         AsyncOperation sceneLoading = SceneManager.LoadSceneAsync(levelName);
 
@@ -58,10 +57,30 @@ public class LevelLoader : MonoBehaviour
 
         await OptionsMenu.optionsMenuInstance.SetPauseMenu();
 
-        await MenuManager.menuManagerInstance.FadeOutTransition(crossFadeCanvasGroup);
+        await MenuAnimationManager.menuManagerInstance.FadeOutTransition(crossFadeCanvasGroup);
         crossFadeCanvasGroup.gameObject.SetActive(false);
 
-        globalDataScriptableObject.levelDifficulty = difficulty;
+        globalDataScriptableObject.ghostName = ghostName;
+        globalDataScriptableObject.levelGhostsNames.Clear();
+        globalDataScriptableObject.levelGhostsNames = Extensions.PartialMatchKey(globalDataScriptableObject.ghostsDatas, levelName);
+
+        GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
+        for(int i = difficulties.Length - 1; i >= 0; i--)
+        {
+            globalDataScriptableObject.levelGhostsNames.Insert(0, difficulties[i].ToString());
+        }
+
+        try
+        {
+            selectedDifficulty = (GameManager.LevelDifficulty)System.Enum.Parse(typeof(GameManager.LevelDifficulty), ghostName);
+            globalDataScriptableObject.levelDifficulty = selectedDifficulty;
+        }
+        catch (ArgumentException)
+        {
+            globalDataScriptableObject.levelDifficulty = GameManager.LevelDifficulty.Easy;
+            Debug.Log(ghostName + " is not a member of Level Difficulty enum");
+        }
+
         await GameManager.gameManagerInstance.StartLevel();
     }
 
@@ -69,7 +88,7 @@ public class LevelLoader : MonoBehaviour
     {
         crossFadeCanvasGroup.gameObject.SetActive(true);
 
-        await MenuManager.menuManagerInstance.FadeInTransition(crossFadeCanvasGroup);
+        await MenuAnimationManager.menuManagerInstance.FadeInTransition(crossFadeCanvasGroup);
 
         AsyncOperation sceneLoading = SceneManager.LoadSceneAsync("MainMenu");
 
@@ -78,7 +97,7 @@ public class LevelLoader : MonoBehaviour
             await UniTask.Yield();
         }
 
-        await MenuManager.menuManagerInstance.FadeOutTransition(crossFadeCanvasGroup);
+        await MenuAnimationManager.menuManagerInstance.FadeOutTransition(crossFadeCanvasGroup);
         crossFadeCanvasGroup.gameObject.SetActive(false);
     }
 

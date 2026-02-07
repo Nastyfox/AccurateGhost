@@ -38,6 +38,8 @@ public class LeaderboardFiller : MonoBehaviour
     private Dictionary<string, GameObject> leaderboardTabPerName = new Dictionary<string, GameObject>();
     private List<GameObject> leaderboardTabs = new List<GameObject>();
 
+    [SerializeField] private GlobalDataScriptableObject globalDataScriptableObject;
+
     private class LeaderboardResult
     {
         public int rank;
@@ -56,7 +58,7 @@ public class LeaderboardFiller : MonoBehaviour
 
     private async UniTaskVoid Start()
     {
-        while (!Leaderboard.leaderboardInstance.GetIsInitialized())
+        while (!Leaderboard.leaderboardInstance.GetIsInitialized() || !CloudCodeManager.cloudCodeManagerInstance.IsDataRecovered())
         {
             await UniTask.Yield();
         }
@@ -69,8 +71,6 @@ public class LeaderboardFiller : MonoBehaviour
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
 
-        GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
-
         string firstTabSelected = "";
 
         for (int i = 0; i < sceneCount; i++)
@@ -81,67 +81,78 @@ public class LeaderboardFiller : MonoBehaviour
             if (sceneName.Contains("Level"))
             {
                 levelsDropdown.options.Add(new TMP_Dropdown.OptionData { text = sceneName });
-                SetGhostDropdownList(sceneName, difficulties);
 
-                for (int j = 0; j < difficulties.Length; j++)
+                AddGhostListForLevel(sceneName);
+
+                for (int j = 0; j < ghostListPerLevel[sceneName].Count; j++)
                 {
                     if(!firstLevelGhostDropdownSet && j == 0)
                     {
-                        firstTabSelected = GetTabName(sceneName, difficulties[j].ToString());
+                        firstTabSelected = GetTabName(sceneName, ghostListPerLevel[sceneName][j]);
                         SetGhostDropdown(sceneName);
                     }
 
-                    string levelName = GetTabName(sceneName, difficulties[j].ToString());
+                    string levelName = GetTabName(sceneName, ghostListPerLevel[sceneName][j]);
 
-                    scoreData = await Leaderboard.leaderboardInstance.GetScoresWithMetadata(levelName);
-                    List<LeaderboardResult> levelResults = LeaderboardDataToResults();
-                    SetNumberSameScore(levelResults);
-                    GameObject levelLeaderboard = Instantiate(leaderboardDataContainerPrefab, levelsContainer);
-                    leaderboardTabPerName.Add(levelName, levelLeaderboard);
-                    leaderboardTabs.Add(levelLeaderboard);
-
-                    currentScore = levelResults[0].score;
-
-                    foreach (LeaderboardResult result in levelResults)
+                    try
                     {
-                        Leaderboard.ScoreMetadata scoreMetadata = JsonUtility.FromJson<Leaderboard.ScoreMetadata>(result.metadata);
+                        scoreData = await Leaderboard.leaderboardInstance.GetScoresWithMetadata(levelName);
+                        List<LeaderboardResult> levelResults = LeaderboardDataToResults();
+                        SetNumberSameScore(levelResults);
+                        GameObject levelLeaderboard = Instantiate(leaderboardDataContainerPrefab, levelsContainer);
+                        leaderboardTabPerName.Add(levelName, levelLeaderboard);
+                        leaderboardTabs.Add(levelLeaderboard);
 
-                        GameObject leaderboardEntry = Instantiate(leaderboardEntryPrefab, levelLeaderboard.GetComponentInChildren<VerticalLayoutGroup>().transform);
-
-                        if (result.score != currentScore)
+                        if (levelResults.Count > 0)
                         {
-                            currentRank += sameScoreCount[currentScore];
-                            currentScore = result.score;
-                        }
-                        GameObject rank = Instantiate(rankTextPrefab, leaderboardEntry.transform);
-                        rank.GetComponentInChildren<TextMeshProUGUI>().text = (currentRank).ToString();
-
-                        GameObject pseudo = Instantiate(pseudoTextPrefab, leaderboardEntry.transform);
-                        pseudo.GetComponentInChildren<TextMeshProUGUI>().text = scoreMetadata.pseudo;
-
-                        GameObject medal = Instantiate(medalPrefab, leaderboardEntry.transform);
-                        switch (GetMedalFromScore(result.score))
-                        {
-                            case "Bronze":
-                                medal.GetComponentInChildren<Image>().sprite = medalSprites[0];
-                                break;
-                            case "Silver":
-                                medal.GetComponentInChildren<Image>().sprite = medalSprites[1];
-                                break;
-                            case "Gold":
-                                medal.GetComponentInChildren<Image>().sprite = medalSprites[2];
-                                break;
+                            currentScore = levelResults[0].score;
                         }
 
-                        GameObject completion = Instantiate(completionPrefab, leaderboardEntry.transform);
-                        completion.GetComponentInChildren<TextMeshProUGUI>().text = result.score.ToString() + "%";
-
-                        if (playerID != result.playerID)
+                        foreach (LeaderboardResult result in levelResults)
                         {
-                            Color leaderboardColor = leaderboardEntry.GetComponent<Image>().color;
-                            Color noAlphaColor = new Color(leaderboardColor.r, leaderboardColor.g, leaderboardColor.b, 0f);
-                            leaderboardEntry.GetComponent<Image>().color = noAlphaColor;
+                            Leaderboard.ScoreMetadata scoreMetadata = JsonUtility.FromJson<Leaderboard.ScoreMetadata>(result.metadata);
+
+                            GameObject leaderboardEntry = Instantiate(leaderboardEntryPrefab, levelLeaderboard.GetComponentInChildren<VerticalLayoutGroup>().transform);
+
+                            if (result.score != currentScore)
+                            {
+                                currentRank += sameScoreCount[currentScore];
+                                currentScore = result.score;
+                            }
+                            GameObject rank = Instantiate(rankTextPrefab, leaderboardEntry.transform);
+                            rank.GetComponentInChildren<TextMeshProUGUI>().text = (currentRank).ToString();
+
+                            GameObject pseudo = Instantiate(pseudoTextPrefab, leaderboardEntry.transform);
+                            pseudo.GetComponentInChildren<TextMeshProUGUI>().text = scoreMetadata.pseudo;
+
+                            GameObject medal = Instantiate(medalPrefab, leaderboardEntry.transform);
+                            switch (GetMedalFromScore(result.score))
+                            {
+                                case "Bronze":
+                                    medal.GetComponentInChildren<Image>().sprite = medalSprites[0];
+                                    break;
+                                case "Silver":
+                                    medal.GetComponentInChildren<Image>().sprite = medalSprites[1];
+                                    break;
+                                case "Gold":
+                                    medal.GetComponentInChildren<Image>().sprite = medalSprites[2];
+                                    break;
+                            }
+
+                            GameObject completion = Instantiate(completionPrefab, leaderboardEntry.transform);
+                            completion.GetComponentInChildren<TextMeshProUGUI>().text = result.score.ToString() + "%";
+
+                            if (playerID != result.playerID)
+                            {
+                                Color leaderboardColor = leaderboardEntry.GetComponent<Image>().color;
+                                Color noAlphaColor = new Color(leaderboardColor.r, leaderboardColor.g, leaderboardColor.b, 0f);
+                                leaderboardEntry.GetComponent<Image>().color = noAlphaColor;
+                            }
                         }
+                    }
+                    catch
+                    {
+                        Debug.Log("Getting leaderboard scores failed for " + levelName);
                     }
                 }
             }
@@ -190,16 +201,21 @@ public class LeaderboardFiller : MonoBehaviour
             ghostDropdown.options.Add(new TMP_Dropdown.OptionData { text = ghostName.ToString() });
         }
 
+        ghostDropdown.RefreshShownValue();
+
         firstLevelGhostDropdownSet = true;
     }
 
-    private void SetGhostDropdownList(string levelName, GameManager.LevelDifficulty[] difficulties)
+    private void AddGhostListForLevel(string levelName)
     {
         List<string> ghostList = new List<string>();
 
-        for (int i = 0; i < difficulties.Length; i++)
+        ghostList = Extensions.PartialMatchKey(globalDataScriptableObject.ghostsDatas, levelName);
+
+        GameManager.LevelDifficulty[] difficulties = (GameManager.LevelDifficulty[])Enum.GetValues(typeof(GameManager.LevelDifficulty));
+        for (int a = difficulties.Length - 1; a >= 0; a--)
         {
-            ghostList.Add(difficulties[i].ToString());
+            ghostList.Insert(0, difficulties[a].ToString());
         }
 
         ghostListPerLevel.Add(levelName, ghostList);

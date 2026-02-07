@@ -1,11 +1,9 @@
 using Cysharp.Threading.Tasks;
 using PrimeTween;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static MenuManager;
 
-public class MenuManager : MonoBehaviour
+public class MenuAnimationManager : MonoBehaviour
 {
     public enum AnimationType
     {
@@ -13,7 +11,7 @@ public class MenuManager : MonoBehaviour
         Scale
     }
 
-    public static MenuManager menuManagerInstance;
+    public static MenuAnimationManager menuManagerInstance;
 
     [Header("Position Animation Settings")]
     [SerializeField] private TweenSettings<float> positionDisplayAnimationSettings;
