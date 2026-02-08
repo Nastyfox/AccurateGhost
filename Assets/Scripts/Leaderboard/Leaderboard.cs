@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Leaderboards;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Leaderboard : MonoBehaviour
@@ -15,6 +14,8 @@ public class Leaderboard : MonoBehaviour
     private bool isInitialized = false;
 
     public static Leaderboard leaderboardInstance;
+
+    [SerializeField] private List<Sprite> medalSprites;
 
     [Serializable]
     public class ScoreMetadata
@@ -76,7 +77,6 @@ public class Leaderboard : MonoBehaviour
                 score,
                 new AddPlayerScoreOptions { Metadata = scoreMetadata }
             );
-        Debug.Log(JsonConvert.SerializeObject(playerEntry));
     }
 
     public async UniTask<List<Unity.Services.Leaderboards.Models.LeaderboardEntry>> GetScoresWithMetadata(string leaderboardId)
@@ -108,5 +108,30 @@ public class Leaderboard : MonoBehaviour
             Debug.LogException(e);
             return null;
         }
+    }
+
+    public async UniTask<Unity.Services.Leaderboards.Models.LeaderboardEntry> GetPlayerScore(string leaderboardId)
+    {
+        try
+        {
+            var scoreResponse = await LeaderboardsService.Instance
+            .GetPlayerScoreAsync(
+                leaderboardId
+            );
+
+            string scoreData = JsonConvert.SerializeObject(scoreResponse);
+            return scoreResponse;
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+            return null;
+        }
+    }
+
+    public Sprite GetMedalFromScore(double score)
+    {
+        int medalIndex = (int)(score / 100);
+        return medalSprites[medalIndex];
     }
 }

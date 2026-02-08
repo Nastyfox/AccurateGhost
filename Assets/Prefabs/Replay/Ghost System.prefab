@@ -47,4 +47,5 @@ MonoBehaviour:
   target: {fileID: 0}
   ghostPrefab: {fileID: 1133367838122955813, guid: b80ef119118acda49aef1c72695b9896,
     type: 3}
-  timeBetweenKeyFrames: 0.02
+  timeBetweenKeyFrames: 0
+  globalDataScriptableObject: {fileID: 0}

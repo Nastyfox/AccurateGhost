@@ -10,8 +10,6 @@ using UnityEngine.UI;
 
 public class LeaderboardFiller : MonoBehaviour
 {
-    [SerializeField] private List<Sprite> medalSprites;
-
     [SerializeField] private Transform levelsContainer;
     [SerializeField] private TMP_Dropdown levelsDropdown;
     [SerializeField] private TMP_Dropdown ghostDropdown;
@@ -86,6 +84,8 @@ public class LeaderboardFiller : MonoBehaviour
 
                 for (int j = 0; j < ghostListPerLevel[sceneName].Count; j++)
                 {
+                    currentRank = 1;
+
                     if(!firstLevelGhostDropdownSet && j == 0)
                     {
                         firstTabSelected = GetTabName(sceneName, ghostListPerLevel[sceneName][j]);
@@ -126,18 +126,7 @@ public class LeaderboardFiller : MonoBehaviour
                             pseudo.GetComponentInChildren<TextMeshProUGUI>().text = scoreMetadata.pseudo;
 
                             GameObject medal = Instantiate(medalPrefab, leaderboardEntry.transform);
-                            switch (GetMedalFromScore(result.score))
-                            {
-                                case "Bronze":
-                                    medal.GetComponentInChildren<Image>().sprite = medalSprites[0];
-                                    break;
-                                case "Silver":
-                                    medal.GetComponentInChildren<Image>().sprite = medalSprites[1];
-                                    break;
-                                case "Gold":
-                                    medal.GetComponentInChildren<Image>().sprite = medalSprites[2];
-                                    break;
-                            }
+                            medal.GetComponentInChildren<Image>().sprite = Leaderboard.leaderboardInstance.GetMedalFromScore(result.score);
 
                             GameObject completion = Instantiate(completionPrefab, leaderboardEntry.transform);
                             completion.GetComponentInChildren<TextMeshProUGUI>().text = result.score.ToString() + "%";
@@ -252,25 +241,5 @@ public class LeaderboardFiller : MonoBehaviour
         }
 
         leaderboardTabPerName[tabName].SetActive(true);
-    }
-
-    private string GetMedalFromScore(double score)
-    {
-        if (score > 20.0)
-        {
-            return "Gold";
-        }
-        else if (score > 100.0)
-        {
-            return "Silver";
-        }
-        else if (score >= 30.0)
-        {
-            return "Bronze";
-        }
-        else
-        {
-            return "None";
-        }
     }
 }

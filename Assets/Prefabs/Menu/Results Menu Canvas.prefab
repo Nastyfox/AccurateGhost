@@ -180,6 +180,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -577,6 +578,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -714,6 +716,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -880,7 +883,6 @@ GameObject:
   - component: {fileID: 2130242668024716206}
   - component: {fileID: 1197334123508211506}
   - component: {fileID: 4145216564362206005}
-  - component: {fileID: 4464351313484437470}
   m_Layer: 5
   m_Name: Results Menu Canvas
   m_TagString: Untagged
@@ -1077,30 +1079,6 @@ MonoBehaviour:
   backButton: {fileID: 0}
   globalDataScriptableObject: {fileID: 11400000, guid: 794bf381934561b41944e18d07b476b1,
     type: 2}
---- !u!114 &4464351313484437470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3632863612917204845}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cd8a1b9e1b21cf4ba12edc62d5bdb23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectables:
-  - {fileID: 7948076356056136111}
-  - {fileID: 7948076356056136111}
-  - {fileID: 3806682552744081836}
-  - {fileID: 8715358585245653089}
-  - {fileID: 2396620382064945393}
-  firstSelected: {fileID: 3806682552744081836}
-  navigateReference: {fileID: 415577019146699718, guid: 2bcd2660ca9b64942af0de543d8d7100,
-    type: 3}
-  submitReference: {fileID: 4005412982470921431, guid: 2bcd2660ca9b64942af0de543d8d7100,
-    type: 3}
-  animationExclusions: []
 --- !u!1 &3828909272638866749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,8 +1249,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 90
+  m_fontSizeBase: 90
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1282,6 +1260,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1665,6 +1644,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8920563065928645464}
+  - component: {fileID: 432906695263145347}
   m_Layer: 5
   m_Name: ResultsMenu
   m_TagString: Untagged
@@ -1693,6 +1673,30 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &432906695263145347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6909836309081085241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd8a1b9e1b21cf4ba12edc62d5bdb23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectables:
+  - {fileID: 7948076356056136111}
+  - {fileID: 7948076356056136111}
+  - {fileID: 3806682552744081836}
+  - {fileID: 8715358585245653089}
+  - {fileID: 2396620382064945393}
+  firstSelected: {fileID: 3806682552744081836}
+  navigateReference: {fileID: 415577019146699718, guid: 2bcd2660ca9b64942af0de543d8d7100,
+    type: 3}
+  submitReference: {fileID: 4005412982470921431, guid: 2bcd2660ca9b64942af0de543d8d7100,
+    type: 3}
+  animationExclusions: []
 --- !u!1 &7013118013937896378
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,18 +17,24 @@ public class Parallax : MonoBehaviour
 
     private void Update()
     {
-        if(!GameManager.gameManagerInstance.GetIsCameraFollowingGhost())
+#if UNITY_EDITOR
+        if (!GameManager.gameManagerInstance.GetIsCameraFollowingGhost())
         {
             ParallaxEffect();
         }
+#else
+        ParallaxEffect();
+#endif
     }
 
     private void FixedUpdate()
     {
+#if UNITY_EDITOR
         if (GameManager.gameManagerInstance.GetIsCameraFollowingGhost())
         {
             ParallaxEffect();
         }
+#endif
     }
 
     private void ParallaxEffect()

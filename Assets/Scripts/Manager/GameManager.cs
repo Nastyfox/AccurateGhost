@@ -72,8 +72,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject replayPlaybackPrefab;
     [SerializeField] private GameObject runSavePrefab;
 
-    private event Action displayGhostDuringDelegate;
-
     private GhostSaveBindings ghostSaveBindings;
     private LeaderboardAdmin leaderboardAdmin;
 
@@ -85,10 +83,12 @@ public class GameManager : MonoBehaviour
     public void SetLevel()
     {
         player = Instantiate(playerPrefab, levelDataScriptableObject.playerStartPosition, Quaternion.identity);
-        ResultsMenu.resultsMenuInstance.SetPlayer(player);
 
         cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
         cinemachineCamera.Target.TrackingTarget = player.transform;
+        cinemachineCamera.transform.position = player.transform.position;
+        
+        ResultsMenu.resultsMenuInstance.SetPlayer(player);
 
         ghostPlayback = Instantiate(ghostPlaybackPrefab).GetComponent<Playback>();
         replayPlayback = Instantiate(replayPlaybackPrefab).GetComponent<Playback>();
@@ -107,7 +107,6 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerCollisions.StartEvent += StartRecord;
         PlayerCollisions.EndEvent += UniTask.Action(StopRecord);
 
         Playback.playbackDoneEvent += UniTask.Action(StartRun);
@@ -134,11 +133,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UnsubscribeGhostDuring()
-    {
-        PlayerCollisions.StartEvent -= displayGhostDuringDelegate;
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -163,6 +157,13 @@ public class GameManager : MonoBehaviour
         countdownText.text = "GO !";
         startTimer = true;
         EnablePlayerControls();
+        StartRecord();
+
+        if (displayGhostDuring && !saveClassicRun && !saveCustomRun)
+        {
+            isCameraFollowingGhost = false;
+            DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun).Forget();
+        }
 
         await MenuAnimationManager.menuManagerInstance.CountdownScaleButton(countdownText.gameObject, 1f);
         countdownText.gameObject.SetActive(false);
@@ -300,50 +301,43 @@ public class GameManager : MonoBehaviour
         if (!saveClassicRun && !saveCustomRun)
         {
             DisablePlayerControls();
-        }
 
-        //savedRun = runSaveSystem.LoadRun(runSaveFileSetup, ghostName, SceneManager.GetActiveScene().name);
-        try
-        {
-            savedRun = globalDataScriptableObject.ghostsDatas[SceneManager.GetActiveScene().name + "_" + ghostName];
-        }
-        catch
-        {
-            switch (levelDifficulty)
+            //savedRun = runSaveSystem.LoadRun(runSaveFileSetup, ghostName, SceneManager.GetActiveScene().name);
+            try
             {
-                case LevelDifficulty.Easy:
-                    savedRun = levelDataScriptableObject.easyRunData;
-                    break;
-                case LevelDifficulty.Medium:
-                    savedRun = levelDataScriptableObject.mediumRunData;
-                    break;
-                case LevelDifficulty.Hard:
-                    savedRun = levelDataScriptableObject.hardRunData;
-                    break;
+                savedRun = globalDataScriptableObject.ghostsDatas[SceneManager.GetActiveScene().name + "_" + ghostName];
             }
-        }
+            catch
+            {
+                switch (levelDifficulty)
+                {
+                    case LevelDifficulty.Easy:
+                        savedRun = levelDataScriptableObject.easyRunData;
+                        break;
+                    case LevelDifficulty.Medium:
+                        savedRun = levelDataScriptableObject.mediumRunData;
+                        break;
+                    case LevelDifficulty.Hard:
+                        savedRun = levelDataScriptableObject.hardRunData;
+                        break;
+                }
+            }
 
-        if (displayGhostBefore)
-        {
-            isCameraFollowingGhost = true;
-            await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, true, 0, savedRun);
-            isCameraFollowingGhost = false;
-            cinemachineCamera.Target.TrackingTarget = player.transform;
+            if (displayGhostBefore)
+            {
+                isCameraFollowingGhost = true;
+                await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, true, 0, savedRun);
+                isCameraFollowingGhost = false;
+                cinemachineCamera.Target.TrackingTarget = player.transform;
+            }
+            else
+            {
+                StartRun().Forget();
+            }
         }
         else
         {
             StartRun().Forget();
-        }
-
-        if (displayGhostDuring)
-        {
-            isCameraFollowingGhost = false;
-            displayGhostDuringDelegate = async () =>
-            {
-                await DisplayPlayback(ghostPlayback, isCameraFollowingGhost, false, frameOffset, savedRun);
-            };
-
-            PlayerCollisions.StartEvent += displayGhostDuringDelegate;
         }
     }
 }

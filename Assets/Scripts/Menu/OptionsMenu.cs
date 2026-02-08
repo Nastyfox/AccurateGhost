@@ -68,7 +68,6 @@ public class OptionsMenu : MonoBehaviour
                 optionsPanel.SetActive(false);
                 backButton.SetActive(false);
                 backButton.transform.SetParent(backButton.transform.parent.parent);
-                GameManager.gameManagerInstance.UnsubscribeGhostDuring();
                 await LevelLoader.levelLoaderInstance.LoadMainMenu();
             });
 
@@ -167,7 +166,6 @@ public class OptionsMenu : MonoBehaviour
         replayButton.onClick.AddListener(async () =>
         {
             ResumeFromPause().Forget();
-            GameManager.gameManagerInstance.UnsubscribeGhostDuring();
             await LevelLoader.levelLoaderInstance.LoadLevel(SceneManager.GetActiveScene().name, globalDataScriptableObject.ghostName);
         });
     }
@@ -182,7 +180,7 @@ public class OptionsMenu : MonoBehaviour
     public async UniTask ResumeFromPause()
     {
         isGamePaused = false;
-        Time.timeScale = 1f;
         await MenuAnimationManager.menuManagerInstance.HideMenu(optionsPanel, null, MenuAnimationManager.AnimationType.Scale);
+        Time.timeScale = 1f;
     }
 }

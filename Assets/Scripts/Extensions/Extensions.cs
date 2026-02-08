@@ -81,4 +81,17 @@ public static class Extensions
 
         return returnedValues;
     }
+
+    public static T GetComponentOnlyInChildren<T>(this Transform t)
+    {
+        foreach (Transform child in t)
+        {
+            if(child.GetComponent<T>() != null)
+            {
+                return child.GetComponent<T>();
+            }
+        }
+
+        return default(T);
+    }
 }

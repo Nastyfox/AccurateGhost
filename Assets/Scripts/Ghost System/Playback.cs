@@ -13,7 +13,8 @@ public class Playback : MonoBehaviour
     }
 
     private List<PlaybackKeyFrame> playbackKeyFrames = new List<PlaybackKeyFrame>();
-    private float playerTimer;
+    private float recordTimer;
+    private float replayTimer;
 
     [SerializeField] private GameObject target;
     private Animator targetAnimator;
@@ -65,7 +66,7 @@ public class Playback : MonoBehaviour
         isRecording = value;
         if(isRecording)
         {
-            playerTimer = 0;
+            recordTimer = 0;
         }
     }
 
@@ -88,18 +89,23 @@ public class Playback : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        playerTimer += Time.fixedDeltaTime;
+        replayTimer += Time.deltaTime;
 
         if (isPlaybacking && !isPlaybackDone)
         {
-            PlaybackUpdate(playerTimer);
+            PlaybackUpdate(replayTimer);
         }
         if (isPlaybackDone)
         {
             Destroy(ghost);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        recordTimer += Time.fixedDeltaTime;
 
         if (isRecording)
         {
@@ -115,11 +121,11 @@ public class Playback : MonoBehaviour
 
     public void Record()
     {
-        if (playbackKeyFrames.Count == 0 || playerTimer - playbackKeyFrames[^1].time > timeBetweenKeyFrames)
+        if (playbackKeyFrames.Count == 0 || recordTimer - playbackKeyFrames[^1].time > timeBetweenKeyFrames)
         {
             PlaybackKeyFrame frame = new PlaybackKeyFrame()
             {
-                time = playerTimer,
+                time = recordTimer,
                 pos = target.transform.position,
                 flipXSprite = targetSpriteRenderer.flipX,
                 isMovingAnimator = targetAnimator.GetBool(IsMoving),
@@ -258,7 +264,8 @@ public class Playback : MonoBehaviour
         ghost = Instantiate(ghostPrefab, playbackKeyFrames[0].pos, Quaternion.identity);
         ghostAnimator = ghost.GetComponentInChildren<Animator>();
         ghostSpriteRenderer = ghost.GetComponentInChildren<SpriteRenderer>();
-        playerTimer = playbackKeyFrames[0].time;
+        replayTimer = playbackKeyFrames[0].time;
+        recordTimer = playbackKeyFrames[0].time;
         if (follow)
         {
             virtualCamera.Target.TrackingTarget = ghost.transform;
@@ -270,7 +277,8 @@ public class Playback : MonoBehaviour
     public void ResetPlayback()
     {
         playbackKeyFrames.Clear();
-        playerTimer = 0;
+        recordTimer = 0;
+        replayTimer = 0;
         isRecording = false;
         isPlaybackDone = false;
     }

@@ -89,7 +89,6 @@ public class ResultsMenu : MonoBehaviour
 
     public async UniTask ResultsLevel(int result)
     {
-        GameManager.gameManagerInstance.UnsubscribeGhostDuring();
         ResetResults();
         player.SetActive(false);
         await MenuAnimationManager.menuManagerInstance.DisplayMenu(resultsPanel, null, MenuAnimationManager.AnimationType.Scale);

@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class LevelsListFiller : MonoBehaviour
 {
@@ -16,13 +18,22 @@ public class LevelsListFiller : MonoBehaviour
     [SerializeField] private GlobalDataScriptableObject globalDataScriptableObject;
 
     [SerializeField] private TMP_Dropdown levelsDropdown;
-    [SerializeField] private TMP_Dropdown ghostDropdown;
-    [SerializeField] private Button startButton;
+    [SerializeField] private Button saveNewGhostButton;
     private Dictionary<string, List<string>> ghostListPerLevel = new Dictionary<string, List<string>>();
     private bool firstLevelGhostDropdownSet;
 
     private string levelName;
-    private string ghostName;
+
+    [SerializeField] private GameObject ghostGridPrefab;
+    [SerializeField] private GameObject ghostButtonPrefab;
+    [SerializeField] private Transform ghostListContainer;
+    private Dictionary<string, GameObject> ghostListTabPerName = new Dictionary<string, GameObject>();
+    private List<GameObject> ghostListTabs = new List<GameObject>();
+
+    private Dictionary<string, Selectable> firstSelectablesInGrids = new Dictionary<string, Selectable>();
+    private Selectable currentFirstSelectableInGrid;
+
+    [SerializeField] private GameObject backButton;
 
     private async UniTaskVoid Start()
     {
@@ -31,12 +42,16 @@ public class LevelsListFiller : MonoBehaviour
             await UniTask.Yield();
         }
 
+        globalDataScriptableObject.saveCustomRun = false;
+        globalDataScriptableObject.saveClassicRun = false;
+
         levelsDropdown.ClearOptions();
-        ghostDropdown.ClearOptions();
-        startButton.onClick.RemoveAllListeners();
+        saveNewGhostButton.onClick.RemoveAllListeners();
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
         string[] scenes = new string[sceneCount];
+
+        string firstTabSelected = "";
 
         for (int i = 0; i < sceneCount; i++)
         {
@@ -49,19 +64,70 @@ public class LevelsListFiller : MonoBehaviour
 
                 AddGhostListForLevel(sceneName);
 
+                GameObject ghostGrid = Instantiate(ghostGridPrefab, ghostListContainer);
+                ghostListTabPerName.Add(sceneName, ghostGrid);
+                ghostListTabs.Add(ghostGrid);
+
                 if (!firstLevelGhostDropdownSet)
                 {
-                    SetGhostDropdown(sceneName);
+                    firstTabSelected = sceneName;
+                    firstLevelGhostDropdownSet = true;
+                }
+
+                for (int j = 0; j < ghostListPerLevel[sceneName].Count; j++)
+                {
+                    string ghostName = ghostListPerLevel[sceneName][j];
+
+                    GameObject ghostButton = Instantiate(ghostButtonPrefab, ghostGrid.transform);
+                    ghostButton.GetComponentInChildren<TextMeshProUGUI>().text = ghostName;
+                    ghostButton.GetComponent<Button>().onClick.AddListener(async () =>
+                    {
+                        await LevelLoader.levelLoaderInstance.LoadLevel(sceneName, ghostName);
+                    });
+                    menuEventSystemHandler.AddSelectable(ghostButton.GetComponent<Selectable>());
+
+                    try
+                    {
+                        Unity.Services.Leaderboards.Models.LeaderboardEntry playerEntry = await Leaderboard.leaderboardInstance.GetPlayerScore(sceneName + "_" + ghostName);
+                        Extensions.GetComponentOnlyInChildren<Image>(ghostButton.transform).sprite = Leaderboard.leaderboardInstance.GetMedalFromScore(playerEntry.Score);
+                    }
+                    catch
+                    {
+                        Debug.Log("No result for player in this leaderboard");
+                        Extensions.GetComponentOnlyInChildren<Image>(ghostButton.transform).enabled = false;
+                    }
+
+                    if (j == 0)
+                    {
+                        firstSelectablesInGrids.Add(sceneName, ghostButton.GetComponent<Selectable>());
+                    }
                 }
             }
         }
 
-        startButton.onClick.AddListener(async () => {
-            await StartLevel();
+        saveNewGhostButton.onClick.AddListener(async () => {
+            globalDataScriptableObject.saveCustomRun = true;
+            await LevelLoader.levelLoaderInstance.LoadLevel(levelName, "");
         });
 
         levelName = levelsDropdown.options[0].text;
-        ghostName = ghostDropdown.options[0].text;
+        DisplayLevelGhostList(levelName);
+
+        Navigation navigation = backButton.GetComponent<Selectable>().navigation;
+        navigation.mode = Navigation.Mode.Explicit;
+        navigation.selectOnDown = currentFirstSelectableInGrid;
+        navigation.selectOnRight = levelsDropdown;
+        backButton.GetComponent<Selectable>().navigation = navigation;
+        
+        SetNavigationDown(levelsDropdown);
+        SetNavigationDown(saveNewGhostButton);
+    }
+
+    private void OnDisable()
+    {
+        Navigation navigation = backButton.GetComponent<Selectable>().navigation;
+        navigation.mode = Navigation.Mode.Automatic;
+        backButton.GetComponent<Selectable>().navigation = navigation;
     }
 
     private void AddGhostListForLevel(string levelName)
@@ -79,37 +145,29 @@ public class LevelsListFiller : MonoBehaviour
         ghostListPerLevel.Add(levelName, ghostList);
     }
 
-    private void SetGhostDropdown(string levelName)
-    {
-        ghostDropdown.ClearOptions();
-
-        foreach (string ghostName in ghostListPerLevel[levelName])
-        {
-            ghostDropdown.options.Add(new TMP_Dropdown.OptionData { text = ghostName.ToString() });
-        }
-
-        ghostDropdown.RefreshShownValue();
-
-        firstLevelGhostDropdownSet = true;
-    }
-
     public void OnChangeLevelDropdown(int levelIndex)
     {
         levelName = levelsDropdown.options[levelIndex].text;
-        SetGhostDropdown(levelName);
 
-        ghostName = ghostListPerLevel[levelName][0];
+        DisplayLevelGhostList(levelName);
     }
 
-    public void OnChangeGhostDropdown(int ghostIndex)
+    private void DisplayLevelGhostList(string tabName)
     {
-        levelName = levelsDropdown.options[levelsDropdown.value].text;
+        foreach (GameObject ghostList in ghostListTabs)
+        {
+            ghostList.SetActive(false);
+        }
 
-        ghostName = ghostDropdown.options[ghostIndex].text;
+        ghostListTabPerName[tabName].SetActive(true);
+
+        currentFirstSelectableInGrid = firstSelectablesInGrids[tabName];
     }
 
-    public async UniTask StartLevel()
+    private void SetNavigationDown(Selectable selectable)
     {
-        await LevelLoader.levelLoaderInstance.LoadLevel(levelName, ghostName);
+        Navigation navigation = selectable.navigation;
+        navigation.selectOnDown = currentFirstSelectableInGrid;
+        selectable.navigation = navigation;
     }
 }
